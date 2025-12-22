@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} | ArtDecor{% endblock %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
+
+{% if products %}
+<ul>
+    {% for product in products %}
+        <li>
+            <a href="{% url 'product_detail' product.slug %}">
+                {{ product.title }} – ₹{{ product.price }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No products available.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}ArtGift | Home{% endblock %}
+
+{% block content %}
+
+
+  <!-- Hero slider -->
+  <section class="hero-gradient">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+      <!-- dots -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0"
+                class="active" aria-current="true"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+      </div>
+
+      <div class="carousel-inner">
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4">
+                  The Deo Cream<br>That Broke The Rules
+                </h1>
+                <ul class="list-unstyled fs-6">
+                  <li class="mb-2">Eliminates bad smell bacteria*</li>
+                  <li class="mb-2">Long lasting confidence</li>
+                  <li class="mb-2">Whole body safe application*</li>
+                  <li class="mb-2">The OG head turning scent</li>
+                </ul>
+              </div>
+              <div class="col-md-6 text-center">
+                <!-- Replace with product image like screenshot -->
+                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
+                     class="img-fluid" alt="Product">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-item">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4">
+                  Freshness All Day Long
+                </h1>
+                <p class="fs-5 mb-4">
+                  Experience a new level of body care with our unique formula.
+                </p>
+              </div>
+              <div class="col-md-6 text-center">
+                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
+                     class="img-fluid" alt="Product">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-item">
+          <div class="container py-5">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h1 class="display-4 fw-bold mb-4">
+                  For Every Body Type
+                </h1>
+                <p class="fs-5 mb-4">
+                  Dermatologically tested and safe for whole body use.
+                </p>
+              </div>
+              <div class="col-md-6 text-center">
+                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
+                     class="img-fluid" alt="Product">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- arrows like screenshot -->
+      <button class="carousel-control-prev" type="button"
+              data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button"
+              data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
+<main>
+  <section class="hero">
+    <div class="hero__carousel">
+      <button class="carousel__control prev" aria-label="Previous slide">❮</button>
+      <button class="carousel__control next" aria-label="Next slide">❯</button>
+      <div class="carousel__slides" id="hero-slides"></div>
+      <div class="carousel__dots" id="hero-dots"></div>
+    </div>
+  </section>
+
+  <section class="marquee-bar">
+    <div class="marquee-bar__content">
+      <div class="marquee-bar__item">★ SAFE & CLEAN INGREDIENTS</div>
+      <div class="marquee-bar__item">★ FREE & FAST SHIPPING</div>
+      <div class="marquee-bar__item">★ MADE IN INDIA</div>
+      <div class="marquee-bar__item">★ PREMIUM QUALITY</div>
+      <div class="marquee-bar__item">★ SAFE & CLEAN INGREDIENTS</div>
+      <div class="marquee-bar__item">★ FREE & FAST SHIPPING</div>
+      <div class="marquee-bar__item">★ MADE IN INDIA</div>
+      <div class="marquee-bar__item">★ PREMIUM QUALITY</div>
+    </div>
+  </section>
+
+  <section id="combos" class="section">
+    <div class="container section__header">
+      <div>
+        <p class="eyebrow">Best Selling Combos</p>
+        <h2>Powerful duos for powerful results</h2>
+      </div>
+      <a class="link" href="#hot-singles">Shop all combos →</a>
+    </div>
+
+    <div class="container grid" id="combo-grid">
+      {% for product in combos %}
+        <article class="card product-card">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+          {% endif %}
+
+          <h3>{{ product.title }}</h3>
+
+          <div class="stars">
+            ⭐️⭐️⭐️⭐️⭐️
+            <span class="product-meta">( {{ product.stock }} in stock )</span>
+          </div>
+
+          <div class="price">
+            {% if product.compare_at_price %}
+              <span class="price__current">₹{{ product.price }}</span>
+              <span class="price__strike"><del>₹{{ product.compare_at_price }}</del></span>
+            {% else %}
+              <span class="price__current">₹{{ product.price }}</span>
+            {% endif %}
+          </div>
+
+          <button class="btn primary full">Buy Now</button>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="hot-singles" class="section alt">
+    <div class="container section__header">
+      <div>
+        <p class="eyebrow">Hot Singles</p>
+        <h2>Grab 'em before they run out!</h2>
+      </div>
+      <a class="link" href="#newsletter">Shop new launches →</a>
+    </div>
+    <div class="container grid" id="singles-grid"></div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Discover the new meaning of freshness</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>High-performance formulas</h3>
+          <p>Designed for the everyday grind. Effective freshness that lasts.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Confidence, bottled</h3>
+          <p>Bold, lasting scents that elevate your day without overpowering.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Made to work</h3>
+          <p>No fancy claims. Just clean, reliable performance you can trust.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container section__header">
+      <div>
+        <p class="eyebrow">Real peeps, real results!</p>
+        <h2>Customer Reviews & Testimonials</h2>
+      </div>
+    </div>
+    <div class="container testimonial-carousel">
+      <button class="testimonial__control prev" aria-label="Previous testimonial">❮</button>
+      <div class="testimonial__viewport">
+        <div class="testimonial__track" id="testimonial-track"></div>
+      </div>
+      <button class="testimonial__control next" aria-label="Next testimonial">❯</button>
+    </div>
+  </section>
+
+  <section id="newsletter" class="section">
+    <div class="container newsletter">
+      <div>
+        <p class="eyebrow">Stay up to date</p>
+        <h2>Be the first to know about offers and drops</h2>
+        <p class="lede">Get exclusive offers, sale information, and launch alerts. No spam, just freshness.</p>
+      </div>
+      <form class="newsletter__form">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit" class="btn primary">Subscribe</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<ul>
+  {% for category in categories %}
+    <li>
+      <a href="{% url 'category' category.slug %}">
+        {{ category.name }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<h2>Best Sellers</h2>
+
+<ul>
+  {% for product in products %}
+    <li>
+      <a href="{% url 'product_detail' product.slug %}">
+        {{ product.title }} – ₹{{ product.price }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

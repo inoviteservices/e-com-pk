@@ -22,10 +22,10 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # new single image field on the same table
+    image = models.ImageField(upload_to="products/", null=True, blank=True)
+
     def __str__(self):
         return self.title
 
 
-class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="products/")

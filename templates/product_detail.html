@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.title }} | ArtDecor{% endblock %}
+{% block meta_description %}{{ product.description|truncatewords:20 }}{% endblock %}
+
+{% block content %}
+<h1>{{ product.title }}</h1>
+
+{% if product.compare_at_price %}
+<p>
+    <del>₹{{ product.compare_at_price }}</del>
+    <strong>₹{{ product.price }}</strong>
+</p>
+{% else %}
+<p>₹{{ product.price }}</p>
+{% endif %}
+
+<p>{{ product.description }}</p>
+
+{% if product.image %}
+    <img src="{{ product.image.url }}" width="200" alt="{{ product.title }}">
+{% endif %}
+
+<p>Stock: {{ product.stock }}</p>
+{% endblock %}
