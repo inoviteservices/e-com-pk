@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-)$6ubapxn&39b=t+c3=lbn_n%k+m$a3kq2!vz^wd=)!(yzl-1+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '143.244.132.1',
+    'localhost',
+    '127.0.0.1',
+    'artgift.in',
+
+]
+
 
 
 # Application definition
@@ -83,14 +90,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'artdecor_db',
-        'USER': 'artdecor_user',
-        'PASSWORD': 'strongpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 
@@ -130,6 +134,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
