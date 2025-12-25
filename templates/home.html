@@ -6,217 +6,582 @@
 {% block content %}
 
 
-  <!-- Hero slider -->
-  <section class="hero-gradient">
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-      <!-- dots -->
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0"
-                class="active" aria-current="true"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-      </div>
 
-      <div class="carousel-inner">
-        <!-- Slide 1 -->
-        <div class="carousel-item active">
-          <div class="container py-5">
-            <div class="row align-items-center">
-              <div class="col-md-6">
-                <h1 class="display-4 fw-bold mb-4">
-                  The Deo Cream<br>That Broke The Rules
-                </h1>
-                <ul class="list-unstyled fs-6">
-                  <li class="mb-2">Eliminates bad smell bacteria*</li>
-                  <li class="mb-2">Long lasting confidence</li>
-                  <li class="mb-2">Whole body safe application*</li>
-                  <li class="mb-2">The OG head turning scent</li>
-                </ul>
-              </div>
-              <div class="col-md-6 text-center">
-                <!-- Replace with product image like screenshot -->
-                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
-                     class="img-fluid" alt="Product">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="carousel-item">
-          <div class="container py-5">
-            <div class="row align-items-center">
-              <div class="col-md-6">
-                <h1 class="display-4 fw-bold mb-4">
-                  Freshness All Day Long
-                </h1>
-                <p class="fs-5 mb-4">
-                  Experience a new level of body care with our unique formula.
-                </p>
-              </div>
-              <div class="col-md-6 text-center">
-                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
-                     class="img-fluid" alt="Product">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="carousel-item">
-          <div class="container py-5">
-            <div class="row align-items-center">
-              <div class="col-md-6">
-                <h1 class="display-4 fw-bold mb-4">
-                  For Every Body Type
-                </h1>
-                <p class="fs-5 mb-4">
-                  Dermatologically tested and safe for whole body use.
-                </p>
-              </div>
-              <div class="col-md-6 text-center">
-                <img src="https://storage.googleapis.com/goodfeel_images/banner_image/imfresh_men_homepage_banner_desktop_.webp"
-                     class="img-fluid" alt="Product">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- arrows like screenshot -->
-      <button class="carousel-control-prev" type="button"
-              data-bs-target="#heroCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button"
-              data-bs-target="#heroCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-  </section>
 <main>
-  <section class="hero">
-    <div class="hero__carousel">
-      <button class="carousel__control prev" aria-label="Previous slide">❮</button>
-      <button class="carousel__control next" aria-label="Next slide">❯</button>
-      <div class="carousel__slides" id="hero-slides"></div>
-      <div class="carousel__dots" id="hero-dots"></div>
-    </div>
-  </section>
 
-  <section class="marquee-bar">
-    <div class="marquee-bar__content">
-      <div class="marquee-bar__item">★ SAFE & CLEAN INGREDIENTS</div>
-      <div class="marquee-bar__item">★ FREE & FAST SHIPPING</div>
-      <div class="marquee-bar__item">★ MADE IN INDIA</div>
-      <div class="marquee-bar__item">★ PREMIUM QUALITY</div>
-      <div class="marquee-bar__item">★ SAFE & CLEAN INGREDIENTS</div>
-      <div class="marquee-bar__item">★ FREE & FAST SHIPPING</div>
-      <div class="marquee-bar__item">★ MADE IN INDIA</div>
-      <div class="marquee-bar__item">★ PREMIUM QUALITY</div>
-    </div>
-  </section>
+<section class="relative w-full overflow-hidden">
 
-  <section id="combos" class="section">
-    <div class="container section__header">
-      <div>
-        <p class="eyebrow">Best Selling Combos</p>
-        <h2>Powerful duos for powerful results</h2>
+  <div
+    id="heroSlider"
+    class="relative w-full
+           h-[200px]
+           sm:h-[280px]
+           md:h-[380px]
+           lg:h-[480px]
+           xl:h-[560px]"
+  >
+
+    <!-- Slide 1 -->
+    <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-700">
+      <img
+        src="{% static 'images/hero-1.jpg' %}"
+        class="w-full h-full object-cover"
+        alt="Hero"
+      >
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
+      <img
+        src="{% static 'images/hero-2.jpg' %}"
+        class="w-full h-full object-cover"
+        alt="Hero"
+      >
+    </div>
+
+    <!-- Slide 3 -->
+
+    
+    <!-- <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
+      <img
+        src="{% static 'images/hero-3.jpg' %}"
+        class="w-full h-full object-cover"
+        alt="Hero"
+      >
+    </div> -->
+
+    <!-- LEFT ARROW -->
+    <button
+      id="prevSlide"
+      class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20
+             bg-black/60 text-white w-9 h-9 sm:w-11 sm:h-11
+             rounded-full flex items-center justify-center">
+      ‹
+    </button>
+
+    <!-- RIGHT ARROW -->
+    <button
+      id="nextSlide"
+      class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20
+             bg-black/60 text-white w-9 h-9 sm:w-11 sm:h-11
+             rounded-full flex items-center justify-center">
+      ›
+    </button>
+
+  </div>
+
+  <!-- DOTS -->
+  <div class="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+  </div>
+
+</section>
+<section class="w-full overflow-hidden bg-black text-white">
+  <div class="flex whitespace-nowrap">
+
+    <!-- Track 1 -->
+    <div
+      class="flex gap-10 py-2 text-xs sm:text-sm font-medium
+             animate-[marquee_20s_linear_infinite]"
+    >
+      <span>★ SAFE & CLEAN INGREDIENTS</span>
+      <span>★ FREE & FAST SHIPPING</span>
+      <span>★ MADE IN INDIA</span>
+      <span>★ PREMIUM QUALITY</span>
+      <span>★ SAFE & CLEAN INGREDIENTS</span>
+      <span>★ FREE & FAST SHIPPING</span>
+      <span>★ MADE IN INDIA</span>
+      <span>★ PREMIUM QUALITY </span>
+    </div>
+
+    <!-- Track 2 (duplicate for seamless loop) -->
+    <div
+      class="flex gap-10 py-2 text-xs sm:text-sm font-medium
+             animate-[marquee_20s_linear_infinite]"
+    > <span></span>
+      <span> ★ SAFE & CLEAN INGREDIENTS</span>
+      <span>★ FREE & FAST SHIPPING</span>
+      <span>★ MADE IN INDIA</span>
+      <span>★ PREMIUM QUALITY</span>
+      <span>★ SAFE & CLEAN INGREDIENTS</span>
+      <span>★ FREE & FAST SHIPPING</span>
+      <span>★ MADE IN INDIA</span>
+      <span>★ PREMIUM QUALITY</span>
+    </div>
+
+  </div>
+</section>
+ 
+<style>
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+
+
+<section class="relative py-16 bg-gradient-to-b from-[#eaf6ff] to-[#bfe4ff]">
+
+  <!-- Header -->
+  <div class="text-center mb-12 px-6">
+    <h2 class="text-3xl font-extrabold uppercase tracking-wide">
+      Best Selling Combos
+    </h2>
+    <p class="mt-2 text-lg text-gray-800">
+      Powerful duos for powerful results
+    </p>
+    <a href="#" class="inline-block mt-2 text-base font-medium underline">
+      Shop all combos
+    </a>
+  </div>
+
+  <!-- Carousel Wrapper -->
+  <div class="relative max-w-[1400px] mx-auto px-6">
+
+    <!-- Left Arrow (desktop only) -->
+    <button
+      class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
+             bg-black text-white w-10 h-10 rounded-full
+             items-center justify-center">
+      ❮
+    </button>
+
+    <!-- Right Arrow (desktop only) -->
+    <button
+      class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
+             bg-black text-white w-10 h-10 rounded-full
+             items-center justify-center">
+      ❯
+    </button>
+
+    <!-- Cards -->
+    <div
+      class="flex gap-6 overflow-x-auto scroll-smooth
+             lg:grid lg:grid-cols-4 lg:gap-8
+             [&::-webkit-scrollbar]:hidden"
+    >
+
+      <!-- Card 1 -->
+      <article
+        class="min-w-[280px] max-w-[280px]
+               lg:min-w-0 lg:max-w-none
+               bg-white rounded-2xl shadow-xl overflow-hidden
+               snap-start"
+      >
+        <div class="bg-gray-100 p-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
+            alt=""
+            class="w-full h-56 object-contain rounded-xl"
+          >
+        </div>
+        <div class="p-6 text-center">
+          <h3 class="font-semibold text-lg mb-2">
+            imfresh Men Cream (Dopenight + Original) Combo
+          </h3>
+          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
+            ★★★★★ <span class="text-gray-600 text-sm">(276)</span>
+          </div>
+          <div class="flex justify-center gap-3 mb-4">
+            <span class="text-xl font-bold text-sky-500">₹799</span>
+            <span class="line-through text-gray-500">₹1198</span>
+          </div>
+          <button class="bg-sky-400 hover:bg-sky-500 text-white px-6 py-2 rounded-lg font-medium">
+            Buy Now
+          </button>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article
+        class="min-w-[280px] max-w-[280px]
+               lg:min-w-0 lg:max-w-none
+               bg-white rounded-2xl shadow-xl overflow-hidden
+               snap-start"
+      >
+        <div class="bg-gray-100 p-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
+            class="w-full h-56 object-contain rounded-xl"
+          >
+        </div>
+        <div class="p-6 text-center">
+          <h3 class="font-semibold text-lg mb-2">
+            imfresh Men Cream (Dopenight + Sweet Killer) Combo
+          </h3>
+          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
+            ★★★★★ <span class="text-gray-600 text-sm">(476)</span>
+          </div>
+          <div class="flex justify-center gap-3 mb-4">
+            <span class="text-xl font-bold text-sky-500">₹799</span>
+            <span class="line-through text-gray-500">₹1198</span>
+          </div>
+          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
+            Buy Now
+          </button>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article
+        class="min-w-[280px] max-w-[280px]
+               lg:min-w-0 lg:max-w-none
+               bg-white rounded-2xl shadow-xl overflow-hidden
+               snap-start"
+      >
+        <div class="bg-gray-100 p-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
+            class="w-full h-56 object-contain rounded-xl"
+          >
+        </div>
+        <div class="p-6 text-center">
+          <h3 class="font-semibold text-lg mb-2">
+            imfresh Men Cream (Original + Sweet Killer) Combo
+          </h3>
+          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
+            ★★★★★ <span class="text-gray-600 text-sm">(5769)</span>
+          </div>
+          <div class="flex justify-center gap-3 mb-4">
+            <span class="text-xl font-bold text-sky-500">₹799</span>
+            <span class="line-through text-gray-500">₹1198</span>
+          </div>
+          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
+            Buy Now
+          </button>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article
+        class="min-w-[280px] max-w-[280px]
+               lg:min-w-0 lg:max-w-none
+               bg-white rounded-2xl shadow-xl overflow-hidden
+               snap-start"
+      >
+        <div class="bg-gray-100 p-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
+            class="w-full h-56 object-contain rounded-xl"
+          >
+        </div>
+        <div class="p-6 text-center">
+          <h3 class="font-semibold text-lg mb-2">
+            imfresh Men Cream (Pack of 2)
+          </h3>
+          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
+            ★★★★★ <span class="text-gray-600 text-sm">(310)</span>
+          </div>
+          <div class="flex justify-center gap-3 mb-4">
+            <span class="text-xl font-bold text-sky-500">₹799</span>
+            <span class="line-through text-gray-500">₹1198</span>
+          </div>
+          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
+            Buy Now
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="py-20 bg-white">
+  <div class="max-w-[1400px] mx-auto px-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+
+      <!-- LEFT -->
+      <div class="max-w-md">
+        <p class="text-sm text-gray-600 mb-4">Trending Now</p>
+
+        <h2 class="text-4xl font-serif leading-tight mb-6">
+          Yes, that's all you need for your love 💞
+        </h2>
+
+        <p class="text-gray-600 text-lg leading-relaxed">
+          Carefully curated with love to make every moment magical. 😍
+        </p>
       </div>
-      <a class="link" href="#hot-singles">Shop all combos →</a>
+
+      <!-- MIDDLE -->
+      <div class="flex flex-col items-center text-center">
+
+        <!-- SAME SIZE WRAPPER -->
+        <div class="h-[420px] w-full max-w-[360px] bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_30.png?v=1742586623&width=860"
+            alt="Personalized Giggle"
+            class="w-full h-full object-contain"
+          >
+        </div>
+
+        <h3 class="text-xl font-serif mb-2">Personalized Giggles</h3>
+
+        <p class="text-gray-600 max-w-xs mb-6">
+          Perfect cosy gift for yourself or for your annoyingly cute friends.
+        </p>
+
+        <button class="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-900 transition">
+          Explore Now
+        </button>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="flex flex-col items-center text-center">
+
+        <!-- SAME SIZE WRAPPER -->
+        <div class="h-[420px] w-full max-w-[360px] bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+          <img
+            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
+            alt="Personalized Frame"
+            class="w-full h-full object-contain"
+          >
+        </div>
+
+        <h3 class="text-xl font-serif mb-2">Personalized Frames</h3>
+
+        <p class="text-gray-600 max-w-xs mb-6">
+          Perfect cosy gift for yourself or for your annoyingly cute friends.
+        </p>
+
+        <button class="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-900 transition">
+          Explore Now
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="w-full overflow-hidden bg-black text-white">
+  <div class="flex whitespace-nowrap">
+
+    <!-- Track 1 -->
+    <div
+      class="flex items-center gap-16 py-2
+             text-xs sm:text-sm font-medium
+             animate-[marquee_22s_linear_infinite]"
+    >
+      <span>
+        Save ₹50 instantly on prepaid orders Use Code 👉 <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
+
+      <span class="uppercase tracking-wide">
+        ANNOUNCEMENT — Save ₹50 instantly on prepaid orders Use Code 👉
+        <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
+
+      <span>
+        Save ₹50 instantly on prepaid orders Use Code 👉 <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
     </div>
 
-    <div class="container grid" id="combo-grid">
+    <!-- Track 2 (duplicate for seamless loop) -->
+    <div
+      class="flex items-center gap-16 py-2
+             text-xs sm:text-sm font-medium
+             animate-[marquee_22s_linear_infinite]"
+    >
+      <span>
+        Save ₹50 instantly on prepaid orders Use Code 👉 <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
+
+      <span class="uppercase tracking-wide">
+        ANNOUNCEMENT — Save ₹50 instantly on prepaid orders Use Code 👉
+        <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
+
+      <span>
+        Save ₹50 instantly on prepaid orders Use Code 👉 <span class="font-semibold">PREPAID50</span> 🎁
+      </span>
+    </div>
+
+  </div>
+</section>
+<section class="py-20 bg-white">
+
+  <!-- Heading -->
+  <div class="text-center mb-16 px-6">
+    <p class="text-sm tracking-wide text-gray-600 mb-4">
+      10,000+ Happy Customers 😍
+    </p>
+
+    <h2 class="text-3xl md:text-4xl font-serif font-medium">
+      Don’t take our word, take theirs
+    </h2>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="max-w-[1400px] mx-auto px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+
+      <!-- Testimonial 1 -->
+      <div class="text-center">
+        <img
+          src="https://i.imgur.com/8Km9tLL.jpg"
+          alt=""
+          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+        >
+
+        <div class="flex justify-center mb-4 text-yellow-400">
+          ★★★★★
+        </div>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+          My friend gifted me this miniature on my b’day, and it was at my doorstep within 5 days!
+          The quality is fantastic, and the design is so cute. Thanks, BhootIya!
+          Super happy with my gift. 😊
+        </p>
+
+        <p class="font-serif text-gray-900">
+          — Nandini Chaudhary
+        </p>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="text-center">
+        <img
+          src="https://i.imgur.com/5cX1G3E.jpg"
+          alt=""
+          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+        >
+
+        <div class="flex justify-center mb-4 text-yellow-400">
+          ★★★★★
+        </div>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+          Big thanks to BhootIya team for creating such a cute miniature of me! 😇🔥
+          It’s the perfect gift to surprise your loved ones with something unique and special.
+        </p>
+
+        <p class="font-serif text-gray-900">
+          — Manya Gupta
+        </p>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="text-center">
+        <img
+          src="https://i.imgur.com/6RZ5YqQ.jpg"
+          alt=""
+          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+        >
+
+        <div class="flex justify-center mb-4 text-yellow-400">
+          ★★★★★
+        </div>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+          Got this adorable miniature from my husband on our anniversary, and I absolutely love it!
+          The details are fantastic, and it fits perfectly with our decor.
+          Wonderful job, BhootIya!
+        </p>
+
+        <p class="font-serif text-gray-900">
+          — Swati Gurwani
+        </p>
+      </div>
+
+      <!-- Testimonial 4 -->
+      <div class="text-center">
+        <img
+          src="https://i.imgur.com/4Z7wZ7T.jpg"
+          alt=""
+          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+        >
+
+        <div class="flex justify-center mb-4 text-yellow-400">
+          ★★★★★
+        </div>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+          I bought this for myself, and it’s just as cute as me! 😍
+          I’m going to carry it with me wherever I go.
+          Love it! ❤️
+        </p>
+
+        <p class="font-serif text-gray-900">
+          — Dency Kanaiya
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+    <div id="combo-carousel"
+         class="flex gap-6 overflow-x-auto scroll-smooth pb-4
+                [&::-webkit-scrollbar]:hidden">
+
       {% for product in combos %}
-        <article class="card product-card">
+      <article
+        class="min-w-[260px] max-w-[260px]
+               bg-white rounded-2xl shadow-lg
+               overflow-hidden flex flex-col">
+
+        <!-- Image -->
+        <div class="bg-gray-100 p-4">
           {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+          <img
+            src="{{ product.image.url }}"
+            alt="{{ product.title }}"
+            class="w-full h-52 object-contain"
+          >
           {% endif %}
+        </div>
 
-          <h3>{{ product.title }}</h3>
+        <!-- Content -->
+        <div class="p-4 text-center flex flex-col flex-1">
 
-          <div class="stars">
-            ⭐️⭐️⭐️⭐️⭐️
-            <span class="product-meta">( {{ product.stock }} in stock )</span>
+          <!-- Title -->
+          <h3 class="text-sm font-semibold mb-2 line-clamp-2">
+            {{ product.title }}
+          </h3>
+
+          <!-- Rating -->
+          <div class="flex items-center justify-center gap-1 text-yellow-400 text-sm mb-2">
+            ★★★★★
+            <span class="text-gray-600 text-xs">
+              ({{ product.stock }})
+            </span>
           </div>
 
-          <div class="price">
+          <!-- Price -->
+          <div class="flex justify-center items-center gap-2 mb-4">
+            <span class="text-lg font-bold text-sky-500">
+              ₹{{ product.price }}
+            </span>
             {% if product.compare_at_price %}
-              <span class="price__current">₹{{ product.price }}</span>
-              <span class="price__strike"><del>₹{{ product.compare_at_price }}</del></span>
-            {% else %}
-              <span class="price__current">₹{{ product.price }}</span>
+            <span class="text-sm text-gray-500 line-through">
+              ₹{{ product.compare_at_price }}
+            </span>
             {% endif %}
           </div>
 
-          <button class="btn primary full">Buy Now</button>
-        </article>
+          <!-- CTA -->
+          <button
+            class="mt-auto bg-sky-400 hover:bg-sky-500
+                   text-white text-sm font-medium
+                   py-2 rounded-full transition">
+            Buy Now
+          </button>
+
+        </div>
+      </article>
       {% endfor %}
-    </div>
-  </section>
 
-  <section id="hot-singles" class="section alt">
-    <div class="container section__header">
-      <div>
-        <p class="eyebrow">Hot Singles</p>
-        <h2>Grab 'em before they run out!</h2>
-      </div>
-      <a class="link" href="#newsletter">Shop new launches →</a>
     </div>
-    <div class="container grid" id="singles-grid"></div>
-  </section>
+  </div>
+</section>
 
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow">Discover the new meaning of freshness</p>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3>High-performance formulas</h3>
-          <p>Designed for the everyday grind. Effective freshness that lasts.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Confidence, bottled</h3>
-          <p>Bold, lasting scents that elevate your day without overpowering.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Made to work</h3>
-          <p>No fancy claims. Just clean, reliable performance you can trust.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section alt">
-    <div class="container section__header">
-      <div>
-        <p class="eyebrow">Real peeps, real results!</p>
-        <h2>Customer Reviews & Testimonials</h2>
-      </div>
-    </div>
-    <div class="container testimonial-carousel">
-      <button class="testimonial__control prev" aria-label="Previous testimonial">❮</button>
-      <div class="testimonial__viewport">
-        <div class="testimonial__track" id="testimonial-track"></div>
-      </div>
-      <button class="testimonial__control next" aria-label="Next testimonial">❯</button>
-    </div>
-  </section>
-
-  <section id="newsletter" class="section">
-    <div class="container newsletter">
-      <div>
-        <p class="eyebrow">Stay up to date</p>
-        <h2>Be the first to know about offers and drops</h2>
-        <p class="lede">Get exclusive offers, sale information, and launch alerts. No spam, just freshness.</p>
-      </div>
-      <form class="newsletter__form">
-        <input type="email" placeholder="Enter your email" required>
-        <button type="submit" class="btn primary">Subscribe</button>
-      </form>
-    </div>
-  </section>
 </main>
 
 <ul>
@@ -240,4 +605,49 @@
     </li>
   {% endfor %}
 </ul>
+
+
+
+
+<script>
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.dot');
+  let current = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('opacity-100', i === index);
+      slide.classList.toggle('opacity-0', i !== index);
+      slide.style.zIndex = i === index ? 10 : 0;
+
+      dots[i].classList.toggle('bg-white', i === index);
+      dots[i].classList.toggle('bg-white/40', i !== index);
+    });
+  }
+
+  document.getElementById('nextSlide').addEventListener('click', () => {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  });
+
+  document.getElementById('prevSlide').addEventListener('click', () => {
+    current = (current - 1 + slides.length) % slides.length;
+    showSlide(current);
+  });
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      current = i;
+      showSlide(current);
+    });
+  });
+
+  // Auto-slide (optional)
+  setInterval(() => {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }, 5000);
+</script>
+
+
 {% endblock %}

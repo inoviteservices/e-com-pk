@@ -5,149 +5,343 @@
   <meta charset="utf-8">
   <title>ArtDecor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Icons (for cart & search) -->
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Bootstrap Icons CDN (icons only, not CSS framework) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-<style>
-  .top-bar {
-    background: #000;
-    color: #fff;
-    font-size: 0.85rem;
-  }
-
-  /* Gradient navbar like screenshot */
-  .navbar-custom {
-    background: linear-gradient(90deg, #ffffff 0%, #5eb4ff 100%);
-  }
-
-  /* Make brand + links bold */
-  .navbar-brand {
-    font-weight: 800;           /* thicker than default bold */
-    letter-spacing: 0.02em;
-  }
-  .navbar-nav .nav-link {
-    font-weight: 600;
-  }
-
-  /* Pill search */
-  .search-pill input {
-    border-radius: 999px 0 0 999px;
-    border: none;
-    padding-left: 1.5rem;
-  }
-  .search-pill button {
-    border-radius: 0 999px 999px 0;
-    border: none;
-  }
-  .search-pill {
-    background: #ffffff;
-    border-radius: 999px;
-    padding: 3px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-  }
-</style>
-
 </head>
-<body>
 
-  <!-- Free shipping bar -->
-  <div class="top-bar text-center py-1">
-    FREE SHIPPING ON ALL ORDERS ABOVE ₹499!
+<body class="antialiased font-sans">
+
+  <!-- Top Bar -->
+<div class="bg-black text-white text-center
+            text-[10px] sm:text-xs
+            py-0.5 sm:py-1
+            tracking-wide">
+  FREE SHIPPING ON ALL ORDERS ABOVE ₹499!
+</div>
+
+
+
+<!-- Navbar -->
+<nav class="sticky top-0 z-50 bg-gradient-to-r from-white to-sky-400">
+  <div
+    class="max-w-[1400px] mx-auto
+           px-3 sm:px-5 md:px-8 lg:px-10
+           py-2 sm:py-3"
+  >
+
+    <!-- Row 1: Logo - Search - Cart -->
+    <div class="flex items-center gap-2 sm:gap-4">
+
+      <!-- Logo -->
+      <a href="#" class="flex-shrink-0">
+  <img
+    src="{% static 'images/logo.png' %}"
+    alt="art gift"
+    class="h-9 sm:h-11 md:h-12 w-auto object-contain"
+  >
+</a>
+
+     <!-- Search -->
+<!-- Search -->
+<form
+  class="flex-1 min-w-0
+         mx-2 sm:mx-auto
+         sm:max-w-[640px] md:max-w-[720px]"
+>
+  <div
+    class="flex items-center bg-white rounded-full shadow-sm
+           px-3 sm:px-5 py-1.5 sm:py-2"
+  >
+    <input
+      type="search"
+      placeholder="Search"
+      class="flex-1 min-w-0 bg-transparent outline-none
+             text-xs sm:text-sm px-1 sm:px-2"
+    >
+    <button type="submit" class="flex-shrink-0 text-gray-700">
+      <i class="bi bi-search text-base sm:text-lg"></i>
+    </button>
+  </div>
+</form>
+
+
+
+      <!-- Cart Button -->
+<button id="openCart" class="relative flex-shrink-0">
+  <i class="bi bi-bag text-xl sm:text-2xl"></i>
+  <span
+    class="absolute -top-1.5 -right-1.5
+           bg-black text-white text-[9px] sm:text-[10px]
+           rounded-full px-1"
+  >
+    2
+  </span>
+</button>
+<!-- CART OVERLAY -->
+<div id="cartOverlay"
+     class="fixed inset-0 bg-black/40 z-40 hidden"></div>
+
+<!-- CART DRAWER -->
+<aside id="cartDrawer"
+  class="fixed top-0 right-0 h-full w-[360px] max-w-full
+         bg-white z-50 transform translate-x-full
+         transition-transform duration-300 ease-out
+         shadow-2xl flex flex-col">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between px-6 py-4 border-b">
+    <h2 class="text-xl font-serif">Your cart</h2>
+    <button id="closeCart" class="text-2xl">&times;</button>
   </div>
 
-  <!-- Header / navbar -->
-  <nav class="navbar navbar-expand-lg navbar-custom py-3 sticky-top">
-    <div class="container flex-column">
+  <!-- Cart Items -->
+<div class="flex-1 overflow-y-auto px-6 py-4">
 
-    <!-- ROW 1: logo - search - cart -->
-    <div class="w-100 d-flex align-items-center justify-content-between mb-2">
+  {% if cart_items %}
 
-      <!-- Left: logo -->
-      <div class="d-flex align-items-center">
-        <a href="#" class="me-3">
-          <img src="https://imfreshmen.com/_next/image?url=%2Fassets%2Ficons%2Fimfresh_black_christmas_2025.webp&w=256&q=75" alt="imfresh" style="height:60px;">
-        </a>
-      </div>
+    {% for item in cart_items %}
+    <!-- Item -->
+    <div class="flex gap-4 mb-6">
+      <img
+        src="{{ item.product.images.first.image.url }}"
+        class="w-20 h-20 object-cover rounded-lg"
+        alt="{{ item.product.title }}"
+      >
 
-      <!-- Middle: big pill search -->
-      <form class="flex-grow-1 mx-3">
-        <div class="d-flex align-items-center search-pill">
-          <input class="form-control bg-transparent border-0"
-                 type="search"
-                 placeholder="imfresh Cr"
-                 aria-label="Search">
-          <button class="btn bg-transparent text-dark" type="submit">
-            <i class="bi bi-search fs-4"></i>
-          </button>
+      <div class="flex-1">
+        <p class="text-sm text-gray-500">
+          {{ item.product.category.name }}
+        </p>
+
+        <p class="font-medium leading-snug">
+          {{ item.product.title }}
+        </p>
+
+        <p class="text-sm mt-1">
+          ₹{{ item.price }}
+        </p>
+
+        <!-- Quantity -->
+        <div class="flex items-center gap-3 mt-3">
+          <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
+            <a href="{% url 'cart_decrease' item.product.id %}" class="px-2">−</a>
+            <span class="px-2">{{ item.quantity }}</span>
+            <a href="{% url 'cart_add' item.product.id %}" class="px-2">+</a>
+          </div>
+
+          <a
+            href="{% url 'cart_remove' item.product.id %}"
+            class="text-gray-400 hover:text-black"
+            title="Remove item"
+          >
+            🗑️
+          </a>
         </div>
-      </form>
-
-      <!-- Right: cart with badge -->
-      <div>
-        <a href="#" class="position-relative me-2">
-          <i class="bi bi-bag fs-3"></i>
-          <span class="position-absolute top-0 start-100 translate-middle
-                       bg-dark text-white rounded-pill px-1"
-                style="font-size:0.7rem;">
-            2
-          </span>
-        </a>
       </div>
     </div>
+    {% endfor %}
 
-    <!-- ROW 2: nav links centered -->
-    <div class="w-100 d-flex justify-content-center">
-      <ul class="nav">
-        <li class="nav-item">
-          <a class="nav-link px-4 fw-semibold" href="#">Shop All</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link px-4 fw-semibold" href="#">Bundles</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link px-4 fw-semibold" href="#">Track Your Order</a>
-        </li>
+    <hr>
+
+    <!-- Instructions -->
+    <details class="mt-6">
+      <summary class="cursor-pointer text-sm font-medium">
+        ORDER SPECIAL INSTRUCTIONS
+      </summary>
+      <textarea
+        class="mt-3 w-full border rounded-lg p-2 text-sm"
+        rows="3"
+        placeholder="Add a note to your order"
+      ></textarea>
+    </details>
+
+  {% else %}
+    <p class="text-center text-gray-500 mt-10">
+      Your cart is empty.
+    </p>
+  {% endif %}
+
+</div>
+
+
+  <!-- Footer -->
+<div class="border-t px-6 py-4">
+  <div class="flex justify-between text-sm mb-3">
+    <span>Subtotal</span>
+    <span>₹{{ cart_total }}</span>
+  </div>
+
+  <a
+    class="block w-full text-center bg-black text-white py-3 rounded-lg font-medium"
+  >
+    Proceed to Checkout
+  </a>
+</div>
+
+
+</aside>
+
+
+    </div>
+
+    <!-- Row 2: Nav Links -->
+    <div class="mt-2 sm:mt-3 flex justify-center">
+      <ul class="flex gap-4 sm:gap-6 md:gap-8
+                 text-xs sm:text-sm font-medium">
+        <li><a href="#" class="hover:underline">Shop All</a></li>
+        <li><a href="#" class="hover:underline">Bulk Corporate Orders</a></li>
+        <li><a href="#" class="hover:underline">Track Order</a></li>
       </ul>
     </div>
 
   </div>
-  </nav>
+</nav>
 
 
-<main>
-  {% block content %}{% endblock %}
-</main>
 
-<footer class="footer">
-  <div class="container footer__grid">
-    <div>
-      <div class="logo">ArtDecor</div>
-      <p>Freshness that works. Confidence that sticks.</p>
-      <p class="muted">© 2025 AYURVEDA HOUSE PRIVATE LIMITED</p>
-    </div>
-    <div class="footer__col">
-      <h4>Help</h4>
-      <a href="#">Track my Order</a>
-      <a href="#">Get in Touch</a>
-      <a href="#">Terms of Use</a>
-    </div>
-    <div class="footer__col">
-      <h4>Information</h4>
-      <a href="#">Privacy Policy</a>
-      <a href="#">About Us</a>
-      <a href="#">Shipping & Returns</a>
-    </div>
-    <div class="footer__col">
-      <h4>Follow Us</h4>
-      <a href="#">Instagram</a>
-      <a href="#">Facebook</a>
-      <a href="#">Twitter</a>
+
+
+  <!-- Main -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black text-white pt-16">
+
+  <!-- Main Footer -->
+  <div class="max-w-[1400px] mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+      <!-- LEFT: Contact Info -->
+      <div class="space-y-4 text-sm leading-relaxed">
+
+        <p class="flex items-start gap-3">
+          📞 <span>+91 88815 48561 (WhatsApp only)</span>
+        </p>
+
+        <p class="flex items-start gap-3">
+          📧 <span>artgiftstore@gmail.com</span>
+        </p>
+
+        <p class="flex items-start gap-3 font-semibold">
+          🏢 <span>ArtGift Ventures Private Limited</span>
+        </p>
+
+        <p class="flex items-start gap-3">
+          📍 <span>
+            G-157, Sector D-1, Pocket-3,  
+            TDS City, Ghaziabad,  
+            Uttar Pradesh – 201103
+          </span>
+        </p>
+
+        <p class="flex items-start gap-3">
+          ⏰ <span>
+            Our hours of operation –<br>
+            Monday–Saturday: 10 AM – 7 PM
+          </span>
+        </p>
+
+      </div>
+
+      <!-- MIDDLE: Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold mb-6 uppercase tracking-wide">
+          Quick Links
+        </h4>
+
+        <ul class="space-y-3 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">Search</a></li>
+          <li><a href="#" class="hover:text-white">Bulk Corporate Orders 📦</a></li>
+          <li><a href="#" class="hover:text-white">Blog</a></li>
+          <li><a href="#" class="hover:text-white">Contact Us</a></li>
+          <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-white">Return Policy</a></li>
+          <li><a href="#" class="hover:text-white">Refund / Cancellation Policy</a></li>
+          <li><a href="#" class="hover:text-white">Shipping Policy</a></li>
+          <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-white">About Us</a></li>
+        </ul>
+      </div>
+
+      <!-- RIGHT: Newsletter -->
+      <div>
+        <h4 class="text-lg font-semibold mb-6 uppercase tracking-wide">
+          Newsletter
+        </h4>
+
+        <p class="text-sm text-gray-300 mb-4">
+          Sign up for our e-mail and be the first who knows our special offers!
+        </p>
+
+        <!-- Input -->
+        <div class="flex items-center bg-white rounded-lg overflow-hidden mb-4">
+          <span class="px-3 text-gray-500">✉️</span>
+          <input
+            type="email"
+            placeholder="Please enter your e-mail"
+            class="w-full px-3 py-3 text-black outline-none text-sm"
+          >
+        </div>
+
+        <p class="text-xs text-gray-400 mb-6">
+          By clicking the button you agree to the
+          <a href="#" class="underline hover:text-white">Privacy Policy</a>
+          and
+          <a href="#" class="underline hover:text-white">Terms and Conditions</a>.
+        </p>
+
+        <!-- Social -->
+        <div>
+          <p class="text-sm font-semibold mb-3 uppercase">
+            Follow Us:
+          </p>
+          <a href="#" class="inline-block text-2xl">
+            📷
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
-</footer>
 
-<script src="{% static 'script.js' %}"></script>
+  <!-- Divider -->
+  <div class="border-t border-gray-700 mt-12"></div>
+
+  <!-- Bottom Bar -->
+  <div class="max-w-[1400px] mx-auto px-6 py-6 text-sm text-gray-400">
+    © 2025, <span class="underline text-white">ArtGift</span> All rights reserved.
+  </div>
+
+</footer>
+<script>
+  const openCart = document.getElementById('openCart');
+  const closeCart = document.getElementById('closeCart');
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartOverlay = document.getElementById('cartOverlay');
+
+  function openDrawer() {
+    cartDrawer.classList.remove('translate-x-full');
+    cartOverlay.classList.remove('hidden');
+  }
+
+  function closeDrawer() {
+    cartDrawer.classList.add('translate-x-full');
+    cartOverlay.classList.add('hidden');
+  }
+
+  openCart.addEventListener('click', openDrawer);
+  closeCart.addEventListener('click', closeDrawer);
+  cartOverlay.addEventListener('click', closeDrawer);
+</script>
+
+
+  <script src="{% static 'script.js' %}"></script>
+  
 </body>
 </html>
