@@ -23,13 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)$6ubapxn&39b=t+c3=lbn_n%k+m$a3kq2!vz^wd=)!(yzl-1+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False 
 
 ALLOWED_HOSTS = [
     '143.244.132.1',
-    'localhost',
-    '127.0.0.1',
     'artgift.in',
+    'www.artgift.in',
 
 ]
 
