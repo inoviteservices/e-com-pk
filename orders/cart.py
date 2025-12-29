@@ -20,27 +20,48 @@ class Cart:
         self.cart[product_id]['quantity'] += quantity
         self.save()
 
+    def decrease(self, product_id):
+        product_id = str(product_id)
+        if product_id in self.cart:
+            if self.cart[product_id]['quantity'] > 1:
+                self.cart[product_id]['quantity'] -= 1
+            else:
+                del self.cart[product_id]
+            self.save()
+
     def remove(self, product_id):
         product_id = str(product_id)
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
 
-    def save(self):
-        self.session.modified = True
-
     def clear(self):
         self.session['cart'] = {}
         self.save()
 
+    def save(self):
+        self.session.modified = True
+
+    # ✅ TOTAL ITEM COUNT (FOR NAVBAR BADGE)
+    def count(self):
+        return sum(item['quantity'] for item in self.cart.values())
+
+    # ✅ ITEMS FOR DRAWER / CONTEXT
     def get_items(self):
         products = Product.objects.filter(id__in=self.cart.keys())
         items = []
+
         for product in products:
             item = self.cart[str(product.id)]
-            item['product'] = product
-            item['total_price'] = Decimal(item['price']) * item['quantity']
-            items.append(item)
+            items.append({
+                'id': product.id,
+                'title': product.title,
+                'price': Decimal(item['price']),
+                'quantity': item['quantity'],
+                'total_price': Decimal(item['price']) * item['quantity'],
+                'image': product.image.url if product.image else '',
+            })
+
         return items
 
     def get_total_price(self):

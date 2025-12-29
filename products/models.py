@@ -1,4 +1,24 @@
 from django.db import models
+from django.utils import timezone
+
+class HeroSlide(models.Model):
+    image = models.ImageField(upload_to="hero/")
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Hero Slide {self.id}"
+
+    # 🔥 STEP 2 GOES HERE
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        slides = HeroSlide.objects.order_by("created_at")
+        if slides.count() > 5:
+            for slide in slides[: slides.count() - 5]:
+                slide.delete()
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

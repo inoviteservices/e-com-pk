@@ -5,6 +5,8 @@
   <meta charset="utf-8">
   <title>ArtDecor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -37,7 +39,7 @@
     <div class="flex items-center gap-2 sm:gap-4">
 
       <!-- Logo -->
-      <a href="#" class="flex-shrink-0">
+      <a href="/" class="flex-shrink-0">
   <img
     src="{% static 'images/logo.png' %}"
     alt="art gift"
@@ -73,14 +75,18 @@
       <!-- Cart Button -->
 <button id="openCart" class="relative flex-shrink-0">
   <i class="bi bi-bag text-xl sm:text-2xl"></i>
-  <span
-    class="absolute -top-1.5 -right-1.5
-           bg-black text-white text-[9px] sm:text-[10px]
-           rounded-full px-1"
-  >
-    2
-  </span>
+
+  {% if cart_count > 0 %}
+    <span
+      class="absolute -top-1.5 -right-1.5
+             bg-black text-white text-[9px] sm:text-[10px]
+             rounded-full px-1"
+    >
+      {{ cart_count }}
+    </span>
+  {% endif %}
 </button>
+
 <!-- CART OVERLAY -->
 <div id="cartOverlay"
      class="fixed inset-0 bg-black/40 z-40 hidden"></div>
@@ -99,50 +105,62 @@
   </div>
 
   <!-- Cart Items -->
-<div class="flex-1 overflow-y-auto px-6 py-4">
+<!-- Cart Items -->
+<div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4">
 
   {% if cart_items %}
-
     {% for item in cart_items %}
-    <!-- Item -->
-    <div class="flex gap-4 mb-6">
-      <img
-        src="{{ item.product.images.first.image.url }}"
-        class="w-20 h-20 object-cover rounded-lg"
-        alt="{{ item.product.title }}"
-      >
+      <div class="flex gap-4 mb-6">
 
-      <div class="flex-1">
-        <p class="text-sm text-gray-500">
-          {{ item.product.category.name }}
-        </p>
+        <!-- Image -->
+        <img
+          src="{{ item.image }}"
+          class="w-20 h-20 object-cover rounded-lg"
+          alt="{{ item.title }}"
+        >
 
-        <p class="font-medium leading-snug">
-          {{ item.product.title }}
-        </p>
+        <div class="flex-1">
+          <p class="text-sm text-gray-500">
+            {{ item.category }}
+          </p>
 
-        <p class="text-sm mt-1">
-          ₹{{ item.price }}
-        </p>
+          <p class="font-medium leading-snug">
+            {{ item.title }}
+          </p>
 
-        <!-- Quantity -->
-        <div class="flex items-center gap-3 mt-3">
-          <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
-            <a href="{% url 'cart_decrease' item.product.id %}" class="px-2">−</a>
-            <span class="px-2">{{ item.quantity }}</span>
-            <a href="{% url 'cart_add' item.product.id %}" class="px-2">+</a>
+          <p class="text-sm mt-1">
+            ₹{{ item.price }}
+          </p>
+
+          <!-- Quantity -->
+          <div class="flex items-center gap-3 mt-3">
+            <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
+
+              <button
+                onclick="decreaseCart('{{ item.product_id }}')"
+                class="px-2"
+              >−</button>
+
+              <span class="px-2">{{ item.quantity }}</span>
+
+              <button
+                onclick="increaseCart('{{ item.product_id }}')"
+                class="px-2"
+              >+</button>
+
+            </div>
+
+            <!-- Remove -->
+            <button
+              onclick="removeFromCart('{{ item.product_id }}')"
+              class="text-gray-400 hover:text-black"
+              title="Remove item"
+            >
+              🗑️
+            </button>
           </div>
-
-          <a
-            href="{% url 'cart_remove' item.product.id %}"
-            class="text-gray-400 hover:text-black"
-            title="Remove item"
-          >
-            🗑️
-          </a>
         </div>
       </div>
-    </div>
     {% endfor %}
 
     <hr>
@@ -166,6 +184,7 @@
   {% endif %}
 
 </div>
+
 
 
   <!-- Footer -->
@@ -338,6 +357,77 @@
   closeCart.addEventListener('click', closeDrawer);
   cartOverlay.addEventListener('click', closeDrawer);
 </script>
+
+<script>
+async function refreshCart(data) {
+  // badge
+  document.querySelectorAll("[data-cart-count]").forEach(el => {
+    el.innerText = data.cart_count;
+    data.cart_count == 0 ? el.classList.add("hidden") : el.classList.remove("hidden");
+  });
+
+  // items
+  document.getElementById("cartItems").innerHTML =
+    data.cart_items.length
+      ? data.cart_items.map(item => `
+          <div class="flex gap-4 mb-6">
+            <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg">
+            <div class="flex-1">
+              <p class="text-sm text-gray-500">${item.category}</p>
+              <p class="font-medium">${item.title}</p>
+              <p class="text-sm mt-1">₹${item.price}</p>
+
+              <div class="flex items-center gap-3 mt-3">
+                <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
+                  <button onclick="decreaseCart('${item.product_id}')">−</button>
+                  <span class="px-2">${item.quantity}</span>
+                  <button onclick="increaseCart('${item.product_id}')">+</button>
+                </div>
+
+                <button onclick="removeFromCart('${item.product_id}')">🗑️</button>
+              </div>
+            </div>
+          </div>
+        `).join("")
+      : `<p class="text-center text-gray-500 mt-10">Your cart is empty.</p>`;
+
+  document.getElementById("cartTotal").innerText = "₹" + data.cart_total;
+}
+
+async function addToCart(productId, btn=null) {
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Adding...";
+  }
+
+  const res = await fetch(`/cart/add/${productId}/`);
+  const data = await res.json();
+
+  refreshCart(data);
+  openDrawer();
+
+  if (btn) {
+    btn.disabled = false;
+    btn.innerText = "Add to cart";
+  }
+}
+
+async function increaseCart(productId) {
+  const res = await fetch(`/cart/add/${productId}/`);
+  refreshCart(await res.json());
+}
+
+async function decreaseCart(productId) {
+  const res = await fetch(`/cart/decrease/${productId}/`);
+  refreshCart(await res.json());
+}
+
+async function removeFromCart(productId) {
+  const res = await fetch(`/cart/remove/${productId}/`);
+  refreshCart(await res.json());
+}
+</script>
+
 
 
   <script src="{% static 'script.js' %}"></script>

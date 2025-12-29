@@ -1,34 +1,179 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ product.title }} | ArtDecor{% endblock %}
-{% block meta_description %}{{ product.description|truncatewords:20 }}{% endblock %}
 
 {% block content %}
-<h1>{{ product.title }}</h1>
 
-{% if product.compare_at_price %}
-<p>
-    <del>₹{{ product.compare_at_price }}</del>
-    <strong>₹{{ product.price }}</strong>
-</p>
-{% else %}
-<p>₹{{ product.price }}</p>
-{% endif %}
+<section class="max-w-7xl mx-auto px-4 py-10">
 
-<p>{{ product.description }}</p>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-{% if product.image %}
-    <img src="{{ product.image.url }}" width="200" alt="{{ product.title }}">
-{% endif %}
+    <!-- ================= LEFT : PRODUCT IMAGES ================= -->
+    <div class="flex gap-4">
 
-<p>Stock: {{ product.stock }}</p>
+      <!-- Thumbnails -->
+      <div class="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible">
+        {% for img in images %}
+        <button
+          onclick="setMainImage('{{ img.image.url }}', {{ forloop.counter0 }})"
+          class="w-16 h-16 border rounded-lg overflow-hidden hover:ring-2 ring-black flex-shrink-0"
+        >
+          <img src="{{ img.image.url }}" class="w-full h-full object-cover">
+        </button>
+        {% endfor %}
+      </div>
 
-{% if product.stock > 0 %}
-    <a href="{% url 'cart_add' product.id %}" class="btn btn-primary">
-        Add to Cart
-    </a>
-{% else %}
-    <p><strong>Out of Stock</strong></p>
-{% endif %}
+      <!-- Main Image -->
+      <div class="relative flex-1 border rounded-xl overflow-hidden bg-white">
+
+        <img
+          id="mainImage"
+          src="{{ images.first.image.url }}"
+          class="w-full h-[420px] md:h-[520px] object-contain"
+          alt="{{ product.title }}"
+        >
+
+        <!-- Arrows -->
+        <button onclick="prevImage()"
+          class="absolute left-3 top-1/2 -translate-y-1/2 bg-black text-white w-10 h-10 rounded-full">
+          ‹
+        </button>
+
+        <button onclick="nextImage()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 bg-black text-white w-10 h-10 rounded-full">
+          ›
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ================= RIGHT : PRODUCT INFO ================= -->
+    <div>
+
+      <!-- Sale + Reviews -->
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">Sale</span>
+        <div class="flex items-center text-orange-400 text-sm">
+          ★★★★★ <span class="text-gray-600 ml-2">178 reviews</span>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <h1 class="text-3xl font-serif mb-4">
+        {{ product.title }}
+      </h1>
+
+      <!-- Price -->
+      <div class="mb-6">
+        {% if product.compare_at_price %}
+          <span class="line-through text-gray-400 mr-2">
+            ₹{{ product.compare_at_price }}
+          </span>
+        {% endif %}
+        <span class="text-red-600 text-2xl font-semibold">
+          ₹{{ product.price }}
+        </span>
+        <p class="text-sm text-gray-500 mt-1">Tax included.</p>
+      </div>
+
+      <!-- Upload Images -->
+      <div class="mb-6">
+        <label class="block font-medium mb-2">
+          Upload your Images <span class="text-red-500">*</span>
+        </label>
+        <div class="border border-dashed rounded-lg p-6 text-center">
+          <button class="border px-4 py-2 rounded bg-white hover:bg-gray-50">
+            🖼 Click Here
+          </button>
+        </div>
+      </div>
+
+      <!-- Special Message -->
+      <div class="mb-8">
+        <label class="block font-medium mb-2">
+          Special Message
+        </label>
+        <input
+          type="text"
+          placeholder="You're my everything, forever and always 💖"
+          class="w-full border rounded-lg px-4 py-2"
+        >
+      </div>
+
+      <!-- Add to Cart -->
+      <button
+        onclick="addToCart({{ product.id }}, this)"
+        class="w-full bg-black text-white py-4 rounded-lg text-lg flex items-center justify-center gap-2 hover:bg-gray-900"
+      >
+        🛒 Add to cart
+      </button>
+
+      <!-- WhatsApp -->
+      <a
+        href="https://wa.me/91XXXXXXXXXX"
+        target="_blank"
+        class="block mt-4 bg-green-500 text-white py-3 rounded-lg text-center font-medium"
+      >
+        💬 Need Help? WhatsApp
+      </a>
+
+      <!-- Accordions -->
+      <div class="mt-10 space-y-4 border-t pt-6">
+
+        <details class="border-b pb-4">
+          <summary class="cursor-pointer font-medium">Delivery Information</summary>
+          <p class="mt-2 text-sm text-gray-600">
+            Delivered in 5–7 working days.
+          </p>
+        </details>
+
+        <details class="border-b pb-4">
+          <summary class="cursor-pointer font-medium">Our "PERFECT" Guarantee</summary>
+          <p class="mt-2 text-sm text-gray-600">
+            100% satisfaction guaranteed.
+          </p>
+        </details>
+
+        <details class="border-b pb-4">
+          <summary class="cursor-pointer font-medium">Need help?</summary>
+          <p class="mt-2 text-sm text-gray-600">
+            Contact us anytime on WhatsApp.
+          </p>
+        </details>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= JS ================= -->
+<script>
+  const images = [
+    {% for img in images %}
+      "{{ img.image.url }}",
+    {% endfor %}
+  ];
+
+  let currentIndex = 0;
+  const mainImage = document.getElementById("mainImage");
+
+  function setMainImage(src, index) {
+    currentIndex = index;
+    mainImage.src = src;
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    mainImage.src = images[currentIndex];
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    mainImage.src = images[currentIndex];
+  }
+</script>
 
 {% endblock %}

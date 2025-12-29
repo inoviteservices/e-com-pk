@@ -11,64 +11,30 @@
 
 <section class="relative w-full overflow-hidden">
 
-  <div
-    id="heroSlider"
-    class="relative w-full
-           h-[200px]
-           sm:h-[280px]
-           md:h-[380px]
-           lg:h-[480px]
-           xl:h-[560px]"
-  >
-
-    <!-- Slide 1 -->
-    <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-700">
+ <div
+  id="heroSlider"
+  class="relative w-full
+         h-[200px]
+         sm:h-[280px]
+         md:h-[380px]
+         lg:h-[480px]
+         xl:h-[560px]"
+>
+  {% for slide in slides %}
+    <div
+      class="hero-slide absolute inset-0
+             {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}
+             transition-opacity duration-700"
+    >
       <img
-        src="{% static 'images/hero-1.jpg' %}"
+        src="{{ slide }}"
         class="w-full h-full object-cover"
-        alt="Hero"
-      >
+        alt="Hero banner"
+      />
     </div>
+  {% endfor %}
+</div>
 
-    <!-- Slide 2 -->
-    <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
-      <img
-        src="{% static 'images/hero-2.jpg' %}"
-        class="w-full h-full object-cover"
-        alt="Hero"
-      >
-    </div>
-
-    <!-- Slide 3 -->
-
-    
-    <!-- <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
-      <img
-        src="{% static 'images/hero-3.jpg' %}"
-        class="w-full h-full object-cover"
-        alt="Hero"
-      >
-    </div> -->
-
-    <!-- LEFT ARROW -->
-    <button
-      id="prevSlide"
-      class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20
-             bg-black/60 text-white w-9 h-9 sm:w-11 sm:h-11
-             rounded-full flex items-center justify-center">
-      ‹
-    </button>
-
-    <!-- RIGHT ARROW -->
-    <button
-      id="nextSlide"
-      class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20
-             bg-black/60 text-white w-9 h-9 sm:w-11 sm:h-11
-             rounded-full flex items-center justify-center">
-      ›
-    </button>
-
-  </div>
 
   <!-- DOTS -->
   <div class="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
@@ -610,44 +576,44 @@
 
 
 <script>
-  const slides = document.querySelectorAll('.hero-slide');
-  const dots = document.querySelectorAll('.dot');
-  let current = 0;
+  document.addEventListener("DOMContentLoaded", () => {
+    const slides = document.querySelectorAll(".hero-slide");
+    const dots = document.querySelectorAll(".dot");
+    let current = 0;
 
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('opacity-100', i === index);
-      slide.classList.toggle('opacity-0', i !== index);
-      slide.style.zIndex = i === index ? 10 : 0;
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("opacity-100", i === index);
+        slide.classList.toggle("opacity-0", i !== index);
+      });
 
-      dots[i].classList.toggle('bg-white', i === index);
-      dots[i].classList.toggle('bg-white/40', i !== index);
-    });
-  }
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("bg-white", i === index);
+        dot.classList.toggle("bg-white/40", i !== index);
+      });
+    }
 
-  document.getElementById('nextSlide').addEventListener('click', () => {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  });
-
-  document.getElementById('prevSlide').addEventListener('click', () => {
-    current = (current - 1 + slides.length) % slides.length;
-    showSlide(current);
-  });
-
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      current = i;
+    function nextSlide() {
+      current = (current + 1) % slides.length;
       showSlide(current);
-    });
-  });
+    }
 
-  // Auto-slide (optional)
-  setInterval(() => {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }, 5000);
+    // Auto slide every 4s
+    setInterval(nextSlide, 4000);
+
+    // Dot click support
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        current = index;
+        showSlide(current);
+      });
+    });
+
+    // Init
+    showSlide(0);
+  });
 </script>
+
 
 
 {% endblock %}
