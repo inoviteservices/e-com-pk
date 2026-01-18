@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-xl mx-auto text-center py-20">
+  <h1 class="text-3xl font-semibold mb-4">Order Placed 🎉</h1>
+  <p>Your COD order has been successfully placed.</p>
+
+  <p class="mt-4 font-medium">
+    Order ID: #{{ order.id }}
+  </p>
+
+  <p class="text-sm text-gray-600 mt-2">
+    We will contact you before dispatch.
+  </p>
+
+  <a href="/" class="inline-block mt-6 underline">
+    Continue Shopping
+  </a>
+</div>
+
+{% endblock %}

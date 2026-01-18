@@ -23,12 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)$6ubapxn&39b=t+c3=lbn_n%k+m$a3kq2!vz^wd=)!(yzl-1+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+DEBUG = True 
 
 ALLOWED_HOSTS = [
     '143.244.132.1',
     'artgift.in',
     'www.artgift.in',
+    "127.0.0.1", "localhost"
 
 ]
 
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'products',
     'orders',
     'checkout',
+    'pages',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +64,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -70,11 +71,16 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.debug',
+
+                # existing
                 'orders.context_processors.cart_context',
+
+                # 🔥 NEW — SITE LOGO (GLOBAL)
+                'pages.context_processors.site_logo',
             ],
         },
     },

@@ -27,9 +27,9 @@
              transition-opacity duration-700"
     >
       <img
-        src="{{ slide }}"
+        src="{{ slide.image.url }}"
         class="w-full h-full object-cover"
-        alt="Hero banner"
+        alt="Hero banner {{ forloop.counter }}"
       />
     </div>
   {% endfor %}

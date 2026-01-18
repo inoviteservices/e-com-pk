@@ -1,9 +1,6 @@
 from django.contrib import admin
-from .models import HeroSlide,Product, Category
+from .models import Product, Category
 
-@admin.register(HeroSlide)
-class HeroSlideAdmin(admin.ModelAdmin):
-    list_display = ("id", "created_at")
 
     
 admin.site.register(Product)

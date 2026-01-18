@@ -41,10 +41,11 @@
       <!-- Logo -->
       <a href="/" class="flex-shrink-0">
   <img
-    src="{% static 'images/logo.png' %}"
-    alt="art gift"
-    class="h-9 sm:h-11 md:h-12 w-auto object-contain"
-  >
+  src="{{ site_logo }}"
+  alt="Art Gift"
+  class="h-9 sm:h-11 md:h-12 w-auto object-contain"
+/>
+
 </a>
 
      <!-- Search -->
@@ -149,7 +150,7 @@
               >+</button>
 
             </div>
-
+            
             <!-- Remove -->
             <button
               onclick="removeFromCart('{{ item.product_id }}')"
@@ -193,12 +194,16 @@
     <span>Subtotal</span>
     <span>₹{{ cart_total }}</span>
   </div>
+  <a href="{% url 'checkout' %}"
+   class="block w-full bg-black text-white text-center py-3 rounded-lg mt-4">
+  Checkout (COD)
+</a>
 
-  <a
+  <!-- <a
     class="block w-full text-center bg-black text-white py-3 rounded-lg font-medium"
   >
     Proceed to Checkout
-  </a>
+  </a> -->
 </div>
 
 
