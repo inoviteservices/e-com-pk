@@ -1,7 +1,11 @@
 // point this to your Django STATIC_URL
 const STATIC_URL = "/static/";
 
-
+function addToCart(productId) {
+  fetch(`/cart/add/${productId}/`)
+    .then(res => res.json())
+    .then(() => location.reload());
+}
 const placeholder = 'https://dummyimage.com/640x640/f2f4ff/3764ff&text=imfresh';
 
 const combos = [

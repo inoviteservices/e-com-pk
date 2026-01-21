@@ -51,6 +51,10 @@ INSTALLED_APPS = [
     'orders',
     'checkout',
     'pages',
+    
+    'cart',
+    'shipping',
+    'analytics',
 ]
 
 MIDDLEWARE = [
@@ -78,9 +82,10 @@ TEMPLATES = [
 
                 # existing
                 'orders.context_processors.cart_context',
-
                 # 🔥 NEW — SITE LOGO (GLOBAL)
-                'pages.context_processors.site_logo',
+                # 'pages.context_processors.site_logo',
+                # 🔥 NEW — SITE Announcement (GLOBAL)
+                "pages.context_processors.site_globals",
             ],
         },
     },

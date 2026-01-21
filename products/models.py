@@ -2,9 +2,17 @@ from django.db import models
 from django.utils import timezone
 
 
+from django.db import models
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+    image = models.ImageField(
+        upload_to="categories/",
+        blank=True,
+        null=True,
+        help_text="Image shown on homepage & category cards"
+    )
 
     def __str__(self):
         return self.name
@@ -26,6 +34,9 @@ class Product(models.Model):
 
     # new single image field on the same table
     image = models.ImageField(upload_to="products/", null=True, blank=True)
+
+     # 🔥 NEW FLAG
+    requires_custom_image = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

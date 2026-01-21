@@ -9,48 +9,76 @@
 
 <main>
 
-<section class="relative w-full overflow-hidden">
+  <section class="relative w-full overflow-hidden">
 
- <div
-  id="heroSlider"
-  class="relative w-full
-         h-[200px]
-         sm:h-[280px]
-         md:h-[380px]
-         lg:h-[480px]
-         xl:h-[560px]"
->
-  {% for slide in slides %}
-    <div
-      class="hero-slide absolute inset-0
-             {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}
-             transition-opacity duration-700"
-    >
-      <img
-        src="{{ slide.image.url }}"
-        class="w-full h-full object-cover"
-        alt="Hero banner {{ forloop.counter }}"
-      />
-    </div>
-  {% endfor %}
-</div>
+  <div
+    id="heroSlider"
+    class="relative w-full
+           h-[200px]
+           sm:h-[280px]
+           md:h-[380px]
+           lg:h-[480px]
+           xl:h-[560px]"
+  >
 
+    {% if has_custom_slides %}
+      {# 🔹 ADMIN SLIDES #}
+      {% for slide in hero_slides %}
+        <a
+          href="{{ slide.link }}"
+          class="hero-slide absolute inset-0
+                 {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}
+                 transition-opacity duration-700"
+        >
+          <img
+            src="{{ slide.image.url }}"
+            class="w-full h-full object-cover"
+            alt="Hero banner {{ forloop.counter }}"
+          />
+        </a>
+      {% endfor %}
+
+    {% else %}
+      {# 🔹 DEFAULT SLIDES (ALWAYS 3) #}
+      <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-700">
+        <img src="{% static 'images/hero-1.jpg' %}" class="w-full h-full object-cover" alt="Default hero 1">
+      </div>
+      <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
+        <img src="{% static 'images/hero-2.jpg' %}" class="w-full h-full object-cover" alt="Default hero 2">
+      </div>
+      <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-700">
+        <img src="{% static 'images/hero-3.webp' %}" class="w-full h-full object-cover" alt="Default hero 3">
+      </div>
+    {% endif %}
+
+  </div>
 
   <!-- DOTS -->
   <div class="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
-    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
-    <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+    {% if has_custom_slides %}
+      {% for slide in hero_slides %}
+        <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+      {% endfor %}
+    {% else %}
+      <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+      <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+      <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+    {% endif %}
   </div>
 
 </section>
-<section class="w-full overflow-hidden bg-black text-white">
-  <div class="flex whitespace-nowrap">
+
+<section class="w-full overflow-hidden bg-[#68a8ff] text-white">
+  <div class="flex whitespace-nowrap font-sans">
 
     <!-- Track 1 -->
     <div
-      class="flex gap-10 py-2 text-xs sm:text-sm font-medium
-             animate-[marquee_20s_linear_infinite]"
+      class="flex gap-14 sm:gap-16 md:gap-20
+             py-2.5 sm:py-3
+             text-sm sm:text-base
+             font-medium
+             tracking-wide
+             animate-[marquee_40s_linear_infinite]"
     >
       <span>★ SAFE & CLEAN INGREDIENTS</span>
       <span>★ FREE & FAST SHIPPING</span>
@@ -59,15 +87,19 @@
       <span>★ SAFE & CLEAN INGREDIENTS</span>
       <span>★ FREE & FAST SHIPPING</span>
       <span>★ MADE IN INDIA</span>
-      <span>★ PREMIUM QUALITY </span>
+      <span>★ PREMIUM QUALITY</span>
     </div>
 
     <!-- Track 2 (duplicate for seamless loop) -->
     <div
-      class="flex gap-10 py-2 text-xs sm:text-sm font-medium
-             animate-[marquee_20s_linear_infinite]"
-    > <span></span>
-      <span> ★ SAFE & CLEAN INGREDIENTS</span>
+      class="flex gap-14 sm:gap-16 md:gap-20
+             py-2.5 sm:py-3
+             text-sm sm:text-base
+             font-medium
+             tracking-wide
+             animate-[marquee_40s_linear_infinite]"
+    >
+      <span>★ SAFE & CLEAN INGREDIENTS</span>
       <span>★ FREE & FAST SHIPPING</span>
       <span>★ MADE IN INDIA</span>
       <span>★ PREMIUM QUALITY</span>
@@ -79,179 +111,125 @@
 
   </div>
 </section>
+
+
  
-<style>
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-</style>
+
 
 
 <section class="relative py-16 bg-gradient-to-b from-[#eaf6ff] to-[#bfe4ff]">
 
   <!-- Header -->
-  <div class="text-center mb-12 px-6">
+  <div class="text-center mb-10 px-4 sm:px-6">
+
     <h2 class="text-3xl font-extrabold uppercase tracking-wide">
-      Best Selling Combos
+      Shop by Category
     </h2>
     <p class="mt-2 text-lg text-gray-800">
-      Powerful duos for powerful results
+      Thoughtfully curated collections to help you find the right pick
     </p>
-    <a href="#" class="inline-block mt-2 text-base font-medium underline">
-      Shop all combos
-    </a>
+   
   </div>
 
   <!-- Carousel Wrapper -->
-  <div class="relative max-w-[1400px] mx-auto px-6">
+  {% if categories %}
+<div class="relative max-w-[1400px] mx-auto px-0 sm:px-6">
 
-    <!-- Left Arrow (desktop only) -->
-    <button
-      class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
-             bg-black text-white w-10 h-10 rounded-full
-             items-center justify-center">
-      ❮
-    </button>
 
-    <!-- Right Arrow (desktop only) -->
-    <button
-      class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
-             bg-black text-white w-10 h-10 rounded-full
-             items-center justify-center">
-      ❯
-    </button>
+  <!-- Left Arrow (desktop only) -->
+  <button
+    class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
+           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+           items-center justify-center transition"
+  >
+    ❮
+  </button>
 
-    <!-- Cards -->
-    <div
-      class="flex gap-6 overflow-x-auto scroll-smooth
-             lg:grid lg:grid-cols-4 lg:gap-8
-             [&::-webkit-scrollbar]:hidden"
+  <!-- Right Arrow (desktop only) -->
+  <button
+    class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
+           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+           items-center justify-center transition"
+  >
+    ❯
+  </button>
+
+  <!-- Cards -->
+  <div
+  class="flex gap-6 overflow-x-auto scroll-smooth
+         pl-4 pr-4 sm:pl-6 sm:pr-6
+         lg:grid lg:grid-cols-4 lg:gap-8
+         [&::-webkit-scrollbar]:hidden"
+>
+
+
+    {% for category in categories %}
+      <article
+  class="group
+         min-w-[220px] max-w-[220px]
+         sm:min-w-[260px] sm:max-w-[260px]
+         lg:min-w-0 lg:max-w-none
+         bg-white rounded-2xl
+         shadow-md
+         snap-start
+         transition-all duration-300
+         hover:-translate-y-1 hover:shadow-xl"
+>
+
+
+
+        <a href="/products/category/{{ category.slug }}/">
+
+
+<!-- Image -->
+<div
+  class="overflow-hidden rounded-t-2xl
+         p-[3px] sm:p-0"
+>
+  {% if category.image %}
+    <img
+      src="{{ category.image.url }}"
+      alt="{{ category.name }}"
+      class="w-full aspect-[4/5]
+             object-cover
+             rounded-xl sm:rounded-none
+             transition-transform duration-500 ease-out
+             group-hover:scale-[1.04]"
     >
-
-      <!-- Card 1 -->
-      <article
-        class="min-w-[280px] max-w-[280px]
-               lg:min-w-0 lg:max-w-none
-               bg-white rounded-2xl shadow-xl overflow-hidden
-               snap-start"
-      >
-        <div class="bg-gray-100 p-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
-            alt=""
-            class="w-full h-56 object-contain rounded-xl"
-          >
-        </div>
-        <div class="p-6 text-center">
-          <h3 class="font-semibold text-lg mb-2">
-            imfresh Men Cream (Dopenight + Original) Combo
-          </h3>
-          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
-            ★★★★★ <span class="text-gray-600 text-sm">(276)</span>
-          </div>
-          <div class="flex justify-center gap-3 mb-4">
-            <span class="text-xl font-bold text-sky-500">₹799</span>
-            <span class="line-through text-gray-500">₹1198</span>
-          </div>
-          <button class="bg-sky-400 hover:bg-sky-500 text-white px-6 py-2 rounded-lg font-medium">
-            Buy Now
-          </button>
-        </div>
-      </article>
-
-      <!-- Card 2 -->
-      <article
-        class="min-w-[280px] max-w-[280px]
-               lg:min-w-0 lg:max-w-none
-               bg-white rounded-2xl shadow-xl overflow-hidden
-               snap-start"
-      >
-        <div class="bg-gray-100 p-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
-            class="w-full h-56 object-contain rounded-xl"
-          >
-        </div>
-        <div class="p-6 text-center">
-          <h3 class="font-semibold text-lg mb-2">
-            imfresh Men Cream (Dopenight + Sweet Killer) Combo
-          </h3>
-          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
-            ★★★★★ <span class="text-gray-600 text-sm">(476)</span>
-          </div>
-          <div class="flex justify-center gap-3 mb-4">
-            <span class="text-xl font-bold text-sky-500">₹799</span>
-            <span class="line-through text-gray-500">₹1198</span>
-          </div>
-          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
-            Buy Now
-          </button>
-        </div>
-      </article>
-
-      <!-- Card 3 -->
-      <article
-        class="min-w-[280px] max-w-[280px]
-               lg:min-w-0 lg:max-w-none
-               bg-white rounded-2xl shadow-xl overflow-hidden
-               snap-start"
-      >
-        <div class="bg-gray-100 p-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
-            class="w-full h-56 object-contain rounded-xl"
-          >
-        </div>
-        <div class="p-6 text-center">
-          <h3 class="font-semibold text-lg mb-2">
-            imfresh Men Cream (Original + Sweet Killer) Combo
-          </h3>
-          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
-            ★★★★★ <span class="text-gray-600 text-sm">(5769)</span>
-          </div>
-          <div class="flex justify-center gap-3 mb-4">
-            <span class="text-xl font-bold text-sky-500">₹799</span>
-            <span class="line-through text-gray-500">₹1198</span>
-          </div>
-          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
-            Buy Now
-          </button>
-        </div>
-      </article>
-
-      <!-- Card 4 -->
-      <article
-        class="min-w-[280px] max-w-[280px]
-               lg:min-w-0 lg:max-w-none
-               bg-white rounded-2xl shadow-xl overflow-hidden
-               snap-start"
-      >
-        <div class="bg-gray-100 p-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
-            class="w-full h-56 object-contain rounded-xl"
-          >
-        </div>
-        <div class="p-6 text-center">
-          <h3 class="font-semibold text-lg mb-2">
-            imfresh Men Cream (Pack of 2)
-          </h3>
-          <div class="flex justify-center gap-1 text-yellow-400 mb-2">
-            ★★★★★ <span class="text-gray-600 text-sm">(310)</span>
-          </div>
-          <div class="flex justify-center gap-3 mb-4">
-            <span class="text-xl font-bold text-sky-500">₹799</span>
-            <span class="line-through text-gray-500">₹1198</span>
-          </div>
-          <button class="bg-sky-400 text-white px-6 py-2 rounded-lg font-medium">
-            Buy Now
-          </button>
-        </div>
-      </article>
-
+  {% else %}
+    <div
+      class="w-full aspect-[4/5]
+             flex items-center justify-center
+             bg-gray-100
+             rounded-xl sm:rounded-none
+             text-gray-400 text-sm font-medium"
+    >
+      No Image
     </div>
+  {% endif %}
+</div>
+
+
+
+
+          <!-- Content -->
+          <div class="p-6 text-center">
+            <h3 class="font-semibold text-lg">
+              {{ category.name }}
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Explore collection →
+            </p>
+          </div>
+
+        </a>
+      </article>
+    {% endfor %}
+
   </div>
+</div>
+{% endif %}
+
 </section>
 
 
@@ -369,118 +347,154 @@
 
   </div>
 </section>
-<section class="py-20 bg-white">
+
+
+{% if reviews %}
+<section class="py-20 bg-white relative">
 
   <!-- Heading -->
-  <div class="text-center mb-16 px-6">
-    <p class="text-sm tracking-wide text-gray-600 mb-4">
-      10,000+ Happy Customers 😍
-    </p>
-
-    <h2 class="text-3xl md:text-4xl font-serif font-medium">
-      Don’t take our word, take theirs
+  <div class="text-center mb-14 px-6">
+    <h2 class="text-3xl font-semibold tracking-tight">
+      Real people. Real experiences.
     </h2>
+    <p class="mt-2 text-sm text-gray-600">
+      What our customers are saying
+    </p>
   </div>
 
-  <!-- Testimonials -->
-  <div class="max-w-[1400px] mx-auto px-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+  <!-- Reviews Wrapper -->
+  <div class="max-w-[1400px] mx-auto px-6 relative">
 
-      <!-- Testimonial 1 -->
-      <div class="text-center">
-        <img
-          src="https://i.imgur.com/8Km9tLL.jpg"
-          alt=""
-          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
+    <!-- Slider -->
+    <div
+      id="reviewSlider"
+      class="flex gap-8 overflow-x-auto scroll-smooth
+             snap-x snap-mandatory
+             [&::-webkit-scrollbar]:hidden"
+    >
+
+      {% for review in reviews %}
+      <div
+        class="snap-start
+               w-[300px] min-w-[300px] max-w-[300px]
+               bg-white rounded-2xl
+               border border-gray-100
+               px-6 py-8
+               text-center
+               flex flex-col items-center
+               transition-all hover:shadow-md"
+        onclick="openReviewModal(
+          '{{ review.name|escapejs }}',
+          '{{ review.review|escapejs }}',
+          {{ review.rating }},
+          '{% if review.photo %}{{ review.photo.url }}{% endif %}'
+        )"
+      >
+
+        <!-- Photo -->
+        {% if review.photo %}
+          <img
+            src="{{ review.photo.url }}"
+            alt="{{ review.name }}"
+            class="w-16 h-16 rounded-full mb-4 object-cover"
+          >
+        {% endif %}
+
+        <!-- Stars -->
+        <div class="flex justify-center gap-1 text-yellow-400 text-2xl mb-4">
+  {% for i in "12345" %}
+    {% if forloop.counter <= review.rating %}
+      ★
+    {% else %}
+      <span class="text-gray-300">★</span>
+    {% endif %}
+  {% endfor %}
+</div>
+
+        <!-- Comment (2 lines + …) -->
+        <p
+          class="text-gray-800 text-base leading-relaxed
+                 line-clamp-2 break-anywhere
+                 mb-3 min-h-[48px]"
         >
-
-        <div class="flex justify-center mb-4 text-yellow-400">
-          ★★★★★
-        </div>
-
-        <p class="text-gray-700 leading-relaxed mb-6">
-          My friend gifted me this miniature on my b’day, and it was at my doorstep within 5 days!
-          The quality is fantastic, and the design is so cute. Thanks, BhootIya!
-          Super happy with my gift. 😊
+          {{ review.review }}
         </p>
 
-        <p class="font-serif text-gray-900">
-          — Nandini Chaudhary
+        <!-- Name -->
+        <p class="mt-4 text-base font-semibold text-gray-900">
+          {{ review.name }}
         </p>
+
       </div>
-
-      <!-- Testimonial 2 -->
-      <div class="text-center">
-        <img
-          src="https://i.imgur.com/5cX1G3E.jpg"
-          alt=""
-          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
-        >
-
-        <div class="flex justify-center mb-4 text-yellow-400">
-          ★★★★★
-        </div>
-
-        <p class="text-gray-700 leading-relaxed mb-6">
-          Big thanks to BhootIya team for creating such a cute miniature of me! 😇🔥
-          It’s the perfect gift to surprise your loved ones with something unique and special.
-        </p>
-
-        <p class="font-serif text-gray-900">
-          — Manya Gupta
-        </p>
-      </div>
-
-      <!-- Testimonial 3 -->
-      <div class="text-center">
-        <img
-          src="https://i.imgur.com/6RZ5YqQ.jpg"
-          alt=""
-          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
-        >
-
-        <div class="flex justify-center mb-4 text-yellow-400">
-          ★★★★★
-        </div>
-
-        <p class="text-gray-700 leading-relaxed mb-6">
-          Got this adorable miniature from my husband on our anniversary, and I absolutely love it!
-          The details are fantastic, and it fits perfectly with our decor.
-          Wonderful job, BhootIya!
-        </p>
-
-        <p class="font-serif text-gray-900">
-          — Swati Gurwani
-        </p>
-      </div>
-
-      <!-- Testimonial 4 -->
-      <div class="text-center">
-        <img
-          src="https://i.imgur.com/4Z7wZ7T.jpg"
-          alt=""
-          class="w-24 h-24 rounded-full mx-auto mb-6 object-cover"
-        >
-
-        <div class="flex justify-center mb-4 text-yellow-400">
-          ★★★★★
-        </div>
-
-        <p class="text-gray-700 leading-relaxed mb-6">
-          I bought this for myself, and it’s just as cute as me! 😍
-          I’m going to carry it with me wherever I go.
-          Love it! ❤️
-        </p>
-
-        <p class="font-serif text-gray-900">
-          — Dency Kanaiya
-        </p>
-      </div>
+      {% endfor %}
 
     </div>
-  </div>
 
+    <!-- Arrows (desktop only) -->
+    <button
+      onclick="slideReviews(-1)"
+      class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2
+             w-10 h-10 bg-black text-white rounded-full
+             items-center justify-center"
+    >
+      ❮
+    </button>
+
+    <button
+      onclick="slideReviews(1)"
+      class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2
+             w-10 h-10 bg-black text-white rounded-full
+             items-center justify-center"
+    >
+      ❯
+    </button>
+
+  </div>
 </section>
+
+
+
+<div
+  id="reviewOverlay"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-40"
+  onclick="closeReviewModal()"
+></div>
+
+<div
+  id="reviewModal"
+  class="fixed inset-0 z-50 hidden flex items-center justify-center px-4"
+>
+  <div
+    class="bg-white max-w-md w-full rounded-2xl p-8 relative shadow-xl"
+    onclick="event.stopPropagation()"
+  >
+
+    <img
+      id="modalPhoto"
+      class="w-20 h-20 rounded-full mx-auto mb-4 hidden object-cover"
+    >
+
+    <div
+      id="modalStars"
+      class="flex justify-center gap-1 text-yellow-400 text-2xl mb-4"
+    ></div>
+
+    <p
+      id="modalText"
+      class="text-gray-800 text-sm leading-relaxed mb-6 text-center"
+    ></p>
+
+    <p
+      id="modalName"
+      class="text-center text-sm font-medium text-gray-900"
+    ></p>
+
+  </div>
+</div>
+
+{% endif %}
+
+
 
 
     <div id="combo-carousel"
@@ -572,8 +586,26 @@
   {% endfor %}
 </ul>
 
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+</style>
 
+<style>
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+</style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -613,6 +645,54 @@
     showSlide(0);
   });
 </script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+
+
+<script>
+function openReviewModal(name, text, rating, photoUrl) {
+  document.body.classList.add("overflow-hidden");
+
+  document.getElementById("modalName").innerText = name;
+  document.getElementById("modalText").innerText = text;
+
+  // Stars (FIXED rating bug too)
+  document.getElementById("modalStars").innerHTML =
+    "★".repeat(rating) + "☆".repeat(5 - rating);
+
+  const photo = document.getElementById("modalPhoto");
+  if (photoUrl) {
+    photo.src = photoUrl;
+    photo.classList.remove("hidden");
+  } else {
+    photo.classList.add("hidden");
+  }
+
+  document.getElementById("reviewOverlay").classList.remove("hidden");
+  document.getElementById("reviewModal").classList.remove("hidden");
+}
+
+function closeReviewModal() {
+  document.body.classList.remove("overflow-hidden");
+
+  document.getElementById("reviewOverlay").classList.add("hidden");
+  document.getElementById("reviewModal").classList.add("hidden");
+}
+
+// ESC key support (Apple-level UX)
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeReviewModal();
+});
+</script>
+
 
 
 

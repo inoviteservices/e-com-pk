@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>ArtDecor</title>
+  <title>ArtGift</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
@@ -18,12 +18,19 @@
 <body class="antialiased font-sans">
 
   <!-- Top Bar -->
-<div class="bg-black text-white text-center
-            text-[10px] sm:text-xs
-            py-0.5 sm:py-1
-            tracking-wide">
-  FREE SHIPPING ON ALL ORDERS ABOVE ₹499!
-</div>
+{% if site_announcement %}
+  <div
+    class="bg-black text-white text-center
+           text-xs sm:text-sm
+           py-1 sm:py-1.5
+           font-sans font-medium
+           tracking-wide"
+  >
+    {{ site_announcement.text }}
+  </div>
+{% endif %}
+
+
 
 
 
@@ -39,12 +46,27 @@
     <div class="flex items-center gap-2 sm:gap-4">
 
       <!-- Logo -->
-      <a href="/" class="flex-shrink-0">
-  <img
-  src="{{ site_logo }}"
-  alt="Art Gift"
-  class="h-9 sm:h-11 md:h-12 w-auto object-contain"
-/>
+     <a href="/" class="flex-shrink-0 group">
+  {% if site_logo %}
+    <img
+      src="{{ site_logo.image.url }}"
+      alt="Art Gift"
+      class="h-9 sm:h-11 md:h-12 w-auto object-contain
+             transition-transform duration-300 ease-out
+             group-hover:scale-105"
+    />
+  {% else %}
+    <img
+      src="{% static 'images/logo.png' %}"
+      alt="Art Gift"
+      class="h-9 sm:h-11 md:h-12 w-auto object-contain
+             transition-transform duration-300 ease-out
+             group-hover:scale-105"
+    />
+  {% endif %}
+</a>
+
+
 
 </a>
 
@@ -74,28 +96,51 @@
 
 
       <!-- Cart Button -->
-<button id="openCart" class="relative flex-shrink-0">
-  <i class="bi bi-bag text-xl sm:text-2xl"></i>
+<button
+  id="openCart"
+  class="relative flex-shrink-0 group
+         transition-transform duration-200 ease-out
+         hover:scale-105"
+>
+  <i
+    class="bi bi-bag
+           text-xl sm:text-2xl
+           transition-transform duration-200 ease-out
+           group-hover:-translate-y-0.5"
+  ></i>
 
   {% if cart_count > 0 %}
     <span
       class="absolute -top-1.5 -right-1.5
-             bg-black text-white text-[9px] sm:text-[10px]
-             rounded-full px-1"
+             bg-black text-white
+             text-[9px] sm:text-[10px]
+             rounded-full px-1
+             transition-transform duration-200 ease-out
+             group-hover:scale-105"
     >
       {{ cart_count }}
     </span>
   {% endif %}
 </button>
 
+
 <!-- CART OVERLAY -->
-<div id="cartOverlay"
-     class="fixed inset-0 bg-black/40 z-40 hidden"></div>
+<div
+  id="cartOverlay"
+  class="fixed inset-0 z-40 hidden
+         bg-black/40
+         backdrop-blur-sm
+         transition-opacity duration-300"
+></div>
+
 
 <!-- CART DRAWER -->
 <aside id="cartDrawer"
-  class="fixed top-0 right-0 h-full w-[360px] max-w-full
-         bg-white z-50 transform translate-x-full
+   class="fixed top-0 right-0 h-full
+         w-[90%] sm:w-[420px] lg:w-[500px]
+         max-w-full
+         bg-white z-50
+         transform translate-x-full
          transition-transform duration-300 ease-out
          shadow-2xl flex flex-col">
 
@@ -194,7 +239,7 @@
     <span>Subtotal</span>
     <span>₹{{ cart_total }}</span>
   </div>
-  <a href="{% url 'checkout' %}"
+  <a href="{% url 'checkout_cod' %}"
    class="block w-full bg-black text-white text-center py-3 rounded-lg mt-4">
   Checkout (COD)
 </a>
@@ -213,14 +258,58 @@
     </div>
 
     <!-- Row 2: Nav Links -->
-    <div class="mt-2 sm:mt-3 flex justify-center">
-      <ul class="flex gap-4 sm:gap-6 md:gap-8
-                 text-xs sm:text-sm font-medium">
-        <li><a href="#" class="hover:underline">Shop All</a></li>
-        <li><a href="#" class="hover:underline">Bulk Corporate Orders</a></li>
-        <li><a href="#" class="hover:underline">Track Order</a></li>
-      </ul>
-    </div>
+   <div class="mt-2 sm:mt-3 flex justify-center">
+  <ul
+    class="flex gap-4 sm:gap-6 md:gap-8
+           text-xs sm:text-sm font-medium"
+  >
+    <li>
+      <a
+        href="#"
+        class="relative group inline-block"
+      >
+        Shop All
+        <span
+          class="absolute left-0 -bottom-0.5
+                 w-0 h-[1.5px] bg-black
+                 transition-all duration-300 ease-out
+                 group-hover:w-full"
+        ></span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="#"
+        class="relative group inline-block"
+      >
+        Bulk Corporate Orders
+        <span
+          class="absolute left-0 -bottom-0.5
+                 w-0 h-[1.5px] bg-black
+                 transition-all duration-300 ease-out
+                 group-hover:w-full"
+        ></span>
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="#"
+        class="relative group inline-block"
+      >
+        Track Order
+        <span
+          class="absolute left-0 -bottom-0.5
+                 w-0 h-[1.5px] bg-black
+                 transition-all duration-300 ease-out
+                 group-hover:w-full"
+        ></span>
+      </a>
+    </li>
+  </ul>
+</div>
+
 
   </div>
 </nav>
@@ -433,9 +522,14 @@ async function removeFromCart(productId) {
 }
 </script>
 
+<script>
+function getCSRFToken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+</script>
 
 
-  <script src="{% static 'script.js' %}"></script>
+<script src="{% static 'script.js' %}"></script>
   
 </body>
 </html>
