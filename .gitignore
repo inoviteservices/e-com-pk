@@ -13,6 +13,11 @@ db.sqlite3
 staticfiles/
 media/
 
+# Secrets / local config
+config/settings.py
+config/.env
+.env
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {% if active_category %}
+    {{ active_category|title }} | ArtDecor
+  {% else %}
+    All Products | ArtDecor
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<section class="bg-[#fafaf0]">
+
+  <!-- Container -->
+  <div class="max-w-[1400px] mx-auto px-6 py-6 sm:py-8">
+
+    <!-- Breadcrumb -->
+    <p class="text-sm text-gray-500 mb-2">
+      <a href="/" class="hover:underline">Home</a>
+      <span class="mx-1">›</span>
+      <span class="text-gray-700">All Products</span>
+    </p>
+
+    <!-- Title -->
+    <h1 class="text-3xl sm:text-4xl font-semibold mb-4">
+      {% if active_category %}
+        {{ active_category|title }}
+      {% else %}
+        All Products
+      {% endif %}
+    </h1>
+
+    <!-- Category Tabs -->
+    <div
+      class="flex gap-6 border-b border-gray-300
+             mb-6 text-base sm:text-lg
+             overflow-x-auto scrollbar-hide"
+    >
+
+      <!-- All -->
+      <a
+        href="{% url 'shop_all' %}"
+        class="pb-2 whitespace-nowrap transition
+               {% if not active_category %}
+                 border-b-2 border-black font-medium text-black
+               {% else %}
+                 text-gray-500 hover:text-black
+               {% endif %}"
+      >
+        All
+      </a>
+
+      {% for category in categories %}
+        <a
+          href="?category={{ category.slug }}"
+          class="pb-2 whitespace-nowrap transition
+                 {% if active_category == category.slug %}
+                   border-b-2 border-black font-medium text-black
+                 {% else %}
+                   text-gray-500 hover:text-black
+                 {% endif %}"
+        >
+          {{ category.name }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      {% for product in products %}
+      <div
+        class="group bg-white rounded-xl overflow-hidden
+               shadow-sm hover:shadow-md transition
+               flex flex-col h-full"
+      >
+
+        <!-- Image -->
+        <a href="{% url 'product_detail' product.slug %}">
+          <div class="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+            {% if product.image %}
+              <img
+                src="{{ product.image.url }}"
+                alt="{{ product.title }}"
+                class="w-full h-full object-cover
+                       group-hover:scale-105 transition-transform duration-300"
+              >
+            {% endif %}
+
+            {% if product.compare_at_price %}
+              <span
+                class="absolute top-2 left-2 bg-blue-500 text-white
+                       text-xs px-2 py-1 rounded discount-badge"
+                data-price="{{ product.price }}"
+                data-compare="{{ product.compare_at_price }}"
+              >
+              </span>
+            {% endif %}
+
+            {% if product.requires_custom_image %}
+              <span
+                class="absolute top-2 right-2
+                       bg-black text-white
+                       text-[10px] px-2 py-1 rounded"
+              >
+                CUSTOM
+              </span>
+            {% endif %}
+          </div>
+        </a>
+
+        <!-- Content -->
+        <div class="p-3 flex flex-col flex-1">
+
+          <!-- Title -->
+          <a href="{% url 'product_detail' product.slug %}">
+            <h3 class="text-sm sm:text-base font-medium mb-2 line-clamp-2">
+              {{ product.title }}
+            </h3>
+          </a>
+
+          <!-- Price -->
+          <div class="flex items-center gap-2 text-sm mb-4">
+            <span class="font-semibold">
+              ₹{{ product.price }}
+            </span>
+
+            {% if product.compare_at_price %}
+              <span class="text-gray-400 line-through">
+                ₹{{ product.compare_at_price }}
+              </span>
+            {% endif %}
+          </div>
+
+          <!-- Button -->
+          <div class="mt-auto">
+            {% if product.requires_custom_image %}
+              <a
+                href="{% url 'product_detail' product.slug %}"
+                class="block w-full text-center
+                       bg-black text-white
+                       py-2 rounded-lg
+                       text-sm font-medium
+                       hover:bg-gray-900 transition"
+              >
+                Customize
+              </a>
+            {% else %}
+              <button
+                onclick="addToCart({{ product.id }})"
+                class="w-full bg-blue-500 text-white
+                       py-2 rounded-lg
+                       text-sm font-medium
+                       hover:bg-blue-600 transition"
+              >
+                Add
+              </button>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+      {% empty %}
+        <p class="text-gray-500 col-span-full">
+          No products found.
+        </p>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Discount % JS -->
+<script>
+  document.querySelectorAll(".discount-badge").forEach(badge => {
+    const price = parseFloat(badge.dataset.price);
+    const compare = parseFloat(badge.dataset.compare);
+
+    if (!isNaN(price) && !isNaN(compare) && compare > price) {
+      const percent = Math.round(((compare - price) / compare) * 100);
+      badge.innerText = percent + "% OFF";
+    } else {
+      badge.remove();
+    }
+  });
+</script>
+
+{% endblock %}

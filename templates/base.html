@@ -73,6 +73,8 @@
      <!-- Search -->
 <!-- Search -->
 <form
+  action="{% url 'shop_all' %}"
+  method="get"
   class="flex-1 min-w-0
          mx-2 sm:mx-auto
          sm:max-w-[640px] md:max-w-[720px]"
@@ -82,11 +84,14 @@
            px-3 sm:px-5 py-1.5 sm:py-2"
   >
     <input
-      type="search"
-      placeholder="Search"
-      class="flex-1 min-w-0 bg-transparent outline-none
-             text-xs sm:text-sm px-1 sm:px-2"
-    >
+  id="searchInput"
+  type="search"
+  name="q"
+  placeholder="Search products"
+  class="flex-1 min-w-0 bg-transparent outline-none
+         text-xs sm:text-sm px-1 sm:px-2"
+/>
+
     <button type="submit" class="flex-shrink-0 text-gray-700">
       <i class="bi bi-search text-base sm:text-lg"></i>
     </button>
@@ -95,33 +100,40 @@
 
 
 
-      <!-- Cart Button -->
+
+      <!-- Cart Button --><!-- Cart Button -->
 <button
   id="openCart"
-  class="relative flex-shrink-0 group
-         transition-transform duration-200 ease-out
-         hover:scale-105"
+  class="relative flex items-center justify-center
+         w-11 h-11 sm:w-12 sm:h-12
+         rounded-full
+         bg-white/70 backdrop-blur-md
+         border border-white/40
+         shadow-md
+         transition-all duration-300
+         hover:shadow-lg hover:scale-105"
 >
-  <i
-    class="bi bi-bag
-           text-xl sm:text-2xl
-           transition-transform duration-200 ease-out
-           group-hover:-translate-y-0.5"
-  ></i>
+  <!-- Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg"
+       class="w-5 h-5 sm:w-6 sm:h-6 text-black"
+       fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+  </svg>
 
   {% if cart_count > 0 %}
-    <span
-      class="absolute -top-1.5 -right-1.5
-             bg-black text-white
-             text-[9px] sm:text-[10px]
-             rounded-full px-1
-             transition-transform duration-200 ease-out
-             group-hover:scale-105"
-    >
-      {{ cart_count }}
-    </span>
+  <span
+    class="absolute -top-1 -right-1
+           bg-black text-white
+           text-[10px] px-1.5 py-0.5
+           rounded-full
+           min-w-[18px] text-center"
+  >
+    {{ cart_count }}
+  </span>
   {% endif %}
 </button>
+
 
 
 <!-- CART OVERLAY -->
@@ -259,55 +271,88 @@
 
     <!-- Row 2: Nav Links -->
    <div class="mt-2 sm:mt-3 flex justify-center">
-  <ul
-    class="flex gap-4 sm:gap-6 md:gap-8
-           text-xs sm:text-sm font-medium"
-  >
-    <li>
-      <a
-        href="#"
-        class="relative group inline-block"
-      >
-        Shop All
-        <span
-          class="absolute left-0 -bottom-0.5
-                 w-0 h-[1.5px] bg-black
-                 transition-all duration-300 ease-out
-                 group-hover:w-full"
-        ></span>
-      </a>
-    </li>
+ 
+    
+    <ul
+  class="flex gap-4 sm:gap-6 md:gap-8
+         text-xs sm:text-sm font-medium"
+>
 
-    <li>
-      <a
-        href="#"
-        class="relative group inline-block"
-      >
-        Bulk Corporate Orders
-        <span
-          class="absolute left-0 -bottom-0.5
-                 w-0 h-[1.5px] bg-black
-                 transition-all duration-300 ease-out
-                 group-hover:w-full"
-        ></span>
-      </a>
-    </li>
+  <!-- Shop All -->
+  <li>
+    <a
+      href="{% url 'shop_all' %}"
+      class="relative inline-block group
+             {% if active_nav == 'shop' %}
+               font-semibold
+             {% endif %}"
+    >
+      Shop All
 
-    <li>
-      <a
-        href="#"
-        class="relative group inline-block"
-      >
-        Track Order
-        <span
-          class="absolute left-0 -bottom-0.5
-                 w-0 h-[1.5px] bg-black
-                 transition-all duration-300 ease-out
-                 group-hover:w-full"
-        ></span>
-      </a>
-    </li>
-  </ul>
+      <span
+        class="absolute left-0 -bottom-0.5
+               h-[1.5px] bg-black
+               transition-all duration-300 ease-out
+               {% if active_nav == 'shop' %}
+                 w-full
+               {% else %}
+                 w-0 group-hover:w-full
+               {% endif %}"
+      ></span>
+    </a>
+  </li>
+
+  <!-- Bulk Corporate Orders -->
+  <li>
+    <a
+      href="/bulk-orders/"
+      class="relative inline-block group
+             {% if active_nav == 'bulk' %}
+               font-semibold
+             {% endif %}"
+    >
+      Bulk Corporate Orders
+
+      <span
+        class="absolute left-0 -bottom-0.5
+               h-[1.5px] bg-black
+               transition-all duration-300 ease-out
+               {% if active_nav == 'bulk' %}
+                 w-full
+               {% else %}
+                 w-0 group-hover:w-full
+               {% endif %}"
+      ></span>
+    </a>
+  </li>
+
+  <!-- Track Order -->
+  <li>
+    <a
+      href="/track-order/"
+      class="relative inline-block group
+             {% if active_nav == 'track' %}
+               font-semibold
+             {% endif %}"
+    >
+      Track Order
+
+      <span
+        class="absolute left-0 -bottom-0.5
+               h-[1.5px] bg-black
+               transition-all duration-300 ease-out
+               {% if active_nav == 'track' %}
+                 w-full
+               {% else %}
+                 w-0 group-hover:w-full
+               {% endif %}"
+      ></span>
+    </a>
+  </li>
+
+</ul>
+
+
 </div>
 
 
@@ -324,98 +369,76 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-black text-white pt-16">
+<footer class="bg-black text-white">
 
-  <!-- Main Footer -->
-  <div class="max-w-[1400px] mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+  <!-- TOP SECTION -->
+  <div class="max-w-[1400px] mx-auto px-6 py-14">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
-      <!-- LEFT: Contact Info -->
-      <div class="space-y-4 text-sm leading-relaxed">
-
-        <p class="flex items-start gap-3">
-          📞 <span>+91 88815 48561 (WhatsApp only)</span>
+      <!-- Newsletter -->
+      <div>
+        <p class="text-2xl md:text-3xl font-light leading-snug tracking-tight max-w-xl">
+          Stay up to date with our latest offers and product launches & be the
+          first to get exclusive offers and sale information.
+          <span class="text-xs text-gray-400">(T&amp;C)</span>
         </p>
 
-        <p class="flex items-start gap-3">
-          📧 <span>artgiftstore@gmail.com</span>
-        </p>
+       <form id="newsletterForm"
+      class="mt-8 max-w-xl flex items-center
+             bg-white rounded-full shadow-xl
+             ring-1 ring-black/10
+             overflow-hidden">
 
-        <p class="flex items-start gap-3 font-semibold">
-          🏢 <span>ArtGift Ventures Private Limited</span>
-        </p>
+  {% csrf_token %}
 
-        <p class="flex items-start gap-3">
-          📍 <span>
-            G-157, Sector D-1, Pocket-3,  
-            TDS City, Ghaziabad,  
-            Uttar Pradesh – 201103
-          </span>
-        </p>
+  <input
+    type="email"
+    name="email"
+    required
+    placeholder="Your email"
+    class="flex-1 px-6 py-4 text-black text-base
+           placeholder-gray-400
+           outline-none bg-transparent"
+  >
 
-        <p class="flex items-start gap-3">
-          ⏰ <span>
-            Our hours of operation –<br>
-            Monday–Saturday: 10 AM – 7 PM
-          </span>
-        </p>
+  <button
+    type="submit"
+    class="mr-2 px-6 py-2.5
+           rounded-full
+           bg-black text-white
+           text-sm font-medium
+           hover:bg-gray-900
+           active:scale-[0.98]
+           transition-all duration-200"
+  >
+    Subscribe
+  </button>
+</form>
+
+
+<p id="newsletterMsg" class="mt-3 text-sm hidden"></p>
 
       </div>
 
-      <!-- MIDDLE: Quick Links -->
-      <div>
-        <h4 class="text-lg font-semibold mb-6 uppercase tracking-wide">
-          Quick Links
-        </h4>
-
-        <ul class="space-y-3 text-sm text-gray-300">
-          <li><a href="/" class="hover:text-white">Search</a></li>
-          <li><a href="/" class="hover:text-white">Bulk Corporate Orders 📦</a></li>
-          <li><a href="/" class="hover:text-white">Blog</a></li>
-          <li><a href="/" class="hover:text-white">Contact Us</a></li>
-          <li><a href="/privacy-policy" class="hover:text-white">Privacy Policy</a></li>
-          <li><a href="/return-policy" class="hover:text-white">Refund & Return Policy</a></li>
-          <li><a href="/shipping-policy" class="hover:text-white">Shipping Policy</a></li>
-          <li><a href="/terms-of-service" class="hover:text-white">Terms of Service</a></li>
-          <li><a href="#" class="hover:text-white">About Us</a></li>
-        </ul>
-      </div>
-
-      <!-- RIGHT: Newsletter -->
-      <div>
-        <h4 class="text-lg font-semibold mb-6 uppercase tracking-wide">
-          Newsletter
-        </h4>
-
-        <p class="text-sm text-gray-300 mb-4">
-          Sign up for our e-mail and be the first who knows our special offers!
-        </p>
-
-        <!-- Input -->
-        <div class="flex items-center bg-white rounded-lg overflow-hidden mb-4">
-          <span class="px-3 text-gray-500">✉️</span>
-          <input
-            type="email"
-            placeholder="Please enter your e-mail"
-            class="w-full px-3 py-3 text-black outline-none text-sm"
-          >
+      <!-- Help Links -->
+      <div class="grid grid-cols-2 gap-10 text-base">
+        <div>
+          <h4 class="text-sm font-medium tracking-widest text-gray-400 mb-5">
+            HELP
+          </h4>
+          <ul class="space-y-3 text-gray-200">
+            <li><a href="/track-order/" class="hover:text-white transition">Track my Order</a></li>
+            <li><a href="/bulk-orders/" class="hover:text-white transition">Get in Touch</a></li>
+            <li><a href="/terms-of-service/" class="hover:text-white transition">Terms of Use</a></li>
+          </ul>
         </div>
 
-        <p class="text-xs text-gray-400 mb-6">
-          By clicking the button you agree to the
-          <a href="#" class="underline hover:text-white">Privacy Policy</a>
-          and
-          <a href="#" class="underline hover:text-white">Terms and Conditions</a>.
-        </p>
-
-        <!-- Social -->
-        <div>
-          <p class="text-sm font-semibold mb-3 uppercase">
-            Follow Us:
-          </p>
-          <a href="#" class="inline-block text-2xl">
-            📷
-          </a>
+        <div class="pt-8">
+          <ul class="space-y-3 text-gray-200">
+            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition">About Us</a></li>
+            <li><a href="/return-policy/" class="hover:text-white transition">Shipping & Returns</a></li>
+          </ul>
         </div>
       </div>
 
@@ -423,14 +446,91 @@
   </div>
 
   <!-- Divider -->
-  <div class="border-t border-gray-700 mt-12"></div>
+  <div class="border-t border-gray-700"></div>
 
-  <!-- Bottom Bar -->
-  <div class="max-w-[1400px] mx-auto px-6 py-6 text-sm text-gray-400">
-    © 2025, <span class="underline text-white">ArtGift</span> All rights reserved.
+  <!-- BOTTOM SECTION -->
+  <div class="py-12 text-center px-6">
+
+    <!-- Logo -->
+    <div class="flex justify-center mb-6">
+      <a href="/" class="group">
+        {% if site_logo %}
+          <img
+            src="{{ site_logo.image.url }}"
+            alt="Art Gift"
+            class="h-10 sm:h-12 w-auto object-contain
+                   transition-transform duration-300
+                   group-hover:scale-105"
+          />
+        {% else %}
+          <img
+            src="{% static 'images/logo.png' %}"
+            alt="Art Gift"
+            class="h-10 sm:h-12 w-auto object-contain
+                   transition-transform duration-300
+                   group-hover:scale-105"
+          />
+        {% endif %}
+      </a>
+    </div>
+
+    <!-- Socials -->
+    <div class="flex justify-center gap-6 text-2xl text-gray-300 mb-6">
+      <a href="#" class="hover:text-white transition">📺</a>
+      <a href="#" class="hover:text-white transition">💬</a>
+      <a href="#" class="hover:text-white transition">📷</a>
+      <a href="#" class="hover:text-white transition">📘</a>
+      <a href="#" class="hover:text-white transition">📌</a>
+    </div>
+
+    <!-- Address -->
+    <p class="text-sm text-gray-500 font-light leading-relaxed max-w-3xl mx-auto">
+      © ARTGIFT VENTURES PRIVATE LIMITED <br>
+      G-157, Sector D-1, Pocket-3, TDS City, Ghaziabad,
+      Uttar Pradesh – 201103
+    </p>
+
+    <p class="text-sm text-gray-600 font-light mt-4">
+      © 2025 ArtGift. All Rights Reserved.
+    </p>
+
   </div>
 
 </footer>
+<script>
+document.getElementById("newsletterForm")?.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = this;
+  const msg = document.getElementById("newsletterMsg");
+
+  fetch("{% url 'subscribe_newsletter' %}", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
+    },
+    body: new FormData(form)
+  })
+  .then(res => res.json())
+  .then(data => {
+    msg.classList.remove("hidden");
+    msg.textContent = data.message;
+
+    if (data.success) {
+      msg.className = "mt-3 text-sm text-green-600";
+      form.reset();
+    } else {
+      msg.className = "mt-3 text-sm text-red-600";
+    }
+  })
+  .catch(() => {
+    msg.classList.remove("hidden");
+    msg.className = "mt-3 text-sm text-red-600";
+    msg.textContent = "Something went wrong. Try again.";
+  });
+});
+</script>
+
 <script>
   const openCart = document.getElementById('openCart');
   const closeCart = document.getElementById('closeCart');
@@ -454,39 +554,55 @@
 
 <script>
 async function refreshCart(data) {
-  // badge
+  // Badge
   document.querySelectorAll("[data-cart-count]").forEach(el => {
-    el.innerText = data.cart_count;
-    data.cart_count == 0 ? el.classList.add("hidden") : el.classList.remove("hidden");
+    el.innerText = data.cart_count || 0;
+    el.classList.toggle("hidden", data.cart_count === 0);
   });
 
-  // items
-  document.getElementById("cartItems").innerHTML =
-    data.cart_items.length
-      ? data.cart_items.map(item => `
-          <div class="flex gap-4 mb-6">
-            <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg">
-            <div class="flex-1">
-              <p class="text-sm text-gray-500">${item.category}</p>
-              <p class="font-medium">${item.title}</p>
-              <p class="text-sm mt-1">₹${item.price}</p>
+  const container = document.getElementById("cartItems");
 
-              <div class="flex items-center gap-3 mt-3">
-                <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
-                  <button onclick="decreaseCart('${item.product_id}')">−</button>
-                  <span class="px-2">${item.quantity}</span>
-                  <button onclick="increaseCart('${item.product_id}')">+</button>
-                </div>
+  if (!data.cart_items || data.cart_items.length === 0) {
+    container.innerHTML = `
+      <p class="text-center text-gray-500 mt-10">
+        Your cart is empty.
+      </p>
+    `;
+    document.getElementById("cartTotal").innerText = "₹0";
+    return;
+  }
 
-                <button onclick="removeFromCart('${item.product_id}')">🗑️</button>
-              </div>
-            </div>
+  container.innerHTML = data.cart_items.map(item => `
+    <div class="flex gap-4 mb-6">
+      <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg">
+
+      <div class="flex-1">
+        <p class="text-sm text-gray-500">${item.category}</p>
+        <p class="font-medium">${item.title}</p>
+        <p class="text-sm mt-1">₹${item.price}</p>
+
+        <div class="flex items-center gap-3 mt-3">
+          <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
+            <button onclick="decreaseCart('${item.product_id}')">−</button>
+            <span class="px-2">${item.quantity}</span>
+            <button onclick="increaseCart('${item.product_id}')">+</button>
           </div>
-        `).join("")
-      : `<p class="text-center text-gray-500 mt-10">Your cart is empty.</p>`;
+
+          <button
+            onclick="removeFromCart('${item.product_id}')"
+            class="text-gray-400 hover:text-black"
+            title="Remove"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join("");
 
   document.getElementById("cartTotal").innerText = "₹" + data.cart_total;
 }
+
 
 async function addToCart(productId, btn=null) {
   if (btn) {
@@ -507,9 +623,15 @@ async function addToCart(productId, btn=null) {
 }
 
 async function increaseCart(productId) {
-  const res = await fetch(`/cart/add/${productId}/`);
-  refreshCart(await res.json());
+  try {
+    const res = await fetch(`/cart/add/${productId}/`);
+    if (!res.ok) throw new Error("Failed to increase");
+    refreshCart(await res.json());
+  } catch (e) {
+    console.error(e);
+  }
 }
+
 
 async function decreaseCart(productId) {
   const res = await fetch(`/cart/decrease/${productId}/`);
@@ -526,6 +648,85 @@ async function removeFromCart(productId) {
 function getCSRFToken() {
   return document.querySelector('[name=csrfmiddlewaretoken]').value;
 }
+</script>
+<script>
+  window.SEARCH_CATEGORIES = [
+    {% for category in categories %}
+      "{{ category.name }}",
+    {% endfor %}
+  ];
+</script>
+<script>
+(function () {
+  const input = document.getElementById("searchInput");
+  if (!input) return;
+
+  // ✅ Fallback words if no categories exist
+  const DEFAULT_WORDS = [
+    "products",
+    "custom gifts",
+    "phone cases",
+    "personalized items",
+  ];
+
+  const words =
+    Array.isArray(window.SEARCH_CATEGORIES) &&
+    window.SEARCH_CATEGORIES.length > 0
+      ? window.SEARCH_CATEGORIES
+      : DEFAULT_WORDS;
+
+  let wordIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  const TYPE_SPEED = 90;
+  const DELETE_SPEED = 50;
+  const HOLD_AFTER_TYPE = 1200;
+  const HOLD_AFTER_DELETE = 400;
+
+  function typeEffect() {
+    const currentWord = words[wordIndex];
+    const visibleText = currentWord.slice(0, charIndex);
+
+    input.placeholder = "Search " + visibleText;
+
+    if (!isDeleting) {
+      if (charIndex < currentWord.length) {
+        charIndex++;
+        setTimeout(typeEffect, TYPE_SPEED);
+      } else {
+        setTimeout(() => {
+          isDeleting = true;
+          typeEffect();
+        }, HOLD_AFTER_TYPE);
+      }
+    } else {
+      if (charIndex > 0) {
+        charIndex--;
+        setTimeout(typeEffect, DELETE_SPEED);
+      } else {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+        setTimeout(typeEffect, HOLD_AFTER_DELETE);
+      }
+    }
+  }
+
+  // Start animation
+  setTimeout(typeEffect, 700);
+
+  // 🧠 UX: stop animation when user types
+  input.addEventListener("input", () => {
+    input.placeholder = "Search products";
+  });
+
+})();
+</script>
+<script>
+window.addToCart = addToCart;
+window.increaseCart = increaseCart;
+window.decreaseCart = decreaseCart;
+window.removeFromCart = removeFromCart;
 </script>
 
 

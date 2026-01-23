@@ -15,8 +15,7 @@ urlpatterns = [
     # 🛒 CART (AJAX)
     path('cart/', include('cart.urls')),
 
-    # 💳 CHECKOUT / ORDERS
-    path('checkout/', include('orders.urls')),
+    path('', include('orders.urls')),
 ]
 
 if settings.DEBUG:

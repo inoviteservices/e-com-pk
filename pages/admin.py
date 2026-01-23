@@ -6,6 +6,7 @@ from .models import (
     SiteAnnouncement,
     HeroSlide,
     CustomerReview,
+    NewsletterSubscriber,   # ✅ NEW
 )
 
 # ------------------------
@@ -76,3 +77,23 @@ class CustomerReviewAdmin(admin.ModelAdmin):
             )
         return "—"
     photo_preview.short_description = "Photo"
+
+
+# ------------------------
+# NEWSLETTER SUBSCRIBERS ✅
+# ------------------------
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ("email", "subscribed_at")
+    search_fields = ("email",)
+    ordering = ("-subscribed_at",)
+
+    def has_change_permission(self, request, obj=None):
+        return False  # emails should not be edited
+
+    def has_add_permission(self, request):
+        return False  # added only via site
+
+    def has_delete_permission(self, request, obj=None):
+        return True   # allow cleanup

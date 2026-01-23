@@ -5,7 +5,7 @@ from django.contrib import admin
 admin.site.site_header = "ART GIFT"
 admin.site.site_title = "artgift"
 # admin.site.index_title = "artgift dashboard"
-from .models import Order, OrderItem
+from .models import Order, OrderItem, BulkOrder
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -16,3 +16,9 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'payment_type', 'status', 'total_amount', 'created_at')
     list_filter = ('payment_type', 'status')
     inlines = [OrderItemInline]
+
+
+@admin.register(BulkOrder)
+class BulkOrderAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "phone", "created_at")
+    search_fields = ("name", "email", "phone")

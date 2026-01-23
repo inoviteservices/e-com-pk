@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Bulk Corporate Orders | ArtGift{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-white flex flex-col items-center justify-center px-4">
+
+  <h1 class="text-3xl sm:text-4xl font-semibold mb-10 flex items-center gap-2">
+    Bulk Corporate Orders 📦
+  </h1>
+
+  <div class="w-full max-w-xl">
+
+    {% if success %}
+      <div class="bg-green-50 text-green-700 p-4 rounded-lg mb-6 text-center">
+        Thank you! Our team will contact you shortly.
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Name + Email -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          required
+          class="w-full bg-gray-50 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-black"
+        >
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          class="w-full bg-gray-50 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-black"
+        >
+      </div>
+
+      <!-- Phone -->
+      <input
+        type="text"
+        name="phone"
+        placeholder="Phone number"
+        required
+        class="w-full bg-gray-50 px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-black"
+      >
+
+      <!-- Message -->
+      <textarea
+        name="message"
+        rows="5"
+        placeholder="Comment"
+        required
+        class="w-full bg-gray-50 px-4 py-3 rounded-lg outline-none resize-none focus:ring-2 focus:ring-black"
+      ></textarea>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="w-full bg-black text-white py-3 rounded-lg text-sm font-medium hover:bg-gray-900 transition"
+      >
+        Submit
+      </button>
+    </form>
+
+  </div>
+</section>
+{% endblock %}

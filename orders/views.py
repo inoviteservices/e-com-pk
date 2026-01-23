@@ -4,7 +4,7 @@ from django.core.files.base import ContentFile
 import base64
 
 from cart.cart import Cart
-from .models import Order, OrderItem
+from .models import Order, OrderItem, BulkOrder
 
 
 @login_required
@@ -63,3 +63,21 @@ def checkout_cod(request):
             "total": cart.get_total_price(),
         }
     )
+
+
+def bulk_order_view(request):
+    context = {
+        "active_nav": "bulk",  # 🔥 required for navbar underline
+    }
+    if request.method == "POST":
+        BulkOrder.objects.create(
+            name=request.POST.get("name"),
+            email=request.POST.get("email"),
+            phone=request.POST.get("phone"),
+            message=request.POST.get("message"),
+        )
+        return render(request, "orders/bulk_order.html", {
+            "success": True,
+        })
+
+    return render(request, "orders/bulk_order.html")
