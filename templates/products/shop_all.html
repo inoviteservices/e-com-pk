@@ -10,10 +10,9 @@
 
 {% block content %}
 
-<section class="bg-[#fafaf0]">
 
-  <!-- Container -->
-  <div class="max-w-[1400px] mx-auto px-6 py-6 sm:py-8">
+<section class="bg-[#fafaf0]">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <!-- Breadcrumb -->
     <p class="text-sm text-gray-500 mb-2">
@@ -24,165 +23,177 @@
 
     <!-- Title -->
     <h1 class="text-3xl sm:text-4xl font-semibold mb-4">
-      {% if active_category %}
-        {{ active_category|title }}
-      {% else %}
-        All Products
-      {% endif %}
+      {% if active_category %}{{ active_category|title }}{% else %}All Products{% endif %}
     </h1>
 
     <!-- Category Tabs -->
-    <div
-      class="flex gap-6 border-b border-gray-300
-             mb-6 text-base sm:text-lg
-             overflow-x-auto scrollbar-hide"
-    >
-
-      <!-- All -->
-      <a
-        href="{% url 'shop_all' %}"
-        class="pb-2 whitespace-nowrap transition
-               {% if not active_category %}
-                 border-b-2 border-black font-medium text-black
-               {% else %}
-                 text-gray-500 hover:text-black
-               {% endif %}"
-      >
+    <div class="flex gap-6 border-b border-gray-300 mb-6 overflow-x-auto scrollbar-hide">
+      <a href="{% url 'shop_all' %}"
+         class="pb-2 whitespace-nowrap transition
+                {% if not active_category %}
+                  border-b-2 border-black font-medium text-black
+                {% else %}
+                  text-gray-500 hover:text-black
+                {% endif %}">
         All
       </a>
-
       {% for category in categories %}
-        <a
-          href="?category={{ category.slug }}"
-          class="pb-2 whitespace-nowrap transition
-                 {% if active_category == category.slug %}
-                   border-b-2 border-black font-medium text-black
-                 {% else %}
-                   text-gray-500 hover:text-black
-                 {% endif %}"
-        >
+        <a href="?category={{ category.slug }}"
+           class="pb-2 whitespace-nowrap transition
+                  {% if active_category == category.slug %}
+                    border-b-2 border-black font-medium text-black
+                  {% else %}
+                    text-gray-500 hover:text-black
+                  {% endif %}">
           {{ category.name }}
         </a>
       {% endfor %}
     </div>
 
     <!-- Products Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-cols-4 gap-5">
 
       {% for product in products %}
-      <div
-        class="group bg-white rounded-xl overflow-hidden
-               shadow-sm hover:shadow-md transition
-               flex flex-col h-full"
-      >
+      <div class="bg-white rounded-xl overflow-hidden
+                  border-0 sm:border sm:border-gray-200
+                  shadow-[0_0.5px_1px_rgba(0,0,0,0.08)] sm:shadow-none
+                  flex flex-col">
 
-        <!-- Image -->
+        <!-- IMAGE -->
         <a href="{% url 'product_detail' product.slug %}">
-          <div class="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+          <div class="relative aspect-[4/5] bg-gray-100 overflow-hidden flex items-center justify-center">
+
+            <!-- SHARK TANK BAR (SMALLER ON MOBILE) -->
+            {% if site_announcement %}
+              <div class="absolute top-0 left-0 w-full
+                          h-5 sm:h-7
+                          bg-black text-white
+                          text-[9px] sm:text-xs
+                          flex items-center justify-center
+                          font-medium z-20">
+                {{ site_announcement.text }}
+              </div>
+            {% endif %}
+
             {% if product.image %}
               <img
                 src="{{ product.image.url }}"
                 alt="{{ product.title }}"
-                class="w-full h-full object-cover
-                       group-hover:scale-105 transition-transform duration-300"
-              >
+                class="max-w-full max-h-full object-contain">
             {% endif %}
 
+            <!-- % OFF -->
             {% if product.compare_at_price %}
-              <span
-                class="absolute top-2 left-2 bg-blue-500 text-white
-                       text-xs px-2 py-1 rounded discount-badge"
-                data-price="{{ product.price }}"
-                data-compare="{{ product.compare_at_price }}"
-              >
+              <span class="absolute top-7 sm:top-9 left-2
+                           bg-blue-500 text-white
+                           text-[10px] sm:text-xs
+                           px-2 py-1 rounded discount-badge"
+                    data-price="{{ product.price }}"
+                    data-compare="{{ product.compare_at_price }}">
               </span>
             {% endif %}
 
+            <!-- CUSTOM -->
             {% if product.requires_custom_image %}
-              <span
-                class="absolute top-2 right-2
-                       bg-black text-white
-                       text-[10px] px-2 py-1 rounded"
-              >
+              <span class="absolute top-7 sm:top-9 right-2
+                           bg-black text-white
+                           text-[10px] px-2 py-1 rounded">
                 CUSTOM
               </span>
             {% endif %}
+
           </div>
         </a>
 
-        <!-- Content -->
-        <div class="p-3 flex flex-col flex-1">
+        <!-- CONTENT -->
+        <div class="p-4 flex flex-col flex-1">
 
-          <!-- Title -->
-          <a href="{% url 'product_detail' product.slug %}">
-            <h3 class="text-sm sm:text-base font-medium mb-2 line-clamp-2">
-              {{ product.title }}
-            </h3>
-          </a>
+          <!-- TITLE -->
+          <h3 class="text-sm sm:text-base font-semibold mb-2 line-clamp-2">
+            {{ product.title }}
+          </h3>
 
-          <!-- Price -->
-          <div class="flex items-center gap-2 text-sm mb-4">
-            <span class="font-semibold">
-              ₹{{ product.price }}
-            </span>
-
-            {% if product.compare_at_price %}
-              <span class="text-gray-400 line-through">
-                ₹{{ product.compare_at_price }}
-              </span>
-            {% endif %}
+          <!-- RATING -->
+          <div class="flex items-center gap-2 text-sm mb-3">
+            <span class="text-blue-500 text-lg leading-none">★</span>
+            <span class="text-gray-800 font-medium">4.5/5</span>
+            <span class="text-gray-400">- 5769</span>
           </div>
 
-          <!-- Button -->
+          <!-- CTA -->
           <div class="mt-auto">
+
             {% if product.requires_custom_image %}
-              <a
-                href="{% url 'product_detail' product.slug %}"
-                class="block w-full text-center
-                       bg-black text-white
-                       py-2 rounded-lg
-                       text-sm font-medium
-                       hover:bg-gray-900 transition"
-              >
-                Customize
+              <a href="{% url 'product_detail' product.slug %}"
+                 class="w-full flex items-center justify-between
+                        bg-black text-white
+                        py-3 px-4 rounded-lg
+                        text-sm font-medium">
+                <span>Customize</span>
+                <span class="flex items-center gap-1 text-xs text-gray-300">
+                  <!-- before price hidden on mobile -->
+                  {% if product.compare_at_price %}
+                    <span class="hidden lg:inline line-through">
+                      ₹{{ product.compare_at_price|floatformat:0 }}
+                    </span>
+                  {% endif %}
+                  <span class="font-semibold text-white">
+                    ₹{{ product.price|floatformat:0 }}
+                  </span>
+                </span>
               </a>
             {% else %}
-              <button
-                onclick="addToCart({{ product.id }})"
-                class="w-full bg-blue-500 text-white
-                       py-2 rounded-lg
-                       text-sm font-medium
-                       hover:bg-blue-600 transition"
-              >
-                Add
+              <!-- MOBILE CTA (NO BEFORE PRICE) -->
+              <button onclick="addToCart({{ product.id }})"
+                      class="lg:hidden w-full
+                             flex items-center justify-between
+                             bg-blue-400 text-white
+                             px-4 py-2.5 rounded-md
+                             text-sm font-semibold">
+                <span>Add</span>
+                <span class="text-xs font-semibold">
+                  ₹{{ product.price|floatformat:0 }}
+                </span>
+              </button>
+
+              <!-- DESKTOP CTA -->
+              <button onclick="addToCart({{ product.id }})"
+                      class="hidden lg:flex w-full items-center justify-center
+                             bg-blue-400 text-white
+                             py-3 rounded-lg
+                             text-sm font-medium">
+                <span>Add To Cart</span>
+                <span class="flex items-center gap-1 text-xs text-white/90 ml-3">
+                  {% if product.compare_at_price %}
+                    <span class="line-through">
+                      ₹{{ product.compare_at_price|floatformat:0 }}
+                    </span>
+                  {% endif %}
+                  <span class="font-semibold">
+                    ₹{{ product.price|floatformat:0 }}
+                  </span>
+                </span>
               </button>
             {% endif %}
+
           </div>
 
         </div>
       </div>
-      {% empty %}
-        <p class="text-gray-500 col-span-full">
-          No products found.
-        </p>
       {% endfor %}
 
     </div>
-
   </div>
 </section>
 
-<!-- Discount % JS -->
+
+<!-- DISCOUNT % -->
 <script>
   document.querySelectorAll(".discount-badge").forEach(badge => {
     const price = parseFloat(badge.dataset.price);
     const compare = parseFloat(badge.dataset.compare);
-
-    if (!isNaN(price) && !isNaN(compare) && compare > price) {
-      const percent = Math.round(((compare - price) / compare) * 100);
-      badge.innerText = percent + "% OFF";
-    } else {
-      badge.remove();
+    if (compare > price) {
+      badge.innerText = Math.round(((compare - price) / compare) * 100) + "% OFF";
     }
   });
 </script>
