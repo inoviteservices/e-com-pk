@@ -11,7 +11,6 @@
 
     <!-- LEFT: PRODUCT IMAGE -->
     <div class="border rounded-xl overflow-hidden bg-white flex items-center justify-center">
-
       {% if product.image %}
         <img
           src="{{ product.image.url }}"
@@ -23,7 +22,6 @@
           No image available
         </div>
       {% endif %}
-
     </div>
 
     <!-- RIGHT: PRODUCT INFO -->
@@ -33,6 +31,7 @@
         {{ product.title }}
       </h1>
 
+      <!-- PRICE -->
       <div class="mb-6">
         {% if product.compare_at_price %}
           <span class="line-through text-gray-400 mr-2">
@@ -45,13 +44,12 @@
         <p class="text-sm text-gray-500 mt-1">Tax included.</p>
       </div>
 
-      <!-- CUSTOM ORDER FORM -->
+      <!-- CUSTOM / NORMAL ORDER FORM -->
       <form id="customOrderForm" enctype="multipart/form-data">
-  {% csrf_token %}
+        {% csrf_token %}
 
-
-        {# 🔥 ONLY SHOW IF REQUIRED #}
         {% if product.requires_custom_image %}
+          <!-- CUSTOM IMAGE -->
           <label class="block font-medium mb-2">
             Upload your Image <span class="text-red-500">*</span>
           </label>
@@ -63,11 +61,13 @@
             required
             class="w-full border rounded-lg px-4 py-2 mb-4"
           >
-          <p class="text-xs text-gray-500">
+
+          <p class="text-xs text-gray-500 mb-4">
             JPG or PNG • Max 5MB • Min 300×300 px
           </p>
         {% endif %}
 
+        <!-- MESSAGE -->
         <label class="block font-medium mb-2">
           Special Message
         </label>
@@ -80,23 +80,31 @@
         >
 
         {% if product.requires_custom_image %}
-  <button
-    type="button"
-    onclick="addCustomToCart({{ product.id }})"
-    class="w-full bg-black text-white py-4 rounded-lg text-lg"
-  >
-    🛒 Add to cart
-  </button>
-{% else %}
-  <button
-    type="button"
-    onclick="addToCart({{ product.id }})"
-    class="w-full bg-black text-white py-4 rounded-lg text-lg"
-  >
-    🛒 Add to cart
-  </button>
-{% endif %}
+          <!-- CUSTOM ADD -->
+          <button
+            type="button"
+            onclick="addCustomToCart({{ product.id }})"
+            class="w-full bg-black text-white py-4 rounded-lg text-lg
+                   hover:bg-gray-900 transition"
+          >
+            🛒 Add to cart
+          </button>
+        {% else %}
+          <!-- NORMAL ADD -->
+          <button
+            type="button"
+            onclick="addToCart({{ product.id }})"
+            class="w-full bg-black text-white py-4 rounded-lg text-lg
+                   hover:bg-gray-900 transition"
+          >
+            🛒 Add to cart
+          </button>
 
+          <!-- SOCIAL PROOF -->
+          <p class="text-sm text-gray-600 mt-3">
+            🔥 {{ interest_count }} people have this in their cart
+          </p>
+        {% endif %}
 
       </form>
 
@@ -106,6 +114,7 @@
 
 </section>
 
+<!-- CUSTOM PRODUCT ADD -->
 <script>
 function addCustomToCart(productId) {
   const form = document.getElementById("customOrderForm");
@@ -115,19 +124,28 @@ function addCustomToCart(productId) {
     method: "POST",
     body: formData,
     headers: {
-  "X-CSRFToken": getCSRFToken()
-}
-
+      "X-CSRFToken": getCSRFToken()
+    }
   })
   .then(res => res.json())
   .then(data => {
     if (data.error) {
       alert(data.error);
     } else {
-      location.reload();
+      // ✅ RESET FORM (THIS IS THE FIX)
+      form.reset();
+
+      // optional safety: manually clear file input (Safari edge case)
+      const fileInput = form.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+
+      refreshCart(data);
+      openDrawer();
+      showCartToast("Custom product added 🖼️");
     }
   });
 }
 </script>
+
 
 {% endblock %}

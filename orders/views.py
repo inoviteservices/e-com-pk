@@ -8,7 +8,7 @@ from .models import Order, OrderItem, BulkOrder
 
 
 @login_required
-def checkout_cod(request):
+def checkout(request):
     cart = Cart(request)
 
     if cart.count() == 0:
@@ -57,7 +57,7 @@ def checkout_cod(request):
 
     return render(
         request,
-        "orders/checkout_cod.html",
+        "orders/checkout.html",
         {
             "cart_items": cart.get_items(),
             "total": cart.get_total_price(),

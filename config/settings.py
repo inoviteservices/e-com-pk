@@ -86,6 +86,8 @@ TEMPLATES = [
                 # 'pages.context_processors.site_logo',
                 # 🔥 NEW — SITE Announcement (GLOBAL)
                 "pages.context_processors.site_globals",
+                "cart.context_processors.cart_context",
+                "products.context_processors.categories_context",
             ],
         },
     },

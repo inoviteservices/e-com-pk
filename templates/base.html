@@ -101,7 +101,7 @@
 
 
 
-      <!-- Cart Button --><!-- Cart Button -->
+      <!-- Cart Button -->
 <button
   id="openCart"
   class="relative flex items-center justify-center
@@ -122,16 +122,18 @@
   </svg>
 
   {% if cart_count > 0 %}
-  <span
-    class="absolute -top-1 -right-1
-           bg-black text-white
-           text-[10px] px-1.5 py-0.5
-           rounded-full
-           min-w-[18px] text-center"
-  >
-    {{ cart_count }}
-  </span>
-  {% endif %}
+<span
+  data-cart-count
+  class="absolute -top-1 -right-1
+         bg-black text-white
+         text-[10px] px-1.5 py-0.5
+         rounded-full
+         min-w-[18px] text-center"
+>
+  {{ cart_count }}
+</span>
+{% endif %}
+
 </button>
 
 
@@ -171,11 +173,56 @@
       <div class="flex gap-4 mb-6">
 
         <!-- Image -->
-        <img
-          src="{{ item.image }}"
-          class="w-20 h-20 object-cover rounded-lg"
-          alt="{{ item.title }}"
-        >
+        <!-- Image Wrapper -->
+<div class="relative w-20 h-20 flex-shrink-0">
+
+  {% if item.custom_image %}
+    <!-- IMAGE STACK -->
+    <div class="relative w-full h-full overflow-hidden rounded-lg">
+
+      <!-- Product Image -->
+      <img
+        src="{{ item.image }}"
+        class="absolute inset-0 w-full h-full object-cover
+               transition-opacity duration-300
+               cart-img-product-{{ item.cart_key }}"
+      >
+
+      <!-- Custom Image -->
+      <img
+        src="/media/{{ item.custom_image }}"
+        class="absolute inset-0 w-full h-full object-cover
+               opacity-0 transition-opacity duration-300
+               cart-img-custom-{{ item.cart_key }}"
+      >
+    </div>
+
+    <!-- TOGGLE DOTS -->
+    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2
+                flex gap-1 bg-white/90 px-1.5 py-0.5 rounded-full shadow">
+
+      <button
+        class="w-1.5 h-1.5 rounded-full bg-black"
+        onclick="showCartImage('{{ item.cart_key }}', 'product')"
+      ></button>
+
+      <button
+        class="w-1.5 h-1.5 rounded-full bg-gray-400"
+        onclick="showCartImage('{{ item.cart_key }}', 'custom')"
+      ></button>
+    </div>
+
+  {% else %}
+    <!-- NORMAL PRODUCT -->
+    <img
+      src="{{ item.image }}"
+      class="w-20 h-20 object-cover rounded-lg"
+      alt="{{ item.title }}"
+    >
+  {% endif %}
+
+</div>
+
 
         <div class="flex-1">
           <p class="text-sm text-gray-500">
@@ -195,14 +242,15 @@
             <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
 
               <button
-                onclick="decreaseCart('{{ item.product_id }}')"
+                onclick="decreaseCart('{{ item.cart_key }}')"
                 class="px-2"
               >−</button>
 
               <span class="px-2">{{ item.quantity }}</span>
 
               <button
-                onclick="increaseCart('{{ item.product_id }}')"
+                onclick="increaseCart('{{ item.cart_key }}')"
+
                 class="px-2"
               >+</button>
 
@@ -210,7 +258,7 @@
             
             <!-- Remove -->
             <button
-              onclick="removeFromCart('{{ item.product_id }}')"
+              onclick="removeFromCart('{{ item.cart_key }}')"
               class="text-gray-400 hover:text-black"
               title="Remove item"
             >
@@ -249,18 +297,15 @@
 <div class="border-t px-6 py-4">
   <div class="flex justify-between text-sm mb-3">
     <span>Subtotal</span>
-    <span>₹{{ cart_total }}</span>
+    <span data-cart-total>₹{{ cart_total }}</span>
+
   </div>
-  <a href="{% url 'checkout_cod' %}"
+  <a href="{% url 'checkout' %}"
    class="block w-full bg-black text-white text-center py-3 rounded-lg mt-4">
-  Checkout (COD)
+  Checkout
 </a>
 
-  <!-- <a
-    class="block w-full text-center bg-black text-white py-3 rounded-lg font-medium"
-  >
-    Proceed to Checkout
-  </a> -->
+  
 </div>
 
 
@@ -497,70 +542,77 @@
   </div>
 
 </footer>
-<script>
-document.getElementById("newsletterForm")?.addEventListener("submit", function (e) {
-  e.preventDefault();
 
-  const form = this;
-  const msg = document.getElementById("newsletterMsg");
 
-  fetch("{% url 'subscribe_newsletter' %}", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
-    },
-    body: new FormData(form)
-  })
-  .then(res => res.json())
-  .then(data => {
-    msg.classList.remove("hidden");
-    msg.textContent = data.message;
-
-    if (data.success) {
-      msg.className = "mt-3 text-sm text-green-600";
-      form.reset();
-    } else {
-      msg.className = "mt-3 text-sm text-red-600";
-    }
-  })
-  .catch(() => {
-    msg.classList.remove("hidden");
-    msg.className = "mt-3 text-sm text-red-600";
-    msg.textContent = "Something went wrong. Try again.";
-  });
-});
-</script>
+<!-- =========================
+   CART TOAST (GLOBAL)
+========================= -->
+<div
+  id="cartToast"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2
+         bg-black text-white
+         px-5 py-3 rounded-xl shadow-lg
+         text-sm font-medium
+         opacity-0 pointer-events-none
+         transition-all duration-300 z-[9999]"
+></div>
 
 <script>
-  const openCart = document.getElementById('openCart');
-  const closeCart = document.getElementById('closeCart');
-  const cartDrawer = document.getElementById('cartDrawer');
-  const cartOverlay = document.getElementById('cartOverlay');
+/* =========================
+   UTILITIES
+========================= */
+function getCSRFToken() {
+  return document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+}
 
-  function openDrawer() {
-    cartDrawer.classList.remove('translate-x-full');
-    cartOverlay.classList.remove('hidden');
-  }
+function showCartToast(message = "Added to cart 🛒") {
+  const toast = document.getElementById("cartToast");
+  if (!toast) return;
 
-  function closeDrawer() {
-    cartDrawer.classList.add('translate-x-full');
-    cartOverlay.classList.add('hidden');
-  }
+  toast.textContent = message;
+  toast.classList.remove("opacity-0");
+  toast.classList.add("opacity-100");
 
-  openCart.addEventListener('click', openDrawer);
-  closeCart.addEventListener('click', closeDrawer);
-  cartOverlay.addEventListener('click', closeDrawer);
-</script>
+  setTimeout(() => {
+    toast.classList.remove("opacity-100");
+    toast.classList.add("opacity-0");
+  }, 2200);
+}
 
-<script>
+/* =========================
+   CART DRAWER
+========================= */
+const openCart = document.getElementById("openCart");
+const closeCart = document.getElementById("closeCart");
+const cartDrawer = document.getElementById("cartDrawer");
+const cartOverlay = document.getElementById("cartOverlay");
+
+function openDrawer() {
+  cartDrawer?.classList.remove("translate-x-full");
+  cartOverlay?.classList.remove("hidden");
+}
+
+function closeDrawer() {
+  cartDrawer?.classList.add("translate-x-full");
+  cartOverlay?.classList.add("hidden");
+}
+
+openCart?.addEventListener("click", openDrawer);
+closeCart?.addEventListener("click", closeDrawer);
+cartOverlay?.addEventListener("click", closeDrawer);
+
+/* =========================
+   CART UI UPDATE
+========================= */
 async function refreshCart(data) {
-  // Badge
+  // Cart badge
   document.querySelectorAll("[data-cart-count]").forEach(el => {
     el.innerText = data.cart_count || 0;
-    el.classList.toggle("hidden", data.cart_count === 0);
+    el.classList.toggle("hidden", !data.cart_count);
   });
 
   const container = document.getElementById("cartItems");
+  const totalEl = document.querySelector("[data-cart-total]");
 
   if (!data.cart_items || data.cart_items.length === 0) {
     container.innerHTML = `
@@ -568,28 +620,71 @@ async function refreshCart(data) {
         Your cart is empty.
       </p>
     `;
-    document.getElementById("cartTotal").innerText = "₹0";
+    if (totalEl) totalEl.innerText = "₹0";
     return;
   }
 
   container.innerHTML = data.cart_items.map(item => `
     <div class="flex gap-4 mb-6">
-      <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg">
 
+      <!-- IMAGE -->
+      <div class="relative w-20 h-20 flex-shrink-0">
+
+        ${
+          item.custom_image
+            ? `
+              <div class="relative w-full h-full overflow-hidden rounded-lg">
+                <img
+                  src="${item.image}"
+                  class="absolute inset-0 w-full h-full object-cover
+                         transition-opacity duration-300
+                         cart-img-product-${item.cart_key}"
+                >
+                <img
+                  src="/media/${item.custom_image}"
+                  class="absolute inset-0 w-full h-full object-cover
+                         opacity-0 transition-opacity duration-300
+                         cart-img-custom-${item.cart_key}"
+                >
+              </div>
+
+              <div class="absolute -bottom-2 left-1/2 -translate-x-1/2
+                          flex gap-1 bg-white/90 px-1.5 py-0.5 rounded-full shadow">
+                <button
+                  class="w-1.5 h-1.5 rounded-full bg-black"
+                  onclick="showCartImage('${item.cart_key}','product')"
+                ></button>
+                <button
+                  class="w-1.5 h-1.5 rounded-full bg-gray-400"
+                  onclick="showCartImage('${item.cart_key}','custom')"
+                ></button>
+              </div>
+            `
+            : `
+              <img
+                src="${item.image}"
+                class="w-20 h-20 object-cover rounded-lg"
+              >
+            `
+        }
+
+      </div>
+
+      <!-- INFO -->
       <div class="flex-1">
-        <p class="text-sm text-gray-500">${item.category}</p>
-        <p class="font-medium">${item.title}</p>
+        <p class="text-sm text-gray-500">${item.category || ""}</p>
+        <p class="font-medium leading-snug">${item.title}</p>
         <p class="text-sm mt-1">₹${item.price}</p>
 
         <div class="flex items-center gap-3 mt-3">
           <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
-            <button onclick="decreaseCart('${item.product_id}')">−</button>
+            <button onclick="decreaseCart('${item.cart_key}')">−</button>
             <span class="px-2">${item.quantity}</span>
-            <button onclick="increaseCart('${item.product_id}')">+</button>
+            <button onclick="increaseCart('${item.cart_key}')">+</button>
           </div>
 
           <button
-            onclick="removeFromCart('${item.product_id}')"
+            onclick="removeFromCart('${item.cart_key}')"
             class="text-gray-400 hover:text-black"
             title="Remove"
           >
@@ -600,137 +695,137 @@ async function refreshCart(data) {
     </div>
   `).join("");
 
-  document.getElementById("cartTotal").innerText = "₹" + data.cart_total;
+  if (totalEl) totalEl.innerText = "₹" + data.cart_total;
 }
 
-
-async function addToCart(productId, btn=null) {
-  if (btn) {
-    btn.disabled = true;
-    btn.innerText = "Adding...";
-  }
-
-  const res = await fetch(`/cart/add/${productId}/`);
+/* =========================
+   CART ACTIONS
+========================= */
+async function addToCart(id) {
+  const res = await fetch(`/cart/add/${id}/`);
   const data = await res.json();
-
   refreshCart(data);
   openDrawer();
-
-  if (btn) {
-    btn.disabled = false;
-    btn.innerText = "Add to cart";
-  }
+  showCartToast("Added to cart 🛒");
 }
 
-async function increaseCart(productId) {
+async function increaseCart(id) {
+  const res = await fetch(`/cart/add/${id}/`);
+  const data = await res.json();
+  refreshCart(data);
+  showCartToast("Quantity increased ➕");
+}
+
+async function decreaseCart(id) {
+  const res = await fetch(`/cart/decrease/${id}/`);
+  const data = await res.json();
+  refreshCart(data);
+  showCartToast("Quantity decreased ➖");
+}
+
+async function removeFromCart(cartKey) {
   try {
-    const res = await fetch(`/cart/add/${productId}/`);
-    if (!res.ok) throw new Error("Failed to increase");
-    refreshCart(await res.json());
-  } catch (e) {
-    console.error(e);
+    const res = await fetch(`/cart/remove/${cartKey}/`);
+    const data = await res.json();
+
+    refreshCart(data);
+    showCartToast("Removed from cart 🗑️");
+  } catch (err) {
+    console.error("Remove failed", err);
+    showCartToast("Failed to remove item ❌");
   }
 }
 
 
-async function decreaseCart(productId) {
-  const res = await fetch(`/cart/decrease/${productId}/`);
-  refreshCart(await res.json());
-}
-
-async function removeFromCart(productId) {
-  const res = await fetch(`/cart/remove/${productId}/`);
-  refreshCart(await res.json());
-}
-</script>
-
-<script>
-function getCSRFToken() {
-  return document.querySelector('[name=csrfmiddlewaretoken]').value;
-}
-</script>
-<script>
-  window.SEARCH_CATEGORIES = [
-    {% for category in categories %}
-      "{{ category.name }}",
-    {% endfor %}
-  ];
-</script>
-<script>
-(function () {
-  const input = document.getElementById("searchInput");
-  if (!input) return;
-
-  // ✅ Fallback words if no categories exist
-  const DEFAULT_WORDS = [
-    "products",
-    "custom gifts",
-    "phone cases",
-    "personalized items",
-  ];
-
-  const words =
-    Array.isArray(window.SEARCH_CATEGORIES) &&
-    window.SEARCH_CATEGORIES.length > 0
-      ? window.SEARCH_CATEGORIES
-      : DEFAULT_WORDS;
-
-  let wordIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-
-  const TYPE_SPEED = 90;
-  const DELETE_SPEED = 50;
-  const HOLD_AFTER_TYPE = 1200;
-  const HOLD_AFTER_DELETE = 400;
-
-  function typeEffect() {
-    const currentWord = words[wordIndex];
-    const visibleText = currentWord.slice(0, charIndex);
-
-    input.placeholder = "Search " + visibleText;
-
-    if (!isDeleting) {
-      if (charIndex < currentWord.length) {
-        charIndex++;
-        setTimeout(typeEffect, TYPE_SPEED);
-      } else {
-        setTimeout(() => {
-          isDeleting = true;
-          typeEffect();
-        }, HOLD_AFTER_TYPE);
-      }
-    } else {
-      if (charIndex > 0) {
-        charIndex--;
-        setTimeout(typeEffect, DELETE_SPEED);
-      } else {
-        isDeleting = false;
-        wordIndex = (wordIndex + 1) % words.length;
-        setTimeout(typeEffect, HOLD_AFTER_DELETE);
-      }
-    }
-  }
-
-  // Start animation
-  setTimeout(typeEffect, 700);
-
-  // 🧠 UX: stop animation when user types
-  input.addEventListener("input", () => {
-    input.placeholder = "Search products";
-  });
-
-})();
-</script>
-<script>
 window.addToCart = addToCart;
 window.increaseCart = increaseCart;
 window.decreaseCart = decreaseCart;
 window.removeFromCart = removeFromCart;
+
+/* =========================
+   IMAGE TOGGLE (CUSTOM)
+========================= */
+function showCartImage(productId, type) {
+  const productImg = document.querySelector(`.cart-img-product-${productId}`);
+  const customImg = document.querySelector(`.cart-img-custom-${productId}`);
+  if (!productImg || !customImg) return;
+
+  productImg.style.opacity = type === "product" ? "1" : "0";
+  customImg.style.opacity = type === "custom" ? "1" : "0";
+}
+
+/* =========================
+   SEARCH PLACEHOLDER TYPE
+========================= */
+(function () {
+  const input = document.getElementById("searchInput");
+  if (!input) return;
+
+  const words = window.SEARCH_CATEGORIES?.length
+    ? window.SEARCH_CATEGORIES
+    : ["products", "custom gifts", "personalized items"];
+
+  let i = 0, j = 0, del = false;
+
+  function loop() {
+    input.placeholder = "Search " + words[i].slice(0, j);
+    if (!del && j++ === words[i].length) del = true;
+    if (del && j-- === 0) { del = false; i = (i + 1) % words.length; }
+    setTimeout(loop, del ? 50 : 90);
+  }
+
+  setTimeout(loop, 700);
+})();
+</script>
+
+<script>
+/* =========================
+   AUTO SLIDE CART IMAGES
+========================= */
+function startCartImageAutoSlide() {
+  document.querySelectorAll("[class*='cart-img-product-']").forEach(img => {
+    const match = img.className.match(/cart-img-product-([a-zA-Z0-9_]+)/);
+    if (!match) return;
+
+    const cartKey = match[1];
+    const productImg = document.querySelector(`.cart-img-product-${cartKey}`);
+    const customImg = document.querySelector(`.cart-img-custom-${cartKey}`);
+
+    if (!productImg || !customImg) return;
+
+    let showProduct = true;
+
+    // clear old interval if exists (important on refresh)
+    if (productImg.dataset.intervalId) {
+      clearInterval(productImg.dataset.intervalId);
+    }
+
+    const intervalId = setInterval(() => {
+      if (showProduct) {
+        productImg.style.opacity = "0";
+        customImg.style.opacity = "1";
+      } else {
+        productImg.style.opacity = "1";
+        customImg.style.opacity = "0";
+      }
+      showProduct = !showProduct;
+    }, 3500); // ⏱️ 3.5 sec (sweet spot)
+
+    productImg.dataset.intervalId = intervalId;
+  });
+}
+
+/* Re-run auto slide after cart refresh */
+const _refreshCart = refreshCart;
+refreshCart = async function (data) {
+  await _refreshCart(data);
+  startCartImageAutoSlide();
+};
+
+/* Initial run */
+document.addEventListener("DOMContentLoaded", startCartImageAutoSlide);
 </script>
 
 
-<script src="{% static 'script.js' %}"></script>
-  
 </body>
 </html>

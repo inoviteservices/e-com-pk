@@ -1,67 +1,86 @@
 from decimal import Decimal
 from products.models import Product
-import base64
+import uuid
+
 
 class Cart:
     def __init__(self, request):
         self.session = request.session
-        self.cart = self.session.get("cart")
+        self.cart = request.session.get("cart", {})
+        request.session["cart"] = self.cart
 
-        if not self.cart:
-            self.cart = self.session["cart"] = {}
-
-    def add(self, product_id, custom_image=None, custom_message=""):
+    # ➕ ADD TO CART
+    def add(self, product_id, quantity=1, custom_image=None, custom_message=""):
         product = Product.objects.get(id=product_id)
-        pid = str(product_id)
 
-        if pid not in self.cart:
-            self.cart[pid] = {
-                "product_id": product.id,
+        # 🔑 unique key per customized item
+        cart_key = (
+            f"{product_id}_{uuid.uuid4().hex}"
+            if custom_image
+            else str(product_id)
+        )
+
+        if cart_key not in self.cart:
+            self.cart[cart_key] = {
+                "cart_key": cart_key,
+                "product_id": product.id,   # ALWAYS INT
                 "title": product.title,
                 "price": str(product.price),
-                "quantity": 1,
+                "quantity": quantity,
+                "image": product.image.url if product.image else "",
+                "custom_image": custom_image,
                 "custom_message": custom_message,
-                "custom_image": None,
-                "custom_image_name": None,
             }
+        else:
+            self.cart[cart_key]["quantity"] += quantity
 
-            # ✅ STEP 4: SESSION-SAFE IMAGE STORAGE
-            if custom_image:
-                encoded = base64.b64encode(custom_image.read()).decode("utf-8")
-                self.cart[pid]["custom_image"] = encoded
-                self.cart[pid]["custom_image_name"] = custom_image.name
+        self.save()
 
+    # ➖ DECREASE QUANTITY
+    def decrease(self, cart_key):
+        if cart_key in self.cart:
+            self.cart[cart_key]["quantity"] -= 1
+            if self.cart[cart_key]["quantity"] <= 0:
+                del self.cart[cart_key]
+        self.save()
+
+    # ❌ REMOVE ITEM
+    def remove(self, cart_key):
+        if cart_key in self.cart:
+            del self.cart[cart_key]
+        self.save()
+
+    # 🧹 CLEAR CART
+    def clear(self):
+        self.session["cart"] = {}
+        self.save()
+
+    def save(self):
         self.session.modified = True
 
-    def get_items(self):
-        items = []
-
+    # 🔁 ITERABLE (FOR TEMPLATES)
+    def __iter__(self):
         for item in self.cart.values():
-            product = Product.objects.get(id=item["product_id"])
+            yield {
+                **item,
+                "price_decimal": Decimal(item["price"]),
+                "total_price": Decimal(item["price"]) * item["quantity"],
+            }
 
-            items.append({
-                "product_id": product.id,
-                "title": product.title,
-                "price": Decimal(item["price"]),
-                "quantity": item["quantity"],
-                "category": product.category.name if product.category else "",
-                "image": product.image.url if product.image else "",
-                "custom_message": item.get("custom_message", ""),
-                "custom_image": item.get("custom_image"),
-                "custom_image_name": item.get("custom_image_name"),
-            })
-
-        return items
+    # 🔢 TOTAL QUANTITY (NAVBAR BADGE)
+    def __len__(self):
+        return sum(item["quantity"] for item in self.cart.values())
 
     def count(self):
         return sum(item["quantity"] for item in self.cart.values())
 
+    # 📦 ITEMS LIST (NO DB QUERIES)
+    def get_items(self):
+        return list(self.cart.values())
+
+    # 💰 TOTAL CART PRICE
     def get_total_price(self):
         return sum(
             Decimal(item["price"]) * item["quantity"]
             for item in self.cart.values()
         )
-
-    def clear(self):
-        self.session["cart"] = {}
-        self.session.modified = True
