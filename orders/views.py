@@ -114,3 +114,31 @@ def bulk_order_view(request):
         )
 
     return render(request, "orders/bulk_order.html")
+
+
+
+
+ORDER_STEPS = ["INITIATED", "PAID", "SHIPPED", "DELIVERED"]
+
+
+def track_order(request):
+    order = None
+    error = None
+
+    if request.method == "POST":
+        order_id = request.POST.get("order_id", "").strip().upper()
+
+        try:
+            order = Order.objects.get(public_order_id=order_id)
+        except Order.DoesNotExist:
+            error = "Order not found. Please check your Order ID."
+
+    return render(
+        request,
+        "orders/track_order.html",
+        {
+            "order": order,
+            "error": error,
+            "steps": ORDER_STEPS,   # 👈 PASS FROM VIEW
+        }
+    )

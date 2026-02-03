@@ -816,6 +816,38 @@ refreshCart = async function (data) {
 document.addEventListener("DOMContentLoaded", startCartImageAutoSlide);
 </script>
 
+<script>
+document.getElementById("newsletterForm")?.addEventListener("submit", async function (e) {
+  e.preventDefault(); // 🔴 THIS is critical
+
+  const form = e.target;
+  const email = form.querySelector("input[name='email']").value;
+  const msg = document.getElementById("newsletterMsg");
+  const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+  const res = await fetch("/subscribe/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": csrf,
+    },
+    body: new URLSearchParams({ email })
+  });
+
+  const data = await res.json();
+
+  msg.classList.remove("hidden");
+
+  if (data.success) {
+    msg.textContent = "🎉 " + data.message;
+    msg.className = "mt-3 text-sm text-green-600";
+    form.reset();
+  } else {
+    msg.textContent = "😊 " + data.message;
+    msg.className = "mt-3 text-sm text-red-600";
+  }
+});
+</script>
+
 
 </body>
 </html>

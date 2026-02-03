@@ -102,8 +102,8 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "order_display",        # 👈 AG-2402-9502 · Raj Patil
         "phone",
-        "first_name",
         "payment_type",
         "status",
         "total_amount",
@@ -119,6 +119,7 @@ class OrderAdmin(admin.ModelAdmin):
     )
 
     search_fields = (
+        "public_order_id",
         "phone",
         "email",
         "first_name",
@@ -152,6 +153,7 @@ class OrderAdmin(admin.ModelAdmin):
         }),
         ("Order Details", {
             "fields": (
+                "public_order_id",
                 "payment_type",
                 "status",
                 "total_amount",
@@ -164,6 +166,22 @@ class OrderAdmin(admin.ModelAdmin):
     )
 
     inlines = [OrderItemInline]
+
+    # ─────────────────────────────
+    # 🔥 CUSTOM DISPLAY COLUMN
+    # ─────────────────────────────
+    def order_display(self, obj):
+        order_id = obj.public_order_id or f"AG-{obj.id}"
+        name = f"{obj.first_name or ''} {obj.last_name or ''}".strip() or "—"
+
+        return format_html(
+            "<strong>{}</strong><br><span style='color:#888'>{}</span>",
+            order_id,
+            name
+        )
+
+    order_display.short_description = "Order / Name"
+    order_display.admin_order_field = "public_order_id"
 
 
 @admin.register(BulkOrder)

@@ -5,9 +5,18 @@
   <h1 class="text-3xl font-semibold mb-4">Order Placed 🎉</h1>
   <p>Your COD order has been successfully placed.</p>
 
-  <p class="mt-4 font-medium">
-    Order ID: #{{ order.id }}
-  </p>
+<p class="mt-4 font-medium">
+  Order ID:
+  <span class="font-semibold">
+    {% if order.public_order_id %}
+      {{ order.public_order_id }}
+    {% else %}
+      #{{ order.id }}
+    {% endif %}
+  </span>
+</p>
+
+
 
   <p class="text-sm text-gray-600 mt-2">
     We will contact you before dispatch.

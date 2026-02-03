@@ -40,7 +40,7 @@ def subscribe_newsletter(request):
         return JsonResponse({"success": False, "message": "Email required"})
 
     if NewsletterSubscriber.objects.filter(email=email).exists():
-        return JsonResponse({"success": False, "message": "Already subscribed"})
+        return JsonResponse({"success": False, "message": "You’re already on our list!"})
 
     NewsletterSubscriber.objects.create(email=email)
-    return JsonResponse({"success": True, "message": "Subscribed successfully!"})
+    return JsonResponse({"success": True, "message": "You’re in! We’ll keep you posted."})

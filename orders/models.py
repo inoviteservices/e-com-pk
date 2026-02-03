@@ -1,5 +1,7 @@
+import random
 from django.db import models
 from products.models import Product
+from datetime import datetime
 
 
 class Order(models.Model):
@@ -16,6 +18,14 @@ class Order(models.Model):
         ("SHIPPED", "Shipped"),
         ("DELIVERED", "Delivered"),
         ("CANCELLED", "Cancelled"),
+    )
+
+    # 🔹 PUBLIC ORDER ID (NEW)
+    public_order_id = models.CharField(
+        max_length=20,
+        unique=True,
+        null=True,
+        blank=True
     )
 
     # 🔹 CONTACT
@@ -36,7 +46,7 @@ class Order(models.Model):
     pincode = models.CharField(max_length=10, null=True, blank=True)
     country = models.CharField(max_length=50, null=True, blank=True)
 
-    # 🔹 EXTRA / ANALYTICS
+    # 🔹 EXTRA
     age_group = models.CharField(max_length=20, null=True, blank=True)
     is_repeat_order = models.BooleanField(default=False)
 
@@ -65,8 +75,20 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # 🔥 AUTO GENERATE ORDER ID
+    def save(self, *args, **kwargs):
+        if not self.public_order_id:
+            month_year = datetime.now().strftime("%m%y")  # 0226
+            while True:
+                candidate = f"AG-{month_year}-{random.randint(1000, 9999)}"
+                if not Order.objects.filter(public_order_id=candidate).exists():
+                    self.public_order_id = candidate
+                    break
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Order #{self.id} - {self.phone}"
+        return self.public_order_id or f"Order #{self.id}"
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
