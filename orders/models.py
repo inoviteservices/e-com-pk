@@ -1,37 +1,72 @@
 from django.db import models
-from users.models import Customer
 from products.models import Product
 
 
 class Order(models.Model):
+
     PAYMENT_CHOICES = (
-        ('PREPAID', 'Prepaid'),
-        ('COD', 'Cash on Delivery'),
+        ("PREPAID", "Prepaid"),
+        ("COD", "Cash on Delivery"),
     )
 
     STATUS_CHOICES = (
-        ('INITIATED', 'Initiated'),
-        ('PAID', 'Paid'),
-        ('FAILED', 'Failed'),
-        ('SHIPPED', 'Shipped'),
-        ('DELIVERED', 'Delivered'),
-        ('CANCELLED', 'Cancelled'),
+        ("INITIATED", "Initiated"),
+        ("PAID", "Paid"),
+        ("FAILED", "Failed"),
+        ("SHIPPED", "Shipped"),
+        ("DELIVERED", "Delivered"),
+        ("CANCELLED", "Cancelled"),
     )
 
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    payment_type = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
+    # 🔹 CONTACT
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+
+    # 🔹 NAME
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+
+    # 🔹 ADDRESS
+    address_line_1 = models.CharField(max_length=255, null=True, blank=True)
+    address_line_2 = models.CharField(max_length=255, null=True, blank=True)
+    landmark = models.CharField(max_length=255, null=True, blank=True)
+
+    city = models.CharField(max_length=100, null=True, blank=True)
+    state = models.CharField(max_length=100, null=True, blank=True)
+    pincode = models.CharField(max_length=10, null=True, blank=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+
+    # 🔹 EXTRA / ANALYTICS
+    age_group = models.CharField(max_length=20, null=True, blank=True)
+    is_repeat_order = models.BooleanField(default=False)
+
+    order_tags = models.JSONField(default=list, blank=True)
+    checkout_source = models.CharField(max_length=50, null=True, blank=True)
+
+    # 🔹 PAYMENT
+    payment_type = models.CharField(
+        max_length=10,
+        choices=PAYMENT_CHOICES,
+        default="COD"
+    )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='INITIATED'
+        default="INITIATED"
     )
-    is_repeat_order = models.BooleanField(default=False)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    total_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.id}"
-
+        return f"Order #{self.id} - {self.phone}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -43,7 +78,6 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    # ✅ CUSTOM ORDER FIELDS (NEW)
     custom_image = models.ImageField(
         upload_to="orders/custom/",
         null=True,
@@ -56,7 +90,6 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.title} (x{self.quantity})"
-
 
 class BulkOrder(models.Model):
     name = models.CharField(max_length=150)

@@ -14,184 +14,156 @@
 
   <!-- LOGO -->
   <div class="mb-8 flex justify-center lg:justify-start">
-    <a href="/" class="flex-shrink-0 group">
-    {% if site_logo %}
-      <img src="{{ site_logo.image.url }}" alt="Art Gift" class="h-10 sm:h-12">
-    {% else %}
-      <img src="{% static 'images/logo.png' %}" alt="Art Gift" class="h-10 sm:h-12">
-    {% endif %}
+    <a href="/">
+      {% if site_logo %}
+        <img src="{{ site_logo.image.url }}" class="h-10 sm:h-12">
+      {% else %}
+        <img src="{% static 'images/logo.png' %}" class="h-10 sm:h-12">
+      {% endif %}
     </a>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- FORM START -->
+  <form method="POST" action="{% url 'checkout' %}">
+    {% csrf_token %}
 
-    <!-- LEFT -->
-    <div class="lg:col-span-2 space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-      <!-- CONTACT -->
-      <section class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-black/5">
-        <h2 class="font-semibold mb-4">Contact Information</h2>
+      <!-- LEFT -->
+      <div class="lg:col-span-2 space-y-8">
 
-        <input
-          type="tel"
-          name="phone"
-          required
-          maxlength="10"
-          pattern="[6-9][0-9]{9}"
-          placeholder="Phone Number *"
-          class="w-full rounded-xl border px-4 py-4 focus:ring-2 focus:ring-black"
-        >
-      </section>
+        <!-- CONTACT -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm">
+          <h2 class="font-semibold mb-4">Contact Information</h2>
 
-      <!-- ADDRESS -->
-      <section class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-black/5">
-        <h2 class="font-semibold mb-4">Shipping Address</h2>
+          <input
+            type="tel"
+            name="phone"
+            required
+            maxlength="10"
+            pattern="[6-9][0-9]{9}"
+            placeholder="Phone Number *"
+            class="w-full rounded-xl border px-4 py-4"
+          >
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input required minlength="3" placeholder="First Name *"
-            class="rounded-xl border px-4 py-4">
-          <input required minlength="3" placeholder="Last Name *"
-            class="rounded-xl border px-4 py-4">
-        </div>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email (Optional)"
+            class="w-full rounded-xl border px-4 py-4 mt-4"
+          >
+        </section>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-          <input id="pincode" required maxlength="6" pattern="[0-9]{6}"
-            placeholder="Pincode *" class="rounded-xl border px-4 py-4">
+        <!-- ADDRESS -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm">
+          <h2 class="font-semibold mb-4">Shipping Address</h2>
 
-          <input id="city" required minlength="3"
-            placeholder="City / District *" class="rounded-xl border px-4 py-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input name="first_name" required placeholder="First Name *"
+              class="rounded-xl border px-4 py-4">
+            <input name="last_name" required placeholder="Last Name *"
+              class="rounded-xl border px-4 py-4">
+          </div>
 
-          <input id="state" required readonly
-            placeholder="State *"
-            class="rounded-xl border px-4 py-4 bg-green-50 border-green-400">
-        </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+            <input id="pincode" name="pincode" required maxlength="6"
+              placeholder="Pincode *" class="rounded-xl border px-4 py-4">
 
-        <p id="pincodeError" class="text-xs text-red-500 hidden mt-2">
-          Invalid Indian pincode
-        </p>
+            <input id="city" name="city" required
+              placeholder="City *" class="rounded-xl border px-4 py-4">
 
-        <input required placeholder="Flat, House no, Building *"
-          class="w-full rounded-xl border px-4 py-4 mt-4">
+            <input id="state" name="state" required readonly
+              placeholder="State *"
+              class="rounded-xl border px-4 py-4 bg-green-50">
+          </div>
 
-        <input required minlength="3"
-          placeholder="Area, Street, Sector *"
-          class="w-full rounded-xl border px-4 py-4 mt-4">
+          <input name="address_line_1" required
+            placeholder="Flat, House no, Building *"
+            class="w-full rounded-xl border px-4 py-4 mt-4">
 
-        <input placeholder="Landmark (Optional)"
-          class="w-full rounded-xl border px-4 py-4 mt-4">
+          <input name="address_line_2" required
+            placeholder="Area, Street, Sector *"
+            class="w-full rounded-xl border px-4 py-4 mt-4">
 
-        <input readonly value="India"
-          class="w-full rounded-xl border px-4 py-4 mt-4 bg-green-50 border-green-400">
+          <input name="landmark"
+            placeholder="Landmark (Optional)"
+            class="w-full rounded-xl border px-4 py-4 mt-4">
 
-        <select id="ageGroup" required
-          class="w-full rounded-xl border px-4 py-4 mt-4">
-          <option value="">Select Age Group *</option>
-          <option>18–25</option>
-          <option>26–35</option>
-          <option>36–45</option>
-          <option>45+</option>
-        </select>
+          <select name="age_group" required
+            class="w-full rounded-xl border px-4 py-4 mt-4">
+            <option value="">Select Age Group *</option>
+            <option value="18-25">18–25</option>
+            <option value="26-35">26–35</option>
+            <option value="36-45">36–45</option>
+            <option value="45+">45+</option>
+          </select>
 
-        <p id="ageError" class="text-xs text-red-500 hidden mt-1">
-          Please select age group
-        </p>
+        </section>
 
-        <input type="email" placeholder="Email (Optional)"
-          class="w-full rounded-xl border px-4 py-4 mt-4">
-      </section>
+        <!-- PAYMENT -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm">
+          <h2 class="font-semibold mb-4">Payment Method</h2>
 
-      <!-- PAYMENT -->
-      <section class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-black/5">
-        <h2 class="font-semibold mb-4">Payment Method</h2>
+          <input type="hidden" name="payment_type" value="COD">
 
-        <!-- PREPAID -->
-        <div class="rounded-xl border p-4 mb-4 opacity-40 cursor-not-allowed">
-          <p class="font-medium">Prepaid</p>
-          <p class="text-sm text-gray-500">Coming soon</p>
-        </div>
+          <div class="rounded-xl border-2 border-black p-4">
+            <p class="font-medium">Cash On Delivery</p>
+            <p class="text-sm text-gray-500">Pay when product arrives</p>
+          </div>
+        </section>
 
-        <!-- COD -->
-        <div id="codCard"
-          class="rounded-xl border-2 border-gray-300 p-4 opacity-40 cursor-not-allowed">
-          <p class="font-medium">Cash On Delivery</p>
-          <p class="text-sm text-gray-500">Complete details to continue</p>
-        </div>
-      </section>
-
-      <!-- PLACE ORDER -->
-      <form method="POST" action="/">
-        {% csrf_token %}
+        <!-- SUBMIT -->
         <button
-          id="placeOrderBtn"
-          disabled
+          type="submit"
           class="w-full bg-black text-white py-4 rounded-2xl
-                 text-lg font-semibold mt-4 opacity-40 cursor-not-allowed">
+                 text-lg font-semibold mt-4">
           Place Order
         </button>
-      </form>
 
+      </div>
+
+      <!-- RIGHT -->
+      <aside class="bg-white rounded-2xl p-6 shadow-sm h-fit">
+        <h3 class="font-semibold mb-4">Order Summary</h3>
+
+        {% for item in cart_items %}
+  <div class="flex gap-3 mb-5">
+
+    <!-- IMAGE -->
+    <img src="{{ item.image }}" class="w-14 h-14 rounded-xl object-cover">
+
+    <!-- DETAILS -->
+    <div class="flex-1 text-sm">
+      <p class="font-medium">{{ item.title }}</p>
+      <p class="text-gray-500">Qty {{ item.quantity }}</p>
+
+      {% if item.custom_message %}
+  <p class="text-xs text-gray-600 italic mt-1">
+    “{{ item.custom_message }}”
+  </p>
+{% endif %}
     </div>
 
-    <!-- RIGHT -->
-    <aside class="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-black/5 h-fit">
-      <h3 class="font-semibold mb-4">Order Summary</h3>
-
-      {% for item in cart_items %}
-        <div class="flex gap-3 mb-4">
-          <img src="{{ item.image }}" class="w-14 h-14 rounded-xl">
-          <div class="flex-1 text-sm">
-            <p class="font-medium">{{ item.title }}</p>
-            <p class="text-gray-500">Qty {{ item.quantity }}</p>
-          </div>
-          <div class="font-semibold">₹{{ item.price }}</div>
-        </div>
-      {% endfor %}
-
-      <hr class="my-4">
-
-      <div class="flex justify-between text-lg font-semibold">
-        <span>Total</span>
-        <span>₹{{ total }}</span>
-      </div>
-    </aside>
-
+    <!-- PRICE -->
+    <div class="font-semibold">₹{{ item.price }}</div>
   </div>
+{% endfor %}
+
+
+        <hr class="my-4">
+
+        <div class="flex justify-between text-lg font-semibold">
+          <span>Total</span>
+          <span>₹{{ total }}</span>
+        </div>
+      </aside>
+
+    </div>
+  </form>
 </div>
 
-<!-- VALIDATION + PINCODE -->
+<!-- PINCODE AUTO-FILL -->
 <script>
-const requiredFields = document.querySelectorAll("input[required], select[required]");
-const placeOrderBtn = document.getElementById("placeOrderBtn");
-const codCard = document.getElementById("codCard");
-const ageGroup = document.getElementById("ageGroup");
-const ageError = document.getElementById("ageError");
-
-function validateForm() {
-  let valid = true;
-  requiredFields.forEach(f => {
-    if (!f.value.trim()) valid = false;
-  });
-
-  if (!ageGroup.value) {
-    ageError.classList.remove("hidden");
-    valid = false;
-  } else ageError.classList.add("hidden");
-
-  if (valid) {
-    placeOrderBtn.disabled = false;
-    placeOrderBtn.classList.remove("opacity-40", "cursor-not-allowed");
-    codCard.classList.remove("opacity-40", "cursor-not-allowed");
-    codCard.classList.add("border-black");
-  } else {
-    placeOrderBtn.disabled = true;
-    placeOrderBtn.classList.add("opacity-40", "cursor-not-allowed");
-    codCard.classList.add("opacity-40", "cursor-not-allowed");
-  }
-}
-
-requiredFields.forEach(f => f.addEventListener("input", validateForm));
-
-// PINCODE API
 document.getElementById("pincode").addEventListener("input", e => {
   const pin = e.target.value;
   if (pin.length === 6) {
@@ -199,12 +171,10 @@ document.getElementById("pincode").addEventListener("input", e => {
       .then(r => r.json())
       .then(d => {
         if (d[0].Status === "Success") {
-          document.getElementById("city").value = d[0].PostOffice[0].District;
-          document.getElementById("state").value = d[0].PostOffice[0].State;
-          document.getElementById("pincodeError").classList.add("hidden");
-          validateForm();
-        } else {
-          document.getElementById("pincodeError").classList.remove("hidden");
+          document.getElementById("city").value =
+            d[0].PostOffice[0].District;
+          document.getElementById("state").value =
+            d[0].PostOffice[0].State;
         }
       });
   }
