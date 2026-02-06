@@ -17,20 +17,62 @@
 
 <body class="antialiased font-sans">
 
-  <!-- Top Bar -->
-{% if site_announcement %}
-  <div
-    class="bg-black text-white text-center
-           text-xs sm:text-sm
-           py-1 sm:py-1.5
-           font-sans font-medium
-           tracking-wide"
-  >
-    {{ site_announcement.text }}
-  </div>
-{% endif %}
+        <!-- Top Announcement Bar -->
+        {% if site_announcements %}
+        <div
+          style="
+            width:100%;
+            background:#062f3f;
+            color:white;
+            overflow:hidden;
+            white-space:nowrap;
+            font-size:15px;
+            font-weight:600;
+            padding:5px 0;
+            position:relative;
+            letter-spacing:0.25px;
+            font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display',
+                        'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            border-bottom:1px solid rgba(255,255,255,0.06);
+          "
+        >
+          <div
+            style="
+              display:flex;
+              width:max-content;
+              animation:scroll-left 24s linear infinite;
+              align-items:center;
+            "
+          >
 
+            <!-- Loop 1 -->
+            {% for ann in site_announcements %}
+              <span style="margin:0 40px; flex-shrink:0;">
+                {{ ann.text|safe }}
+              </span>
+            {% endfor %}
 
+            <!-- Loop 2 -->
+            {% for ann in site_announcements %}
+              <span style="margin:0 40px; flex-shrink:0;">
+                {{ ann.text|safe }}
+              </span>
+            {% endfor %}
+
+          </div>
+        </div>
+
+        <style>
+        @keyframes scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        </style>
+        {% endif %}
 
 
 
@@ -70,32 +112,65 @@
 
 </a>
 
-     <!-- Search -->
+
 <!-- Search -->
 <form
   action="{% url 'shop_all' %}"
   method="get"
-  class="flex-1 min-w-0
+  class="relative flex-1 min-w-0
          mx-2 sm:mx-auto
          sm:max-w-[640px] md:max-w-[720px]"
 >
   <div
-    class="flex items-center bg-white rounded-full shadow-sm
-           px-3 sm:px-5 py-1.5 sm:py-2"
+    class="flex items-center bg-white/95 rounded-full
+           shadow-[0_2px_10px_rgba(0,0,0,0.08)]
+           px-4 sm:px-5 py-1.5 sm:py-2
+           border border-black/5
+           transition-all duration-200
+           focus-within:shadow-[0_4px_14px_rgba(0,0,0,0.12)]
+           focus-within:border-black/10"
   >
     <input
-  id="searchInput"
-  type="search"
-  name="q"
-  placeholder="Search products"
-  class="flex-1 min-w-0 bg-transparent outline-none
-         text-xs sm:text-sm px-1 sm:px-2"
-/>
+      id="searchInput"
+      type="search"
+      name="q"
+      placeholder="Search products"
+      autocomplete="off"
+      class="flex-1 min-w-0 bg-transparent outline-none
+             text-[13px] sm:text-sm
+             px-1 sm:px-2
+             text-gray-800
+             placeholder-gray-400
+             font-medium
+             tracking-wide
+             font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Display','Segoe_UI',Roboto,Helvetica,Arial,sans-serif]"
+    />
 
-    <button type="submit" class="flex-shrink-0 text-gray-700">
-      <i class="bi bi-search text-base sm:text-lg"></i>
+    <button
+      type="submit"
+      class="flex-shrink-0 text-gray-900
+             hover:text-black
+             transition-colors duration-200"
+    >
+      <i class="bi bi-search text-lg sm:text-xl font-bold"></i>
     </button>
   </div>
+
+  <!-- Search Popup -->
+  <div
+    id="searchPopup"
+    class="absolute left-0 right-0 mt-2
+           bg-white rounded-xl shadow-xl
+           border border-gray-100
+           hidden z-50 overflow-hidden"
+  ></div>
+  <div id="searchPopup"
+     class="absolute left-0 right-0 mt-2
+            bg-white rounded-xl shadow-xl
+            border border-gray-100
+            hidden z-50 overflow-hidden">
+</div>
+
 </form>
 
 
@@ -159,12 +234,35 @@
          shadow-2xl flex flex-col">
 
   <!-- Header -->
-  <div class="flex items-center justify-between px-6 py-4 border-b">
-    <h2 class="text-xl font-serif">Your cart</h2>
-    <button id="closeCart" class="text-2xl">&times;</button>
+  <!-- CART HEADER -->
+<div class="border-b">
+
+  <!-- Top Row -->
+<div class="flex items-center justify-between px-5 py-2 border-b bg-white">
+
+    <h2 class="text-xl font-semibold text-gray-900">
+      Your Shopping Cart ({{ cart_count }})
+    </h2>
+
+    <button
+      id="closeCart"
+      class="text-2xl text-gray-500 hover:text-black transition"
+    >
+      &times;
+    </button>
+
   </div>
 
-  <!-- Cart Items -->
+<div class="bg-sky-300 text-white text-center text-[14px] py-1.5 font-medium tracking-tight">
+  Free shipping on all orders above ₹499!
+</div>
+
+
+
+
+</div>
+
+
 <!-- Cart Items -->
 <div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4">
 
@@ -269,8 +367,41 @@
         </div>
       </div>
     {% endfor %}
+    <!-- FREE GIFT -->
+<div class="flex items-center gap-4 py-4 mt-2 bg-green-50 rounded-xl px-4">
 
-    <hr>
+  <!-- Gift Icon -->
+  <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-lg text-2xl">
+    🎁
+  </div>
+
+  <!-- Gift Info -->
+  <div class="flex-1">
+
+    <div class="flex items-center gap-2">
+
+      <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+        FREE
+      </span>
+
+      <p class="font-medium text-gray-900 text-sm">
+        Free Surprise Gift
+      </p>
+
+    </div>
+
+    <p class="text-xs text-gray-500 mt-1">
+      Worth ₹299 • Included with your order
+    </p>
+
+  </div>
+
+  <!-- Price -->
+  <div class="text-right text-sm font-semibold text-green-600">
+    ₹0
+  </div>
+
+</div>
 
 
   {% else %}
@@ -283,20 +414,63 @@
 
 
 
-  <!-- Footer -->
-<div class="border-t px-6 py-4">
-  <div class="flex justify-between text-sm mb-3">
-    <span>Subtotal</span>
-    <span data-cart-total>₹{{ cart_total }}</span>
+<!-- CART FOOTER -->
+<div class="border-t px-6 py-4 bg-white">
+
+  <!-- ORDER SUMMARY TOGGLE -->
+  <button
+    onclick="toggleSummary()"
+    class="w-full flex items-center justify-between text-sm font-medium text-gray-800 mb-3">
+
+    <span>Order Summary</span>
+    <span id="summaryArrow">›</span>
+
+  </button>
+<!-- SUMMARY DETAILS -->
+<div id="orderSummaryDetails" class="hidden space-y-2 text-sm text-gray-700 mb-3">
+
+  <div class="flex justify-between">
+    <span>Selling Price</span>
+    <span>₹{{ cart_total }}</span>
+  </div>
+
+  <div class="flex justify-between text-green-600">
+    <span>Prepaid Discount</span>
+    <span>- ₹50</span>
+  </div>
+
+  <div class="flex justify-between">
+    <span>Shipping Charges</span>
+    <span class="text-green-600 font-medium">FREE</span>
+  </div>
+
+  <hr class="my-2">
+
+</div>
+
+
+  <!-- SUBTOTAL -->
+  <div class="flex justify-between items-center text-base font-semibold mb-4">
+
+    <span>SUBTOTAL</span>
+    <span data-cart-total>₹{{ cart_total|add:"-50" }}</span>
+
 
   </div>
-  <a href="{% url 'checkout' %}"
-   class="block w-full bg-black text-white text-center py-3 rounded-lg mt-4">
-  Checkout
-</a>
 
-  
+  <!-- CHECKOUT BUTTON -->
+  <a
+    href="{% url 'checkout' %}"
+    class="block w-full bg-sky-400 hover:bg-sky-500
+           text-white text-center py-3 rounded-lg
+           font-semibold text-base transition">
+
+    Checkout
+
+  </a>
+
 </div>
+
 
 
 </aside>
@@ -547,6 +721,12 @@
          transition-all duration-300 z-[9999]"
 ></div>
 
+
+
+
+
+
+
 <script>
 /* =========================
    UTILITIES
@@ -744,29 +924,74 @@ function showCartImage(productId, type) {
   customImg.style.opacity = type === "custom" ? "1" : "0";
 }
 
-/* =========================
-   SEARCH PLACEHOLDER TYPE
-========================= */
-(function () {
+</script>
+
+<script>
+(function(){
+
   const input = document.getElementById("searchInput");
-  if (!input) return;
+  const popup = document.getElementById("searchPopup");
 
-  const words = window.SEARCH_CATEGORIES?.length
-    ? window.SEARCH_CATEGORIES
-    : ["products", "custom gifts", "personalized items"];
+  if (!input || !popup) return;
 
-  let i = 0, j = 0, del = false;
+  let timer = null;
 
-  function loop() {
-    input.placeholder = "Search " + words[i].slice(0, j);
-    if (!del && j++ === words[i].length) del = true;
-    if (del && j-- === 0) { del = false; i = (i + 1) % words.length; }
-    setTimeout(loop, del ? 50 : 90);
-  }
+  input.addEventListener("input", function () {
 
-  setTimeout(loop, 700);
+    clearTimeout(timer);
+
+    const q = this.value.trim();
+
+    if (q.length < 2) {
+      popup.classList.add("hidden");
+      return;
+    }
+
+    timer = setTimeout(() => {
+
+      fetch(`/products/search-suggestions/?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+
+          if (!data.length) {
+            popup.classList.add("hidden");
+            return;
+          }
+
+          let html = "";
+
+          data.forEach(p => {
+            html += `
+              <a href="/products/product/${p.slug}/"
+                 class="block px-4 py-2 text-sm
+                        text-gray-700 hover:bg-gray-100">
+                ${p.title}
+              </a>
+            `;
+          });
+
+          popup.innerHTML = html;
+          popup.classList.remove("hidden");
+
+        })
+        .catch(() => {
+          popup.classList.add("hidden");
+        });
+
+    }, 250);
+
+  });
+
+  // Hide popup on outside click
+  document.addEventListener("click", function(e){
+    if (!e.target.closest("form")) {
+      popup.classList.add("hidden");
+    }
+  });
+
 })();
 </script>
+
 
 <script>
 /* =========================
@@ -846,6 +1071,22 @@ document.getElementById("newsletterForm")?.addEventListener("submit", async func
     msg.className = "mt-3 text-sm text-red-600";
   }
 });
+</script>
+<script>
+function toggleSummary() {
+
+  const box = document.getElementById("orderSummaryDetails");
+  const arrow = document.getElementById("summaryArrow");
+
+  if (box.classList.contains("hidden")) {
+    box.classList.remove("hidden");
+    arrow.textContent = "⌄";
+  } else {
+    box.classList.add("hidden");
+    arrow.textContent = "›";
+  }
+
+}
 </script>
 
 

@@ -3,182 +3,371 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Checkout</title>
+  <title>Checkout | ArtGift</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 text-gray-900 antialiased">
 
-<div class="max-w-5xl mx-auto px-4 py-6 lg:py-10">
+<div class="max-w-6xl mx-auto px-4 py-8 lg:py-12">
 
   <!-- LOGO -->
-  <div class="mb-8 flex justify-center lg:justify-start">
+  <div class="mb-10 flex justify-center lg:justify-start">
     <a href="/">
-      {% if site_logo %}
-        <img src="{{ site_logo.image.url }}" class="h-10 sm:h-12">
-      {% else %}
-        <img src="{% static 'images/logo.png' %}" class="h-10 sm:h-12">
-      {% endif %}
+      <img src="{% static 'images/logo.png' %}" class="h-12">
     </a>
   </div>
 
-  <!-- FORM START -->
+  <!-- FORM -->
   <form method="POST" action="{% url 'checkout' %}">
     {% csrf_token %}
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-      <!-- LEFT -->
+      <!-- LEFT SIDE -->
       <div class="lg:col-span-2 space-y-8">
 
         <!-- CONTACT -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 class="font-semibold mb-4">Contact Information</h2>
+        <section class="bg-white rounded-2xl p-7 shadow-sm">
+          <h2 class="text-lg font-semibold mb-5">Contact Information</h2>
 
           <input
             type="tel"
             name="phone"
             required
-            maxlength="10"
-            pattern="[6-9][0-9]{9}"
             placeholder="Phone Number *"
-            class="w-full rounded-xl border px-4 py-4"
+            class="w-full rounded-xl border px-5 py-4 focus:ring-2 focus:ring-sky-400"
           >
 
           <input
             type="email"
             name="email"
             placeholder="Email (Optional)"
-            class="w-full rounded-xl border px-4 py-4 mt-4"
+            class="w-full rounded-xl border px-5 py-4 mt-4 focus:ring-2 focus:ring-sky-400"
           >
         </section>
 
-        <!-- ADDRESS -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 class="font-semibold mb-4">Shipping Address</h2>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input name="first_name" required placeholder="First Name *"
-              class="rounded-xl border px-4 py-4">
-            <input name="last_name" required placeholder="Last Name *"
-              class="rounded-xl border px-4 py-4">
+        <!-- ADDRESS -->
+        <section class="bg-white rounded-2xl p-7 shadow-sm">
+          <h2 class="text-lg font-semibold mb-5">Shipping Address</h2>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input name="first_name" required
+              placeholder="First Name *"
+              class="rounded-xl border px-5 py-4">
+
+            <input name="last_name" required
+              placeholder="Last Name *"
+              class="rounded-xl border px-5 py-4">
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+          <div class="grid sm:grid-cols-3 gap-4 mt-4">
             <input id="pincode" name="pincode" required maxlength="6"
-              placeholder="Pincode *" class="rounded-xl border px-4 py-4">
+              placeholder="Pincode *"
+              class="rounded-xl border px-5 py-4">
 
             <input id="city" name="city" required
-              placeholder="City *" class="rounded-xl border px-4 py-4">
+              placeholder="City *"
+              class="rounded-xl border px-5 py-4">
 
-            <input id="state" name="state" required readonly
+            <input id="state" name="state" readonly required
               placeholder="State *"
-              class="rounded-xl border px-4 py-4 bg-green-50">
+              class="rounded-xl border px-5 py-4 bg-green-50">
           </div>
 
-          <input name="address_line_1" required
-            placeholder="Flat, House no, Building *"
-            class="w-full rounded-xl border px-4 py-4 mt-4">
+          <input name="address1" required
+            placeholder="Flat / House / Building *"
+            class="w-full rounded-xl border px-5 py-4 mt-4">
 
-          <input name="address_line_2" required
-            placeholder="Area, Street, Sector *"
-            class="w-full rounded-xl border px-4 py-4 mt-4">
+          <input name="address2" required
+            placeholder="Area / Street / Sector *"
+            class="w-full rounded-xl border px-5 py-4 mt-4">
 
           <input name="landmark"
             placeholder="Landmark (Optional)"
-            class="w-full rounded-xl border px-4 py-4 mt-4">
+            class="w-full rounded-xl border px-5 py-4 mt-4">
 
-          <select name="age_group" required
-            class="w-full rounded-xl border px-4 py-4 mt-4">
-            <option value="">Select Age Group *</option>
-            <option value="18-25">18–25</option>
-            <option value="26-35">26–35</option>
-            <option value="36-45">36–45</option>
-            <option value="45+">45+</option>
-          </select>
-
+         
         </section>
 
-        <!-- PAYMENT -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 class="font-semibold mb-4">Payment Method</h2>
 
-          <input type="hidden" name="payment_type" value="COD">
 
-          <div class="rounded-xl border-2 border-black p-4">
-            <p class="font-medium">Cash On Delivery</p>
-            <p class="text-sm text-gray-500">Pay when product arrives</p>
-          </div>
-        </section>
 
-        <!-- SUBMIT -->
+        <!-- PAYMENT METHOD -->
+<!-- PAYMENT METHOD -->
+<section class="bg-white rounded-2xl p-7 shadow-sm space-y-5">
+
+  <h2 class="text-lg font-semibold mb-2">
+    Payment Method
+  </h2>
+
+<input type="hidden" name="payment_type" id="paymentType" value="COD">
+
+
+
+  <!-- PREPAID -->
+  <div
+    onclick="selectPayment('PREPAID')"
+
+    class="relative bg-white border rounded-xl p-5 flex
+           items-center justify-between cursor-pointer
+           hover:shadow-md transition"
+  >
+
+    <!-- Badge -->
+    <span
+      class="absolute -top-3 left-1/2 -translate-x-1/2
+             bg-emerald-500 text-white text-xs px-3 py-1
+             rounded-full font-medium shadow"
+    >
+      🎁 Save ₹50 + Get Free Product
+    </span>
+
+    <!-- Left -->
+    <div class="flex items-center gap-3">
+
+      <span class="text-xl">💳</span>
+
+      <div>
+        <p class="font-semibold text-gray-900">
+          Prepaid
+        </p>
+
+        <p class="text-sm text-gray-500">
+          Pay online now!
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Right -->
+    <div class="flex items-center gap-2 text-lg font-semibold">
+
+      ₹{{ cart_total|add:"-50" }}
+      <span class="text-gray-400">›</span>
+
+    </div>
+
+  </div>
+
+
+  <!-- COD -->
+  <div
+    onclick="selectPayment('COD')"
+
+    class="relative bg-white border-2 border-red-500
+           rounded-xl p-5 flex items-center
+           justify-between cursor-pointer
+           hover:shadow-md transition"
+  >
+
+    <!-- Badge -->
+    <span
+      class="absolute -top-3 left-1/2 -translate-x-1/2
+             bg-red-500 text-white text-xs px-3 py-1
+             rounded-full font-medium shadow"
+    >
+      ₹49 COD Fee Added
+    </span>
+
+    <!-- Left -->
+    <div class="flex items-center gap-3">
+
+      <span class="text-xl">💵</span>
+
+      <div>
+        <p class="font-semibold text-gray-900">
+          Cash On Delivery (COD)
+        </p>
+
+        <p class="text-sm text-gray-500">
+          Switch to prepaid for better offer!
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Right -->
+    <div class="flex items-center gap-2 text-lg font-semibold">
+
+      ₹{{ cart_total }}
+      <span class="text-gray-400">›</span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+
+        <!-- PLACE ORDER -->
         <button
           type="submit"
           class="w-full bg-black text-white py-4 rounded-2xl
-                 text-lg font-semibold mt-4">
+                 text-lg font-semibold hover:bg-gray-900 transition">
+
           Place Order
+
         </button>
 
       </div>
 
-      <!-- RIGHT -->
-      <aside class="bg-white rounded-2xl p-6 shadow-sm h-fit">
-        <h3 class="font-semibold mb-4">Order Summary</h3>
 
+      <!-- RIGHT SIDE -->
+      <aside class="bg-white rounded-2xl p-7 shadow-sm h-fit">
+
+        <h3 class="text-lg font-semibold mb-5">
+          Order Summary
+        </h3>
+
+
+        <!-- ITEMS -->
         {% for item in cart_items %}
-  <div class="flex gap-3 mb-5">
 
-    <!-- IMAGE -->
-    <img src="{{ item.image }}" class="w-14 h-14 rounded-xl object-cover">
+        <div class="flex gap-4 mb-5">
 
-    <!-- DETAILS -->
-    <div class="flex-1 text-sm">
-      <p class="font-medium">{{ item.title }}</p>
-      <p class="text-gray-500">Qty {{ item.quantity }}</p>
+          <!-- IMAGE -->
+          <img
+            src="{{ item.image }}"
+            class="w-16 h-16 rounded-xl object-cover"
+          >
 
-      {% if item.custom_message %}
-  <p class="text-xs text-gray-600 italic mt-1">
-    “{{ item.custom_message }}”
-  </p>
-{% endif %}
-    </div>
+          <!-- DETAILS -->
+          <div class="flex-1 text-sm">
 
-    <!-- PRICE -->
-    <div class="font-semibold">₹{{ item.price }}</div>
-  </div>
-{% endfor %}
+            <p class="font-medium leading-snug">
+              {{ item.title }}
+            </p>
 
+            <p class="text-gray-500 text-xs mt-1">
+              Qty {{ item.quantity }}
+            </p>
 
-        <hr class="my-4">
+            {% if item.custom_message %}
+            <p class="text-xs italic text-gray-600 mt-1">
+              “{{ item.custom_message }}”
+            </p>
+            {% endif %}
 
-        <div class="flex justify-between text-lg font-semibold">
-          <span>Total</span>
-          <span>₹{{ total }}</span>
+          </div>
+
+          <!-- PRICE -->
+          <div class="font-semibold">
+            ₹{{ item.price }}
+          </div>
+
         </div>
+
+        {% endfor %}
+
+
+        <hr class="my-5">
+
+
+        <!-- PRICE BREAKUP -->
+        <div class="space-y-2 text-sm text-gray-600">
+
+          <div class="flex justify-between">
+            <span>Selling Price</span>
+            <span>₹{{ cart_total }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Cod Charge</span>
+            <span> ₹49</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span>Shipping</span>
+            <span class="text-green-600">FREE</span>
+          </div>
+
+        </div>
+
+
+        <hr class="my-5">
+
+
+        <!-- TOTAL -->
+        <div class="flex justify-between text-xl font-bold">
+
+          <span>Total</span>
+
+          <span>
+            ₹{{ cart_total|add:"+49" }}
+          </span>
+
+        </div>
+
       </aside>
 
     </div>
   </form>
+
 </div>
 
-<!-- PINCODE AUTO-FILL -->
+<script>
+function paymentNotAvailable() {
+  alert("⚠️ Payment option not available right now. Please try later.");
+}
+</script>
+
+<!-- PINCODE AUTO -->
 <script>
 document.getElementById("pincode").addEventListener("input", e => {
+
   const pin = e.target.value;
+
   if (pin.length === 6) {
+
     fetch(`https://api.postalpincode.in/pincode/${pin}`)
       .then(r => r.json())
       .then(d => {
+
         if (d[0].Status === "Success") {
+
           document.getElementById("city").value =
             d[0].PostOffice[0].District;
+
           document.getElementById("state").value =
             d[0].PostOffice[0].State;
+
         }
       });
   }
 });
+</script>
+<script>
+function selectPayment(type) {
+
+  const paymentInput = document.getElementById("paymentType");
+
+  // ❌ PREPAID NOT AVAILABLE
+  if (type === "PREPAID") {
+
+    alert("🚧 Prepaid payments are temporarily unavailable.\nPlease use Cash on Delivery.");
+
+    // Force COD
+    paymentInput.value = "COD";
+
+    return;
+  }
+
+  // ✅ COD SELECTED
+  if (type === "COD") {
+
+    paymentInput.value = "COD";
+
+    alert("⚠️ Cash on Delivery selected.\n₹49 COD fee will be added.");
+
+  }
+}
+
 </script>
 
 </body>

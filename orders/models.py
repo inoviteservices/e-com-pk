@@ -47,7 +47,6 @@ class Order(models.Model):
     country = models.CharField(max_length=50, null=True, blank=True)
 
     # 🔹 EXTRA
-    age_group = models.CharField(max_length=20, null=True, blank=True)
     is_repeat_order = models.BooleanField(default=False)
 
     order_tags = models.JSONField(default=list, blank=True)

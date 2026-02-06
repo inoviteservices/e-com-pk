@@ -5,119 +5,565 @@
 
 {% block content %}
 
-<section class="max-w-7xl mx-auto px-4 py-10">
+<section class="max-w-7xl mx-auto px-4 py-12">
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 
-    <!-- LEFT: PRODUCT IMAGE -->
-    <div class="border rounded-xl overflow-hidden bg-white flex items-center justify-center">
-      {% if product.image %}
-        <img
-          src="{{ product.image.url }}"
-          class="w-full h-[520px] object-contain"
-          alt="{{ product.title }}"
-        >
-      {% else %}
-        <div class="h-[520px] flex items-center justify-center text-gray-400">
-          No image available
-        </div>
-      {% endif %}
+    <!-- LEFT: PRODUCT IMAGE (STICKY) -->
+    <div class="lg:sticky lg:top-24">
+      <div class="rounded-2xl bg-white shadow-sm overflow-hidden">
+        {% if product.image %}
+          <img
+            src="{{ product.image.url }}"
+            class="w-full h-[520px] object-contain"
+            alt="{{ product.title }}"
+          >
+        {% else %}
+          <div class="h-[520px] flex items-center justify-center text-gray-400">
+            No image available
+          </div>
+        {% endif %}
+      </div>
     </div>
 
     <!-- RIGHT: PRODUCT INFO -->
-    <div>
+    <div class="space-y-8">
 
-      <h1 class="text-3xl font-serif mb-4">
-        {{ product.title }}
-      </h1>
+      <!-- REVIEWS + SOCIAL PROOF -->
+<div class="flex items-center gap-4 text-sm text-gray-600">
+
+  <!-- Stars -->
+  <div class="flex items-center gap-1 text-sky-500 text-2xl font-bold tracking-tight drop-shadow-sm">
+
+    {% for i in "12345" %}
+      {% if avg_rating >= forloop.counter %}
+        ★
+      {% else %}
+        ☆
+      {% endif %}
+    {% endfor %}
+
+  </div>
+
+  <!-- Review Count -->
+  <a href="#reviews"
+     class="underline font-medium cursor-pointer hover:text-sky-600 transition">
+
+    {{ total_reviews }} reviews
+
+  </a>
+
+</div>
+
+
+      <!-- TITLE -->
+      <h1 class="text-3xl lg:text-4xl font-sans font-semibold leading-snug tracking-tight text-slate-900">
+  {{ product.title }}
+</h1>
 
       <!-- PRICE -->
-      <div class="mb-6">
+      <div>
         {% if product.compare_at_price %}
-          <span class="line-through text-gray-400 mr-2">
+          <span class="line-through text-gray-400 mr-3 text-lg">
             ₹{{ product.compare_at_price }}
           </span>
         {% endif %}
-        <span class="text-red-600 text-2xl font-semibold">
+        <span class="text-red-600 text-3xl font-semibold">
           ₹{{ product.price }}
         </span>
         <p class="text-sm text-gray-500 mt-1">Tax included.</p>
       </div>
 
-      <!-- CUSTOM / NORMAL ORDER FORM -->
-      <form id="customOrderForm" enctype="multipart/form-data">
+      <!-- ORDER FORM -->
+      <form id="customOrderForm" enctype="multipart/form-data" class="space-y-6">
         {% csrf_token %}
 
         {% if product.requires_custom_image %}
-          <!-- CUSTOM IMAGE -->
+          <div>
+            <label class="block font-medium mb-2">
+              Upload your Image <span class="text-red-500">*</span>
+            </label>
+
+            <input
+              type="file"
+              name="custom_image"
+              accept="image/jpeg,image/png"
+              required
+              class="w-full border rounded-xl px-4 py-3"
+            >
+
+            <p class="text-xs text-gray-500 mt-2">
+              JPG or PNG • Max 5MB • Min 300×300 px
+            </p>
+          </div>
+        {% endif %}
+
+        <div>
           <label class="block font-medium mb-2">
-            Upload your Image <span class="text-red-500">*</span>
+            Special Message
           </label>
 
           <input
-            type="file"
-            name="custom_image"
-            accept="image/jpeg,image/png"
-            required
-            class="w-full border rounded-lg px-4 py-2 mb-4"
+            type="text"
+            name="custom_message"
+            placeholder="You're my everything, forever and always. 💖"
+            class="w-full border rounded-xl px-4 py-3"
           >
-
-          <p class="text-xs text-gray-500 mb-4">
-            JPG or PNG • Max 5MB • Min 300×300 px
-          </p>
-        {% endif %}
-
-        <!-- MESSAGE -->
-        <label class="block font-medium mb-2">
-          Special Message
-        </label>
-
-        <input
-          type="text"
-          name="custom_message"
-          placeholder="You're my everything 💖"
-          class="w-full border rounded-lg px-4 py-2 mb-6"
-        >
+        </div>
 
         {% if product.requires_custom_image %}
-          <!-- CUSTOM ADD -->
           <button
             type="button"
             onclick="addCustomToCart({{ product.id }})"
-            class="w-full bg-black text-white py-4 rounded-lg text-lg
+            class="w-full bg-black text-white py-4 rounded-xl text-lg
                    hover:bg-gray-900 transition"
           >
-            🛒 Add to cart
+            Add to cart
           </button>
         {% else %}
-          <!-- NORMAL ADD -->
           <button
             type="button"
             onclick="addToCart({{ product.id }})"
-            class="w-full bg-black text-white py-4 rounded-lg text-lg
+            class="w-full bg-black text-white py-4 rounded-xl text-lg
                    hover:bg-gray-900 transition"
           >
-            🛒 Add to cart
+            Add to cart
           </button>
-
-          <!-- SOCIAL PROOF -->
-          <p class="text-sm text-gray-600 mt-3">
-            🔥 {{ interest_count }} people have this in their cart
-          </p>
         {% endif %}
-
       </form>
 
+      <!-- WHATSAPP HELP -->
+<a
+  href="https://wa.me/919834898303?text=Hi%20ArtGift%20Team%2C%20I%20need%20help%20with%20this%20product%3A%20{{ product.title|urlencode }}%0A%0A{{ request.build_absolute_uri|urlencode }}"
+  target="_blank"
+  class="flex items-center justify-center gap-2
+         bg-green-500 text-white py-3 rounded-xl
+         font-medium hover:bg-green-600 transition"
+>
+  Need Help? WhatsApp
+</a>
+
+      <!-- PAYMENT / TRUST BADGES -->
+<div class="w-full mt-4">
+  <img
+    src="{% static 'images/payments.jpg' %}"
+    alt="Customer Reviews"
+    class="w-full h-auto rounded-xl shadow-sm"
+    loading="lazy"
+  >
+</div>
+
+
+      <!-- PRODUCT DESCRIPTION -->
+      <div class="pt-10 border-t space-y-6 text-gray-800">
+
+        
+
+        <p class="text-center text-lg font-semibold">
+          <span class="text-red-600">10,000+</span> HAPPY CUSTOMERS
+        </p>
+        <!-- REVIEWS IMAGE -->
+<div class="w-full mt-4">
+  <img
+    src="{% static 'images/reviews.webp' %}"
+    alt="Customer Reviews"
+    class="w-full h-auto rounded-xl shadow-sm"
+    loading="lazy"
+  >
+</div>
+<h2 class="text-xl font-semibold">Product Description</h2>
+
+        <!-- ADMIN-CONTROLLED DESCRIPTION -->
+<!-- FORMATTED PRODUCT DESCRIPTION -->
+<div class="w-full text-gray-700 space-y-4 leading-relaxed text-sm">
+
+  {{ product.description|linebreaksbr }}
+
+</div>
+
+
+
+        <!-- QUALITY BADGES -->
+        <ul class="grid grid-cols-2 gap-3 text-sm text-gray-700 mt-4">
+          <li>✔ Premium PMMA material</li>
+          <li>✔ High-quality vibrant print</li>
+          <li>✔ Beautifully packaged</li>
+          <li>✔ Made with love in India 🇮🇳</li>
+        </ul>
+
+      </div>
+<!-- PREMIUM INFO ACCORDIONS -->
+<div class="divide-y border-t pt-6 text-gray-800">
+
+  <!-- DELIVERY -->
+  <details class="group py-5">
+    <summary class="flex items-center justify-between cursor-pointer font-semibold text-base">
+      <span>🚚 Fast & Reliable Delivery</span>
+      <span class="transition group-open:rotate-180">⌄</span>
+    </summary>
+
+    <div class="mt-3 text-sm text-gray-600 leading-relaxed">
+      <p>
+        All orders are carefully customised and dispatched within
+        <strong>2–4 working days</strong>.
+      </p>
+
+      <p class="mt-2">
+        We partner with trusted courier services to ensure safe and timely
+        doorstep delivery across India.
+      </p>
     </div>
+  </details>
+
+  <!-- GUARANTEE -->
+  <details class="group py-5">
+    <summary class="flex items-center justify-between cursor-pointer font-semibold text-base">
+      <span>🛡 ArtGift Quality Guarantee</span>
+      <span class="transition group-open:rotate-180">⌄</span>
+    </summary>
+
+    <div class="mt-3 text-sm text-gray-600 leading-relaxed">
+      <p>
+        Every product goes through strict quality checks before shipping.
+      </p>
+
+      <p class="mt-2">
+        If you receive a damaged, incorrect, or unsatisfactory item,
+        we will replace or resolve it immediately — no questions asked.
+      </p>
+
+      <p class="mt-2 font-medium text-gray-800">
+        Your satisfaction is our top priority. ❤️
+      </p>
+    </div>
+  </details>
+
+  <!-- SUPPORT -->
+  <details class="group py-5">
+    <summary class="flex items-center justify-between cursor-pointer font-semibold text-base">
+      <span>💬 24×7 Customer Support</span>
+      <span class="transition group-open:rotate-180">⌄</span>
+    </summary>
+
+    <div class="mt-3 text-sm text-gray-600 leading-relaxed">
+      <p>
+        Have questions about customisation, delivery, or orders?
+      </p>
+
+      <p class="mt-2">
+        Our friendly support team is always ready to help you on WhatsApp.
+      </p>
+
+      <p class="mt-2 font-medium text-gray-800">
+        We usually respond within minutes. ⚡
+      </p>
+    </div>
+  </details>
+
+</div>
+
+    </div>
+  </div>
+
+
+
+  <!-- FULL WIDTH CUSTOMER REVIEWS -->
+</div> <!-- Close Right Column -->
+</div> <!-- Close Grid -->
+
+
+
+
+
+<!-- REVIEWS SECTION -->
+<section class="w-full bg-gray-50 py-16 mt-12">
+
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- HEADING -->
+    <h2 class="text-3xl font-serif text-center mb-10">
+      Customer Reviews
+    </h2>
+
+    <!-- SUMMARY -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center mb-12">
+
+      <!-- Rating -->
+      <div class="text-center">
+
+        <!-- Stars -->
+        <div class="flex justify-center text-sky-500 text-xl mb-2">
+
+          {% for i in "12345" %}
+            {% if avg_rating >= forloop.counter %}
+              ★
+            {% else %}
+              ☆
+            {% endif %}
+          {% endfor %}
+
+        </div>
+
+        <p class="text-2xl font-semibold">
+          {{ avg_rating }} / 5
+        </p>
+
+        <p class="text-sm text-gray-600">
+          Based on {{ total_reviews }} reviews ✔
+        </p>
+
+      </div>
+
+      <!-- Bars -->
+      <div class="space-y-2">
+
+        <!-- 5 Star -->
+        <div class="flex items-center gap-3 text-sm">
+          <span>5★</span>
+
+          <div class="flex-1 bg-gray-200 h-2 rounded">
+            <div
+              class="bg-sky-500 h-2 rounded"
+              style="width: {{ star_percentages.5 }}%;">
+            </div>
+          </div>
+
+          <span>{{ star_counts.5 }}</span>
+        </div>
+
+        <!-- 4 Star -->
+        <div class="flex items-center gap-3 text-sm">
+          <span>4★</span>
+
+          <div class="flex-1 bg-gray-200 h-2 rounded">
+            <div
+  class="bg-sky-400 h-2 rounded"
+  style="width: {{ star_percentages.4 }}%;">
+</div>
+
+          </div>
+
+          <span>{{ star_counts.4 }}</span>
+        </div>
+
+        <!-- 3 Star -->
+        <div class="flex items-center gap-3 text-sm">
+          <span>3★</span>
+
+          <div class="flex-1 bg-gray-200 h-2 rounded">
+  <div
+    class="bg-sky-300 h-2 rounded"
+    style="width: {{ star_percentages.3 }}%;">
+  </div>
+</div>
+
+
+          <span>{{ star_counts.3 }}</span>
+        </div>
+
+        <!-- 2 Star -->
+        <div class="flex items-center gap-3 text-sm">
+          <span>2★</span>
+
+          <div class="flex-1 bg-gray-200 h-2 rounded">
+  <div
+    class="bg-sky-200 h-2 rounded"
+    style="width: {{ star_percentages.2 }}%;">
+  </div>
+</div>
+
+
+          <span>{{ star_counts.2 }}</span>
+        </div>
+
+        <!-- 1 Star -->
+        <div class="flex items-center gap-3 text-sm">
+          <span>1★</span>
+
+          <div class="flex-1 bg-gray-200 h-2 rounded">
+  <div
+    class="bg-sky-100 h-2 rounded"
+    style="width: {{ star_percentages.1 }}%;">
+  </div>
+</div>
+
+
+          <span>{{ star_counts.1 }}</span>
+        </div>
+
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center">
+
+  <button
+    type="button"
+    onclick="openReviewModal()"
+    class="bg-sky-500 text-white px-8 py-3 rounded-lg
+           font-medium hover:bg-sky-600 transition">Write a Review</button>
+
+</div>
+
+      
+
+    </div>
+    <!-- REVIEWS LIST -->
+<div class="divide-y">
+
+  {% if reviews %}
+
+    {% for review in reviews %}
+
+      <div class="review-item py-10 grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+
+
+        <!-- LEFT: NAME -->
+        <div class="font-semibold text-xl text-gray-900">
+          {{ review.name }}
+        </div>
+
+        <!-- RIGHT: REVIEW CONTENT -->
+        <div class="md:col-span-3 space-y-3">
+
+          <!-- Stars -->
+          <div class="flex items-center text-sky-500 text-2xl font-semibold tracking-tight">
+
+            {% for i in "12345" %}
+              {% if review.rating >= forloop.counter %}
+                ★
+              {% else %}
+                ☆
+              {% endif %}
+            {% endfor %}
+
+          </div>
+
+          <!-- Review Title (First Line Only) -->
+          <p class="font-semibold text-lg text-gray-900 leading-snug">
+            {{ review.review|truncatewords:6 }}
+          </p>
+
+          <!-- Review Description -->
+          <p class="text-gray-600 text-base leading-relaxed">
+            {{ review.review }}
+          </p>
+
+          <!-- Date -->
+          <p class="text-sm text-gray-400 pt-2">
+            {{ review.created_at|date:"d M Y" }}
+          </p>
+
+        </div>
+
+      </div>
+
+    {% endfor %}
+
+  {% else %}
+
+    <p class="text-center text-gray-500 py-12 text-lg">
+      No reviews yet. Be the first to review ⭐
+    </p>
+{% endif %}
+
+</div> <!-- End Reviews List -->
+
+<!-- READ MORE BUTTON -->
+<div id="readMoreContainer" class="text-center mt-8 hidden">
+
+  <button
+    onclick="showAllReviews()"
+    class="px-6 py-2 border border-sky-500 text-sky-500 rounded-lg
+           hover:bg-sky-500 hover:text-white transition font-medium">
+
+    Read More Reviews
+
+  </button>
+
+</div>
+
+
+</div>
+
+<!-- REVIEW MODAL -->
+<div
+  id="reviewModal"
+  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+  <div class="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-lg">
+
+    <!-- Close -->
+    <button
+      onclick="closeReviewModal()"
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl">
+      ✕
+    </button>
+
+    <h3 class="text-xl font-semibold mb-4 text-center">
+      Write a Review
+    </h3>
+
+    <form method="POST" class="space-y-4">
+
+      {% csrf_token %}
+
+      <!-- Name -->
+      <input
+        type="text"
+        name="name"
+        placeholder="Your Name"
+        required
+        class="w-full border rounded-lg px-4 py-2"
+      >
+
+      <!-- Rating -->
+      <select
+        name="rating"
+        required
+        class="w-full border rounded-lg px-4 py-2"
+      >
+        <option value="">Select Rating</option>
+        <option value="5">★★★★★ (5)</option>
+        <option value="4">★★★★☆ (4)</option>
+        <option value="3">★★★☆☆ (3)</option>
+        <option value="2">★★☆☆☆ (2)</option>
+        <option value="1">★☆☆☆☆ (1)</option>
+      </select>
+
+      <!-- Review -->
+      <textarea
+        name="review"
+        rows="4"
+        maxlength="500"
+        placeholder="Write your experience..."
+        required
+        class="w-full border rounded-lg px-4 py-2"
+      ></textarea>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="w-full bg-sky-500 text-white py-2 rounded-lg
+               hover:bg-sky-600 transition">
+        Submit Review
+      </button>
+
+    </form>
 
   </div>
+</div>
+
+</section>
 
 </section>
 
 <!-- CUSTOM PRODUCT ADD -->
 <script>
 function addCustomToCart(productId) {
+
   const form = document.getElementById("customOrderForm");
+  if (!form) return;
+
   const formData = new FormData(form);
 
   fetch(`/cart/add-custom/${productId}/`, {
@@ -127,15 +573,21 @@ function addCustomToCart(productId) {
       "X-CSRFToken": getCSRFToken()
     }
   })
+
   .then(res => res.json())
+
   .then(data => {
+
     if (data.error) {
+
       alert(data.error);
+
     } else {
-      // ✅ RESET FORM (THIS IS THE FIX)
+
+      // Reset form
       form.reset();
 
-      // optional safety: manually clear file input (Safari edge case)
+      // Clear file input (Safari fix)
       const fileInput = form.querySelector('input[type="file"]');
       if (fileInput) fileInput.value = "";
 
@@ -143,9 +595,92 @@ function addCustomToCart(productId) {
       openDrawer();
       showCartToast("Custom product added 🖼️");
     }
+
+  })
+
+  .catch(err => {
+    console.error("Cart Error:", err);
   });
+
 }
 </script>
+
+
+<!-- REVIEW MODAL -->
+<script>
+function openReviewModal() {
+
+  const modal = document.getElementById("reviewModal");
+  if (!modal) return;
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeReviewModal() {
+
+  const modal = document.getElementById("reviewModal");
+  if (!modal) return;
+
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+
+// Close modal when clicking outside
+document.addEventListener("click", function (e) {
+
+  const modal = document.getElementById("reviewModal");
+  if (!modal) return;
+
+  if (e.target === modal) {
+    closeReviewModal();
+  }
+
+});
+</script>
+
+
+<!-- READ MORE REVIEWS -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const reviews = document.querySelectorAll(".review-item");
+  const btn = document.getElementById("readMoreContainer");
+
+  const visibleCount = 3; // show first 3
+
+  // Safety
+  if (!reviews.length || !btn) return;
+
+  // Hide extra reviews
+  if (reviews.length > visibleCount) {
+
+    for (let i = visibleCount; i < reviews.length; i++) {
+      reviews[i].classList.add("hidden");
+    }
+
+    btn.classList.remove("hidden");
+  }
+
+});
+
+
+function showAllReviews() {
+
+  const reviews = document.querySelectorAll(".review-item");
+  const btn = document.getElementById("readMoreContainer");
+
+  if (!reviews.length || !btn) return;
+
+  reviews.forEach(review => {
+    review.classList.remove("hidden");
+  });
+
+  btn.classList.add("hidden");
+}
+</script>
+
 
 
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h1>Import Reviews from CSV</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+  {% csrf_token %}
+
+  <p>
+    Upload a CSV file with columns:
+  </p>
+
+  <pre>
+product_slug,name,rating,review,is_active
+  </pre>
+
+  <br>
+
+  <input type="file" name="csv_file" required>
+
+  <br><br>
+
+  <button class="default" type="submit">
+    Upload
+  </button>
+
+</form>
+
+<br>
+
+<a href="../">← Back to Reviews</a>
+
+{% endblock %}

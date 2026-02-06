@@ -27,21 +27,34 @@ class SiteLogo(models.Model):
 class SiteAnnouncement(models.Model):
     text = models.CharField(
         max_length=255,
-        help_text="Text shown in the top black bar (e.g. Free Shipping above ₹499)"
+        help_text=(
+            "You can use simple HTML to add colors. "
+            "Example: "
+            "Use Code <span style='color:#ffd700;'>SHARKTANK5</span> "
+            "for <span style='color:#00cfff;'>5% OFF</span>"
+        )
     )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    MAX_ANNOUNCEMENTS = 5
+
     def clean(self):
-        if not self.pk and SiteAnnouncement.objects.exists():
-            raise ValidationError("Only one announcement is allowed.")
+        # Allow update, block only new if limit reached
+        if not self.pk:
+            count = SiteAnnouncement.objects.count()
+            if count >= self.MAX_ANNOUNCEMENTS:
+                raise ValidationError(
+                    f"Maximum {self.MAX_ANNOUNCEMENTS} announcements allowed."
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return "Header Announcement"
+        return self.text[:40]
+    
 
 
 class HeroSlide(models.Model):

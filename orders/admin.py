@@ -137,7 +137,6 @@ class OrderAdmin(admin.ModelAdmin):
                 "email",
                 "first_name",
                 "last_name",
-                "age_group",
             )
         }),
         ("Address", {
