@@ -10,7 +10,6 @@ from products.models import Product
 from .cart import Cart
 
 MAX_FILE_SIZE_MB = 5
-ALLOWED_FORMATS = ["JPEG", "PNG"]
 
 
 def cart_add(request, product_id):
@@ -46,9 +45,8 @@ def cart_remove(request, cart_key):
         "cart_total": str(cart.get_total_price()),  # ✅ FIX
     })
 
-
-
 def cart_add_custom(request, product_id):
+
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request"}, status=405)
 
@@ -58,39 +56,66 @@ def cart_add_custom(request, product_id):
     image = request.FILES.get("custom_image")
     message = request.POST.get("custom_message", "")
 
+    # Check if image is required
     if product.requires_custom_image and not image:
         return JsonResponse({"error": "Image is required"}, status=400)
 
     temp_path = None
 
     if image:
-        if image.size > MAX_FILE_SIZE_MB * 1024 * 1024:
-            return JsonResponse({"error": "Max file size is 5MB"}, status=400)
 
+        # ✅ Max size: 5MB
+        if image.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+            return JsonResponse({"error": "Image must be under 5MB"}, status=400)
+
+        # ✅ Validate image
         try:
             img = Image.open(image)
-            img.verify()
             image.seek(0)
-            img = Image.open(image)
         except Exception:
             return JsonResponse({"error": "Invalid image file"}, status=400)
 
-        if img.format not in ALLOWED_FORMATS:
-            return JsonResponse({"error": "Only JPG and PNG allowed"}, status=400)
+        # Get extension
+        ext = image.name.split('.')[-1].lower()
 
-        if img.width < 300 or img.height < 300:
-            return JsonResponse({"error": "Minimum size 300×300"}, status=400)
+        # Upload folder
+        upload_dir = os.path.join(settings.MEDIA_ROOT, "temp_uploads")
+        os.makedirs(upload_dir, exist_ok=True)
 
-        filename = f"{uuid.uuid4()}.{image.name.split('.')[-1]}"
+        # 📌 Convert HEIC/HEIF → JPG
+        if ext in ["heic", "heif"]:
+
+            try:
+                img = Image.open(image)
+                img = img.convert("RGB")
+
+                filename = f"{uuid.uuid4()}.jpg"
+                full_path = os.path.join(upload_dir, filename)
+
+                img.save(
+                    full_path,
+                    format="JPEG",
+                    quality=90,
+                    optimize=True
+                )
+
+            except Exception:
+                return JsonResponse({"error": "Failed to process image"}, status=400)
+
+        else:
+            # Save normally (jpg/png/etc)
+
+            filename = f"{uuid.uuid4()}.{ext}"
+            full_path = os.path.join(upload_dir, filename)
+
+            with open(full_path, "wb+") as f:
+                for chunk in image.chunks():
+                    f.write(chunk)
+
+        # Relative path for media
         temp_path = f"temp_uploads/{filename}"
-        full_path = os.path.join(settings.MEDIA_ROOT, temp_path)
 
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
-
-        with open(full_path, "wb+") as f:
-            for chunk in image.chunks():
-                f.write(chunk)
-
+    # Add to cart
     cart.add(
         product_id=product_id,
         custom_image=temp_path,

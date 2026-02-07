@@ -28,15 +28,19 @@
         Order ID
       </p>
 
-      <p class="text-lg font-semibold tracking-wide text-gray-900 mt-1">
+      <p
+  id="orderId"
+  class="text-lg font-semibold tracking-wide text-gray-900 mt-1 cursor-pointer hover:text-blue-600 select-all"
+  onclick="copyOrderId()"
+  title="Click to copy"
+>
+  {% if order.public_order_id %}
+    {{ order.public_order_id }}
+  {% else %}
+    #{{ order.id }}
+  {% endif %}
+</p>
 
-        {% if order.public_order_id %}
-          {{ order.public_order_id }}
-        {% else %}
-          #{{ order.id }}
-        {% endif %}
-
-      </p>
 
     </div>
 
@@ -275,6 +279,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }, 1500);
 
 });
+</script>
+<script>
+function copyOrderId() {
+  const text = document.getElementById("orderId").innerText.trim();
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Order ID copied: " + text);
+  }).catch(() => {
+    alert("Failed to copy!");
+  });
+}
 </script>
 
 {% endblock %}
