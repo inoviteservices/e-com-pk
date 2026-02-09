@@ -86,31 +86,43 @@
 {% endif %}
 
             {% if product.image %}
-              <img
-                src="{{ product.image.url }}"
-                alt="{{ product.title }}"
-                class="max-w-full max-h-full object-contain">
-            {% endif %}
+  <img
+    src="{{ product.image.url }}"
+    alt="{{ product.title }}"
+    class="w-full h-full object-cover">
+{% endif %}
 
-            <!-- % OFF -->
-            {% if product.compare_at_price %}
-              <span class="absolute top-7 sm:top-9 left-2
-                           bg-blue-500 text-white
-                           text-[10px] sm:text-xs
-                           px-2 py-1 rounded discount-badge"
-                    data-price="{{ product.price }}"
-                    data-compare="{{ product.compare_at_price }}">
-              </span>
-            {% endif %}
+<!-- % OFF -->
+{% if product.compare_at_price %}
+  <span class="absolute
+               top-7 sm:top-9
+               left-2
+               bg-blue-500 text-white
+               text-[9px]
+               px-1.5 py-0.5
+               rounded
+               font-semibold
+               z-30
+               discount-badge"
+        data-price="{{ product.price }}"
+        data-compare="{{ product.compare_at_price }}">
+  </span>
+{% endif %}
+<!-- CUSTOM -->
+{% if product.requires_custom_image %}
+  <span class="absolute
+               top-7 sm:top-9
+               right-2
+               bg-black text-white
+               text-[9px]
+               px-1.5 py-0.5
+               rounded
+               font-semibold
+               z-30">
+    CUSTOM
+  </span>
+{% endif %}
 
-            <!-- CUSTOM -->
-            {% if product.requires_custom_image %}
-              <span class="absolute top-7 sm:top-9 right-2
-                           bg-black text-white
-                           text-[10px] px-2 py-1 rounded">
-                CUSTOM
-              </span>
-            {% endif %}
 
           </div>
         </a>

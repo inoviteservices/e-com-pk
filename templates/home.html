@@ -118,6 +118,7 @@
 
 
 <section class="relative py-16 bg-gradient-to-b from-[#eaf6ff] to-[#bfe4ff]">
+  
 
   <!-- Header -->
   <div class="text-center mb-10 px-4 sm:px-6">
@@ -184,19 +185,36 @@
 
         <a href="/products/category/{{ category.slug }}/">
 
-
-<!-- Image -->
+<!-- Image Wrapper -->
 <div
-  class="overflow-hidden rounded-t-2xl
-         p-[3px] sm:p-0"
+  class="relative overflow-hidden rounded-t-2xl"
 >
+
+  <!-- Announcement Overlay -->
+  {% if site_announcements %}
+    {% with site_announcements.0 as ann %}
+      <div
+        class="absolute top-0 left-0 w-full z-20
+               h-6 sm:h-7
+               bg-[#062f3f]
+               text-white
+               text-[9px] sm:text-xs
+               flex items-center justify-center
+               font-medium
+               tracking-wide"
+      >
+        {{ ann.text|safe }}
+      </div>
+    {% endwith %}
+  {% endif %}
+
+  <!-- Image -->
   {% if category.image %}
     <img
       src="{{ category.image.url }}"
       alt="{{ category.name }}"
       class="w-full aspect-[4/5]
              object-cover
-             rounded-xl sm:rounded-none
              transition-transform duration-500 ease-out
              group-hover:scale-[1.04]"
     >
@@ -205,13 +223,14 @@
       class="w-full aspect-[4/5]
              flex items-center justify-center
              bg-gray-100
-             rounded-xl sm:rounded-none
              text-gray-400 text-sm font-medium"
     >
       No Image
     </div>
   {% endif %}
+
 </div>
+
 
 
 
