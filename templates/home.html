@@ -256,73 +256,203 @@
 </section>
 
 
-<section class="py-20 bg-white">
-  <div class="max-w-[1400px] mx-auto px-6">
+{% if hot_singles %}
+<section class="bg-[#fafaf0] py-8">
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
 
-      <!-- LEFT -->
-      <div class="max-w-md">
-        <p class="text-sm text-gray-600 mb-4">Trending Now</p>
+   <!-- Header -->
+<div class="mb-10 text-center">
 
-        <h2 class="text-4xl font-serif leading-tight mb-6">
-          Yes, that's all you need for your love 💞
-        </h2>
+  <h2
+    class="text-[32px] sm:text-[44px] md:text-[52px]
+           font-semibold tracking-tight
+           text-gray-900 leading-tight"
+  >
+    HOT SINGLES
+  </h2>
 
-        <p class="text-gray-600 text-lg leading-relaxed">
-          Carefully curated with love to make every moment magical. 😍
-        </p>
-      </div>
+  <p
+    class="mt-2 text-[15px] sm:text-base
+           text-gray-500 max-w-xl mx-auto"
+  >
+    Handpicked designs, made to stand out.
+  </p>
 
-      <!-- MIDDLE -->
-      <div class="flex flex-col items-center text-center">
+</div>
 
-        <!-- SAME SIZE WRAPPER -->
-        <div class="h-[420px] w-full max-w-[360px] bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_30.png?v=1742586623&width=860"
-            alt="Personalized Giggle"
-            class="w-full h-full object-contain"
-          >
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-cols-4 gap-5">
+
+      {% for item in hot_singles %}
+        {% with product=item.product %}
+
+        <div class="bg-white rounded-xl overflow-hidden
+                    border-0 sm:border sm:border-gray-200
+                    shadow-[0_0.5px_1px_rgba(0,0,0,0.08)] sm:shadow-none
+                    flex flex-col">
+
+          <!-- IMAGE -->
+          <a href="{% url 'product_detail' product.slug %}">
+            <div class="relative aspect-[4/5] bg-gray-100 overflow-hidden
+                        flex items-center justify-center">
+
+              <!-- Announcement -->
+              {% if site_announcements %}
+                {% with site_announcements.0 as ann %}
+                  <div
+                    class="absolute top-0 left-0 w-full
+                           h-5 sm:h-7
+                           text-white
+                           text-[9px] sm:text-xs
+                           flex items-center justify-center
+                           font-medium z-20"
+                    style="background:#062f3f;">
+                    {{ ann.text|safe }}
+                  </div>
+                {% endwith %}
+              {% endif %}
+
+              {% if product.image %}
+                <img
+                  src="{{ product.image.url }}"
+                  alt="{{ product.title }}"
+                  class="w-full h-full object-cover">
+              {% endif %}
+
+              
+
+            </div>
+          </a>
+<!-- CONTENT -->
+<div class="p-4 flex flex-col flex-1">
+  <!-- TITLE -->
+<h3 class="text-sm sm:text-base font-semibold mb-2 line-clamp-2">
+  {{ product.title }}
+</h3>
+
+   <!-- REVIEWS -->
+{% if item.review_count > 0 %}
+
+<div class="flex flex-col items-center mt-2 mb-3">
+
+  <!-- Stars + Count -->
+  <div class="flex items-center gap-1 text-yellow-400 text-base font-semibold">
+
+    {% for i in "12345" %}
+      {% if item.avg_rating|default:0 >= forloop.counter %}
+        ★
+      {% else %}
+        ☆
+      {% endif %}
+    {% endfor %}
+
+    <span class="text-gray-600 text-sm font-medium ml-1">
+      ({{ item.review_count }})
+    </span>
+
+  </div>
+
+</div>
+
+{% else %}
+
+<div class="text-xs text-gray-400 text-center mt-2 mb-3">
+  No reviews yet
+</div>
+
+{% endif %}
+
+
+
+            <!-- CTA -->
+            <div class="mt-auto">
+
+              {% if product.requires_custom_image %}
+                <a href="{% url 'product_detail' product.slug %}"
+                   class="w-full flex items-center justify-between
+                          bg-black text-white
+                          py-3 px-4 rounded-lg
+                          text-sm font-medium">
+
+                  <span>Customize</span>
+
+                  <span class="flex items-center gap-1 text-xs text-gray-300">
+                    {% if product.compare_at_price %}
+                      <span class="hidden lg:inline line-through">
+                        ₹{{ product.compare_at_price|floatformat:0 }}
+                      </span>
+                    {% endif %}
+
+                    <span class="font-semibold text-white">
+                      ₹{{ product.price|floatformat:0 }}
+                    </span>
+                  </span>
+
+                </a>
+
+              {% else %}
+
+                <!-- MOBILE CTA -->
+                <button onclick="addToCart({{ product.id }})"
+                        class="lg:hidden w-full flex items-center justify-between
+                               bg-blue-400 text-white
+                               px-4 py-2.5 rounded-md
+                               text-sm font-semibold">
+
+                  <span>Add</span>
+
+                  <span class="text-xs font-semibold">
+                    ₹{{ product.price|floatformat:0 }}
+                  </span>
+
+                </button>
+
+                <!-- DESKTOP CTA -->
+                <button onclick="addToCart({{ product.id }})"
+                        class="hidden lg:flex w-full items-center justify-center
+                               bg-blue-400 text-white
+                               py-3 rounded-lg
+                               text-sm font-medium">
+
+                  <span>Add To Cart</span>
+
+                  <span class="flex items-center gap-1
+                               text-xs text-white/90 ml-3">
+
+                    {% if product.compare_at_price %}
+                      <span class="line-through">
+                        ₹{{ product.compare_at_price|floatformat:0 }}
+                      </span>
+                    {% endif %}
+
+                    <span class="font-semibold">
+                      ₹{{ product.price|floatformat:0 }}
+                    </span>
+
+                  </span>
+
+                </button>
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
         </div>
 
-        <h3 class="text-xl font-serif mb-2">Personalized Giggles</h3>
-
-        <p class="text-gray-600 max-w-xs mb-6">
-          Perfect cosy gift for yourself or for your annoyingly cute friends.
-        </p>
-
-        <button class="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-900 transition">
-          Explore Now
-        </button>
-      </div>
-
-      <!-- RIGHT -->
-      <div class="flex flex-col items-center text-center">
-
-        <!-- SAME SIZE WRAPPER -->
-        <div class="h-[420px] w-full max-w-[360px] bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
-          <img
-            src="https://bhootiya.com/cdn/shop/files/Rs_999_Fe_31.png?v=1742586693&width=860"
-            alt="Personalized Frame"
-            class="w-full h-full object-contain"
-          >
-        </div>
-
-        <h3 class="text-xl font-serif mb-2">Personalized Frames</h3>
-
-        <p class="text-gray-600 max-w-xs mb-6">
-          Perfect cosy gift for yourself or for your annoyingly cute friends.
-        </p>
-
-        <button class="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-900 transition">
-          Explore Now
-        </button>
-      </div>
+        {% endwith %}
+      {% endfor %}
 
     </div>
+
   </div>
+
 </section>
+{% endif %}
+
 
 
 <section class="w-full overflow-hidden bg-black text-white">
@@ -385,95 +515,78 @@
     </p>
   </div>
 
-  <!-- Reviews Wrapper -->
-  <div class="max-w-[1400px] mx-auto px-6 relative">
+  <!-- Reviews Grid -->
+  <div class="max-w-[1200px] mx-auto px-6">
 
-    <!-- Slider -->
-    <div
-      id="reviewSlider"
-      class="flex gap-8 overflow-x-auto scroll-smooth
-             snap-x snap-mandatory
-             [&::-webkit-scrollbar]:hidden"
-    >
+    <div class="grid
+                grid-cols-1
+                md:grid-cols-2
+                lg:grid-cols-3
+                gap-10">
 
       {% for review in reviews %}
+
       <div
-        class="snap-start
-               w-[300px] min-w-[300px] max-w-[300px]
-               bg-white rounded-2xl
-               border border-gray-100
-               px-6 py-8
+        class="bg-white rounded-2xl
+               border border-gray-200
+               shadow-md
+               px-8 py-10
                text-center
                flex flex-col items-center
-               transition-all hover:shadow-md"
-        onclick="openReviewModal(
-          '{{ review.name|escapejs }}',
-          '{{ review.review|escapejs }}',
-          {{ review.rating }},
-          '{% if review.photo %}{{ review.photo.url }}{% endif %}'
-        )"
+               transition hover:shadow-xl"
       >
 
-        <!-- Photo -->
+        <!-- PHOTO (TALL LIKE IMFRESH) -->
         {% if review.photo %}
-          <img
-            src="{{ review.photo.url }}"
-            alt="{{ review.name }}"
-            class="w-16 h-16 rounded-full mb-4 object-cover"
-          >
+        <img
+          src="{{ review.photo.url }}"
+          alt="{{ review.name }}"
+          class="w-24 h-32
+                 rounded-xl
+                 object-cover
+                 mb-6
+                 shadow-sm"
+        >
         {% endif %}
 
-        <!-- Stars -->
-        <div class="flex justify-center gap-1 text-yellow-400 text-2xl mb-4">
-  {% for i in "12345" %}
-    {% if forloop.counter <= review.rating %}
-      ★
-    {% else %}
-      <span class="text-gray-300">★</span>
-    {% endif %}
-  {% endfor %}
-</div>
-
-        <!-- Comment (2 lines + …) -->
+        <!-- REVIEW TEXT -->
         <p
-          class="text-gray-800 text-base leading-relaxed
-                 line-clamp-2 break-anywhere
-                 mb-3 min-h-[48px]"
+          class="text-gray-900 text-base
+                 leading-relaxed
+                 mb-6
+                 min-h-[80px]"
         >
           {{ review.review }}
         </p>
 
-        <!-- Name -->
-        <p class="mt-4 text-base font-semibold text-gray-900">
-          {{ review.name }}
+        <!-- STARS -->
+        <div class="flex justify-center gap-1 text-black text-lg mb-3">
+
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}
+              ★
+            {% else %}
+              <span class="text-gray-300">★</span>
+            {% endif %}
+          {% endfor %}
+
+        </div>
+
+        <!-- NAME -->
+        <p class="text-base font-semibold text-gray-900">
+          {{ review.name }}, Buyer
         </p>
 
       </div>
+
       {% endfor %}
 
     </div>
 
-    <!-- Arrows (desktop only) -->
-    <button
-      onclick="slideReviews(-1)"
-      class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2
-             w-10 h-10 bg-black text-white rounded-full
-             items-center justify-center"
-    >
-      ❮
-    </button>
-
-    <button
-      onclick="slideReviews(1)"
-      class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2
-             w-10 h-10 bg-black text-white rounded-full
-             items-center justify-center"
-    >
-      ❯
-    </button>
-
   </div>
+
 </section>
+
 
 
 <div

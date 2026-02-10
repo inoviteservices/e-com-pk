@@ -86,6 +86,25 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+class HotSingle(models.Model):
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="hot_single"
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]  # newest first
+
+    def __str__(self):
+        return f"Hot: {self.product.title}"
+
+
 class CustomerReview(models.Model):
 
     product = models.ForeignKey(

@@ -1,21 +1,40 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from products.models import Category, Product
+from products.models import Category, Product, HotSingle
 from pages.models import CustomerReview, NewsletterSubscriber
 from django.views.decorators.http import require_POST
+from django.db.models import Avg, Count
+
 
 def home(request):
+
     categories = Category.objects.all()
-    products = Product.objects.filter(is_active=True)[:8]
-    reviews = CustomerReview.objects.filter(is_active=True)[:4]
+
+    products = Product.objects.filter(
+        is_active=True
+    )[:8]
+
+    reviews = CustomerReview.objects.filter(
+        is_active=True
+    )[:4]
+
+
+    hot_singles = HotSingle.objects.filter(
+        is_active=True,
+        product__is_active=True
+    ).select_related("product").annotate(
+        avg_rating=Avg("product__reviews__rating"),
+        review_count=Count("product__reviews")
+    )[:8]
+
 
     return render(request, "home.html", {
         "categories": categories,
         "products": products,
         "reviews": reviews,
+        "hot_singles": hot_singles,
         "active_nav": "home",
     })
-
 
 def terms_of_service(request):
     return render(request, "pages/terms-of-service.html")

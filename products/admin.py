@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from .models import Product, Category, CustomerReview
+from .models import Product, Category, CustomerReview, HotSingle
 import csv
 from django.http import HttpResponse
 from django.urls import path
@@ -60,9 +60,22 @@ class ProductAdmin(admin.ModelAdmin):
     exclude = ("slug", "sku")
 
     inlines = [CustomerReviewInline]
+# ------------------------
+# Hot Single
+# ------------------------
 
-    
+@admin.register(HotSingle)
+class HotSingleAdmin(admin.ModelAdmin):
 
+    list_display = ("product", "is_active", "created_at")
+
+    list_editable = ("is_active",)
+
+    list_filter = ("is_active",)
+
+    search_fields = ("product__title",)
+
+    ordering = ("-created_at",)
 
 # ------------------------
 # CATEGORY ADMIN
