@@ -54,12 +54,23 @@ class ProductAdmin(admin.ModelAdmin):
         "title",
         "price",
         "stock",
+        "sold_units",
+        "is_active",
+    )
+
+    list_editable = (
+        "stock",
+        "sold_units",
         "is_active",
     )
 
     exclude = ("slug", "sku")
 
-    inlines = [CustomerReviewInline]
+    search_fields = ("title", "sku")
+
+    list_filter = ("is_active", "category")
+
+
 # ------------------------
 # Hot Single
 # ------------------------

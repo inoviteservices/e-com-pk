@@ -51,6 +51,12 @@ class Product(models.Model):
 
     stock = models.IntegerField()
 
+    sold_units = models.PositiveIntegerField(
+    default=0,
+    help_text="Total units sold"
+)
+
+
     is_active = models.BooleanField(default=True)
 
     category = models.ForeignKey(

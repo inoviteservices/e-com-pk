@@ -63,8 +63,36 @@
       <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
       <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
       <button class="dot w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/40"></button>
+      
     {% endif %}
   </div>
+  <!-- PREV / NEXT -->
+<button
+  class="hero-prev absolute left-3 sm:left-6 top-1/2 -translate-y-1/2
+         z-30
+         bg-black/50 hover:bg-black/70
+         text-white
+         w-9 h-9 sm:w-11 sm:h-11
+         rounded-full
+         flex items-center justify-center
+         transition"
+>
+  ❮
+</button>
+
+<button
+  class="hero-next absolute right-3 sm:right-6 top-1/2 -translate-y-1/2
+         z-30
+         bg-black/50 hover:bg-black/70
+         text-white
+         w-9 h-9 sm:w-11 sm:h-11
+         rounded-full
+         flex items-center justify-center
+         transition"
+>
+  ❯
+</button>
+
 
 </section>
 
@@ -113,147 +141,127 @@
 </section>
 
 
- 
+ <section class="bg-[#fafaf0] py-12">
 
+  <div class="max-w-[1400px] mx-auto px-6 relative">
 
+    <!-- Header -->
+    <div class="mb-10 text-center">
+      <h2
+        class="text-[28px] sm:text-[36px] md:text-[44px]
+               font-semibold tracking-tight
+               text-gray-900 leading-tight"
+      >
+        SHOP BY CATEGORY
+      </h2>
+    </div>
 
-<section class="relative py-16 bg-gradient-to-b from-[#eaf6ff] to-[#bfe4ff]">
-  
+    {% if categories %}
 
-  <!-- Header -->
-  <div class="text-center mb-10 px-4 sm:px-6">
+    <!-- LEFT ARROW -->
+    <button
+      class="cat-prev hidden lg:flex
+             absolute -left-4 top-1/2 -translate-y-1/2
+             z-30
+             bg-gray-800/80 hover:bg-gray-900
+             text-white
+             w-11 h-11
+             rounded-full
+             items-center justify-center
+             shadow-md transition"
+    >
+      ❮
+    </button>
 
-    <h2 class="text-3xl font-extrabold uppercase tracking-wide">
-      Shop by Category
-    </h2>
-    <p class="mt-2 text-lg text-gray-800">
-      Thoughtfully curated collections to help you find the right pick
-    </p>
-   
-  </div>
+    <!-- RIGHT ARROW -->
+    <button
+      class="cat-next hidden lg:flex
+             absolute -right-4 top-1/2 -translate-y-1/2
+             z-30
+             bg-gray-800/80 hover:bg-gray-900
+             text-white
+             w-11 h-11
+             rounded-full
+             items-center justify-center
+             shadow-md transition"
+    >
+      ❯
+    </button>
 
-  <!-- Carousel Wrapper -->
-  {% if categories %}
-<div class="relative max-w-[1400px] mx-auto px-0 sm:px-6">
+    <!-- SCROLL CONTAINER -->
+    <div
+  class="category-row
+         grid grid-flow-col
 
+         auto-cols-[33.33%]      <!-- Mobile: 3 items -->
+         sm:auto-cols-[25%]     <!-- Tablet: 4 items -->
+         lg:auto-cols-[16.66%]  <!-- Desktop: 6 items -->
 
-  <!-- Left Arrow (desktop only) -->
-  <button
-    class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
-           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
-           items-center justify-center transition"
-  >
-    ❮
-  </button>
+         gap-0
+         overflow-x-auto
+         scroll-smooth
+         px-4 sm:px-6 lg:px-10
 
-  <!-- Right Arrow (desktop only) -->
-  <button
-    class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
-           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
-           items-center justify-center transition"
-  >
-    ❯
-  </button>
-
-  <!-- Cards -->
-  <div
-  class="flex gap-6 overflow-x-auto scroll-smooth
-         pl-4 pr-4
-         scroll-pl-4 sm:scroll-pl-6
-         snap-x snap-mandatory
+         place-items-center
          [&::-webkit-scrollbar]:hidden"
 >
 
 
-
-
-    {% for category in categories %}
-      <article
-  class="group
-         min-w-[240px] max-w-[240px]
-         sm:min-w-[280px] sm:max-w-[280px]
-         lg:min-w-[300px] lg:max-w-[300px]
-         bg-white rounded-2xl
-         shadow-md
-         snap-start
-         transition-all duration-300
-         hover:-translate-y-1 hover:shadow-xl"
->
-
-
-
-
-        <a href="/products/category/{{ category.slug }}/">
-
-<!-- Image Wrapper -->
-<div
-  class="relative overflow-hidden rounded-t-2xl"
->
-
-  <!-- Announcement Overlay -->
-  {% if site_announcements %}
-    {% with site_announcements.0 as ann %}
-      <div
-        class="absolute top-0 left-0 w-full z-20
-               h-6 sm:h-7
-               bg-[#062f3f]
-               text-white
-               text-[9px] sm:text-xs
-               flex items-center justify-center
-               font-medium
-               tracking-wide"
+      {% for category in categories %}
+      <a
+        href="/products/category/{{ category.slug }}/"
+        class="flex-shrink-0 text-center block"
       >
-        {{ ann.text|safe }}
-      </div>
-    {% endwith %}
-  {% endif %}
 
-  <!-- Image -->
-  {% if category.image %}
-    <img
-      src="{{ category.image.url }}"
-      alt="{{ category.name }}"
-      class="w-full aspect-[4/5]
-             object-cover
-             transition-transform duration-500 ease-out
-             group-hover:scale-[1.04]"
-    >
-  {% else %}
-    <div
-      class="w-full aspect-[4/5]
-             flex items-center justify-center
-             bg-gray-100
-             text-gray-400 text-sm font-medium"
-    >
-      No Image
+        <!-- Circle -->
+        <div
+          class="mx-auto
+                 w-24 h-24
+                 sm:w-28 sm:h-28
+                 lg:w-32 lg:h-32
+                 rounded-full
+                 overflow-hidden
+                 bg-white
+                 shadow-md
+                 transition
+                 hover:scale-105">
+
+          {% if category.image %}
+            <img
+              src="{{ category.image.url }}"
+              alt="{{ category.name }}"
+              class="w-full h-full object-cover"
+            >
+          {% else %}
+            <div
+              class="w-full h-full
+                     flex items-center justify-center
+                     text-xs text-gray-400">
+              No Image
+            </div>
+          {% endif %}
+
+        </div>
+
+        <!-- Name -->
+        <p
+          class="mt-3 text-sm sm:text-base
+                 font-medium text-gray-800 truncate px-2"
+        >
+          {{ category.name }}
+        </p>
+
+      </a>
+      {% endfor %}
+
     </div>
-  {% endif %}
 
-</div>
-
-
-
-
-
-          <!-- Content -->
-          <div class="p-6 text-center">
-            <h3 class="font-semibold text-lg">
-              {{ category.name }}
-            </h3>
-            <p class="text-sm text-gray-500 mt-1">
-              Explore collection →
-            </p>
-          </div>
-
-        </a>
-      </article>
-    {% endfor %}
+    {% endif %}
 
   </div>
-</div>
-{% endif %}
 
 </section>
+
 
 
 {% if hot_singles %}
@@ -269,7 +277,7 @@
            font-semibold tracking-tight
            text-gray-900 leading-tight"
   >
-    HOT SINGLES
+    HOT PRODUCTS  
   </h2>
 
   <p
@@ -502,6 +510,10 @@
 </section>
 
 
+
+{% comment %} REVIEW SECTION {% endcomment %}
+
+
 {% if reviews %}
 <section class="py-20 bg-white relative">
 
@@ -518,35 +530,63 @@
   <!-- Reviews Grid -->
   <div class="max-w-[1200px] mx-auto px-6">
 
-    <div class="grid
-                grid-cols-1
-                md:grid-cols-2
-                lg:grid-cols-3
-                gap-10">
+    <!-- GRID -->
+    <div
+      id="reviewGrid"
+      class="grid
+             grid-cols-1
+             md:grid-cols-2
+             lg:grid-cols-3
+             gap-10"
+    >
 
       {% for review in reviews %}
 
+      <!-- REVIEW CARD -->
       <div
-        class="bg-white rounded-2xl
-               border border-gray-200
-               shadow-md
-               px-8 py-10
-               text-center
-               flex flex-col items-center
-               transition hover:shadow-xl"
-      >
+          class="review-card
+                bg-white rounded-2xl
+                border border-gray-200
+                shadow-md
+                px-8 py-10
+                text-center
+                flex flex-col items-center
+                transition hover:shadow-xl
+                cursor-pointer
 
-        <!-- PHOTO (TALL LIKE IMFRESH) -->
-        {% if review.photo %}
-        <img
-          src="{{ review.photo.url }}"
-          alt="{{ review.name }}"
-          class="w-24 h-32
-                 rounded-xl
-                 object-cover
-                 mb-6
-                 shadow-sm"
+                {% if forloop.counter > 3 %}
+                hidden review-hidden
+                {% endif %}"
+          onclick="window.openReviewModal(
+            '{{ review.name|escapejs }}',
+            '{{ review.review|escapejs }}',
+            {{ review.rating }},
+            '{% if review.photo %}{{ review.photo.url }}{% else %}{% endif %}'
+          )"
         >
+
+
+        <!-- PHOTO -->
+        {% if review.photo %}
+          <img
+            src="{{ review.photo.url }}"
+            alt="{{ review.name }}"
+            class="w-24 h-32
+                   rounded-xl
+                   object-cover
+                   mb-6
+                   shadow-sm"
+          >
+        {% else %}
+          <div
+            class="w-24 h-32
+                   rounded-xl
+                   bg-gray-100
+                   flex items-center justify-center
+                   mb-6 text-gray-400 text-xs"
+          >
+            No Photo
+          </div>
         {% endif %}
 
         <!-- REVIEW TEXT -->
@@ -554,7 +594,13 @@
           class="text-gray-900 text-base
                  leading-relaxed
                  mb-6
-                 min-h-[80px]"
+                 min-h-[80px]
+
+                 line-clamp-3
+                 break-words
+                 break-all
+                 overflow-hidden
+                 text-ellipsis"
         >
           {{ review.review }}
         </p>
@@ -582,6 +628,27 @@
       {% endfor %}
 
     </div>
+
+    <!-- VIEW MORE BUTTON -->
+    {% if reviews|length > 3 %}
+    <div class="mt-10 text-center">
+
+      <button
+        id="viewMoreReviews"
+        class="px-6 py-2
+               bg-gray-900
+               text-white
+               rounded-full
+               text-sm
+               font-medium
+               hover:bg-gray-800
+               transition"
+      >
+        View More Reviews
+      </button>
+
+    </div>
+    {% endif %}
 
   </div>
 
@@ -636,71 +703,6 @@
 
 
 
-    <div id="combo-carousel"
-         class="flex gap-6 overflow-x-auto scroll-smooth pb-4
-                [&::-webkit-scrollbar]:hidden">
-
-      {% for product in combos %}
-      <article
-        class="min-w-[260px] max-w-[260px]
-               bg-white rounded-2xl shadow-lg
-               overflow-hidden flex flex-col">
-
-        <!-- Image -->
-        <div class="bg-gray-100 p-4">
-          {% if product.image %}
-          <img
-            src="{{ product.image.url }}"
-            alt="{{ product.title }}"
-            class="w-full h-52 object-contain"
-          >
-          {% endif %}
-        </div>
-
-        <!-- Content -->
-        <div class="p-4 text-center flex flex-col flex-1">
-
-          <!-- Title -->
-          <h3 class="text-sm font-semibold mb-2 line-clamp-2">
-            {{ product.title }}
-          </h3>
-
-          <!-- Rating -->
-          <div class="flex items-center justify-center gap-1 text-yellow-400 text-sm mb-2">
-            ★★★★★
-            <span class="text-gray-600 text-xs">
-              ({{ product.stock }})
-            </span>
-          </div>
-
-          <!-- Price -->
-          <div class="flex justify-center items-center gap-2 mb-4">
-            <span class="text-lg font-bold text-sky-500">
-              ₹{{ product.price }}
-            </span>
-            {% if product.compare_at_price %}
-            <span class="text-sm text-gray-500 line-through">
-              ₹{{ product.compare_at_price }}
-            </span>
-            {% endif %}
-          </div>
-
-          <!-- CTA -->
-          <button
-            class="mt-auto bg-sky-400 hover:bg-sky-500
-                   text-white text-sm font-medium
-                   py-2 rounded-full transition">
-            Buy Now
-          </button>
-
-        </div>
-      </article>
-      {% endfor %}
-
-    </div>
-  </div>
-</section>
-
 </main>
 
 
@@ -725,99 +727,156 @@
 }
 </style>
 
+
+
+
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const slides = document.querySelectorAll(".hero-slide");
-    const dots = document.querySelectorAll(".dot");
-    let current = 0;
+document.addEventListener("DOMContentLoaded", () => {
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle("opacity-100", i === index);
-        slide.classList.toggle("opacity-0", i !== index);
-      });
+  /* ======================
+     HERO SLIDER
+  ====================== */
 
-      dots.forEach((dot, i) => {
-        dot.classList.toggle("bg-white", i === index);
-        dot.classList.toggle("bg-white/40", i !== index);
-      });
-    }
+  const slides = document.querySelectorAll(".hero-slide");
+  const dots = document.querySelectorAll(".dot");
 
-    function nextSlide() {
-      current = (current + 1) % slides.length;
-      showSlide(current);
-    }
+  let current = 0;
 
-    // Auto slide every 4s
-    setInterval(nextSlide, 4000);
-
-    // Dot click support
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
-        current = index;
-        showSlide(current);
-      });
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("opacity-100", i === index);
+      slide.classList.toggle("opacity-0", i !== index);
     });
 
-    // Init
-    showSlide(0);
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("bg-white", i === index);
+      dot.classList.toggle("bg-white/40", i !== index);
+    });
+  }
+
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  function prevSlide() {
+    current = (current - 1 + slides.length) % slides.length;
+    showSlide(current);
+  }
+
+  // Auto play
+  if (slides.length > 1) {
+    setInterval(nextSlide, 4000);
+  }
+
+  // Hero buttons
+  document.querySelector(".hero-next")?.addEventListener("click", nextSlide);
+  document.querySelector(".hero-prev")?.addEventListener("click", prevSlide);
+
+  // Dots
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+      current = i;
+      showSlide(current);
+    });
   });
-</script>
 
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>
+  if (slides.length) showSlide(0);
 
 
-<script>
-function openReviewModal(name, text, rating, photoUrl) {
-  const overlay = document.getElementById("reviewOverlay");
 
-  // Lock background scroll
-  document.body.classList.add("overflow-hidden");
+  /* ======================
+     CATEGORY SLIDER
+  ====================== */
 
-  // Set content
-  document.getElementById("modalName").innerText = name;
-  document.getElementById("modalText").innerText = text;
+  const catRow = document.querySelector(".category-row");
 
-  // Stars
-  document.getElementById("modalStars").innerHTML =
-    "★".repeat(rating) +
-    "<span class='text-gray-300'>" + "★".repeat(5 - rating) + "</span>";
+  document.querySelector(".cat-next")?.addEventListener("click", () => {
+    catRow?.scrollBy({ left: 300, behavior: "smooth" });
+  });
 
-  // Photo
-  const photo = document.getElementById("modalPhoto");
-  if (photoUrl) {
-    photo.src = photoUrl;
-    photo.classList.remove("hidden");
-  } else {
-    photo.classList.add("hidden");
-  }
+  document.querySelector(".cat-prev")?.addEventListener("click", () => {
+    catRow?.scrollBy({ left: -300, behavior: "smooth" });
+  });
 
-  // Show modal
-  overlay.classList.remove("hidden");
-}
 
-function closeReviewModal() {
-  const overlay = document.getElementById("reviewOverlay");
 
-  overlay.classList.add("hidden");
-  document.body.classList.remove("overflow-hidden");
-}
 
-// ESC key support (good UX)
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") closeReviewModal();
+
+  /* ======================
+     REVIEW MODAL
+  ====================== */
+
+  window.openReviewModal = function(name, text, rating, photoUrl) {
+
+    const overlay = document.getElementById("reviewOverlay");
+
+    document.body.classList.add("overflow-hidden");
+
+    document.getElementById("modalName").innerText = name;
+    document.getElementById("modalText").innerText = text;
+
+    document.getElementById("modalStars").innerHTML =
+      "★".repeat(rating) +
+      "<span class='text-gray-300'>" +
+      "★".repeat(5 - rating) +
+      "</span>";
+
+    const photo = document.getElementById("modalPhoto");
+
+    if (photoUrl) {
+      photo.src = photoUrl;
+      photo.classList.remove("hidden");
+    } else {
+      photo.classList.add("hidden");
+    }
+
+    overlay.classList.remove("hidden");
+  };
+
+  window.closeReviewModal = function() {
+    const overlay = document.getElementById("reviewOverlay");
+
+    overlay.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeReviewModal();
+  });
+
 });
 </script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
+  const btn = document.getElementById("viewMoreReviews");
+  const LOAD_COUNT = 3; // How many to load per click
+
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+
+    const hiddenCards = document.querySelectorAll(
+      ".review-card.review-hidden.hidden"
+    );
+
+    // Show next batch
+    for (let i = 0; i < LOAD_COUNT && i < hiddenCards.length; i++) {
+      hiddenCards[i].classList.remove("hidden");
+    }
+
+    // If no more hidden reviews → hide button
+    if (document.querySelectorAll(".review-card.review-hidden.hidden").length === 0) {
+      btn.classList.add("hidden");
+    }
+
+  });
+
+});
+</script>
 
 
 {% endblock %}

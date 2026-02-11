@@ -9,22 +9,41 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 
-    <!-- LEFT: PRODUCT IMAGE (STICKY) -->
-    <div class="lg:sticky lg:top-24">
-      <div class="rounded-2xl bg-white shadow-sm overflow-hidden">
-        {% if product.image %}
-          <img
-            src="{{ product.image.url }}"
-            class="w-full h-[520px] object-contain"
-            alt="{{ product.title }}"
-          >
-        {% else %}
-          <div class="h-[520px] flex items-center justify-center text-gray-400">
-            No image available
-          </div>
-        {% endif %}
+   <!-- LEFT: PRODUCT IMAGE (STICKY) -->
+<div class="lg:sticky lg:top-24">
+
+  <div class="relative rounded-2xl bg-white shadow-sm overflow-hidden">
+
+    {% if product.image %}
+      <img
+        src="{{ product.image.url }}"
+        class="w-full h-[520px] object-contain"
+        alt="{{ product.title }}"
+      >
+    {% else %}
+      <div class="h-[520px] flex items-center justify-center text-gray-400">
+        No image available
       </div>
+    {% endif %}
+
+    <!-- SOLD BADGE (TOP RIGHT) -->
+    {% if product.sold_units > 0 %}
+    <div
+      class="absolute top-4 right-4
+             bg-red-500 text-white
+             text-xs md:text-sm
+             font-semibold
+             px-4 py-1.5
+             rounded-full
+             shadow-lg"
+    >
+      {{ product.sold_units }}+ units sold
     </div>
+    {% endif %}
+
+  </div>
+
+</div>
 
     <!-- RIGHT: PRODUCT INFO -->
     <div class="space-y-8">
@@ -174,13 +193,16 @@
 </div>
 <h2 class="text-xl font-semibold">Product Description</h2>
 
-        <!-- ADMIN-CONTROLLED DESCRIPTION -->
 <!-- FORMATTED PRODUCT DESCRIPTION -->
-<div class="w-full text-gray-700 space-y-4 leading-relaxed text-sm">
+<div
+  class="w-full text-gray-700 space-y-4 leading-relaxed text-sm
+         break-words break-all overflow-hidden"
+>
 
   {{ product.description|linebreaksbr }}
 
 </div>
+
 
 
 
@@ -268,7 +290,6 @@
 
 
 
-  <!-- FULL WIDTH CUSTOMER REVIEWS -->
 </div> <!-- Close Right Column -->
 </div> <!-- Close Grid -->
 
@@ -408,6 +429,8 @@
       
 
     </div>
+
+    
     <!-- REVIEWS LIST -->
 <div class="divide-y">
 
@@ -439,10 +462,7 @@
 
           </div>
 
-          <!-- Review Title (First Line Only) -->
-          <p class="font-semibold text-lg text-gray-900 leading-snug">
-            {{ review.review|truncatewords:6 }}
-          </p>
+       
 
           <!-- Review Description -->
           <p class="text-gray-600 text-base leading-relaxed">
@@ -556,7 +576,6 @@
 
 </section>
 
-</section>
 
 <!-- CUSTOM PRODUCT ADD -->
 <script>
@@ -641,45 +660,52 @@ document.addEventListener("click", function (e) {
 });
 </script>
 
-
-<!-- READ MORE REVIEWS -->
+<!-- READ MORE REVIEWS (LOAD 3 EACH TIME) -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
   const reviews = document.querySelectorAll(".review-item");
-  const btn = document.getElementById("readMoreContainer");
+  const btnContainer = document.getElementById("readMoreContainer");
 
-  const visibleCount = 3; // show first 3
+  const LOAD_COUNT = 3; // how many per click
+  let visible = 3;      // start with 3
 
-  // Safety
-  if (!reviews.length || !btn) return;
+  if (!reviews.length || !btnContainer) return;
 
-  // Hide extra reviews
-  if (reviews.length > visibleCount) {
-
-    for (let i = visibleCount; i < reviews.length; i++) {
-      reviews[i].classList.add("hidden");
+  // Hide all except first 3
+  reviews.forEach((review, index) => {
+    if (index >= visible) {
+      review.classList.add("hidden");
     }
-
-    btn.classList.remove("hidden");
-  }
-
-});
-
-
-function showAllReviews() {
-
-  const reviews = document.querySelectorAll(".review-item");
-  const btn = document.getElementById("readMoreContainer");
-
-  if (!reviews.length || !btn) return;
-
-  reviews.forEach(review => {
-    review.classList.remove("hidden");
   });
 
-  btn.classList.add("hidden");
-}
+  // Show button if needed
+  if (reviews.length > visible) {
+    btnContainer.classList.remove("hidden");
+  }
+
+
+  // Load more handler
+  window.showAllReviews = function () {
+
+    let shown = 0;
+
+    for (let i = visible; i < reviews.length && shown < LOAD_COUNT; i++) {
+
+      reviews[i].classList.remove("hidden");
+
+      shown++;
+      visible++;
+    }
+
+    // Hide button if done
+    if (visible >= reviews.length) {
+      btnContainer.classList.add("hidden");
+    }
+
+  };
+
+});
 </script>
 
 
