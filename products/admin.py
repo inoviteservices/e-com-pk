@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from .models import Product, Category, CustomerReview, HotSingle
+from .models import Product, Category, CustomerReview, HotSingle, ProductImage, ProductVideo
 import csv
 from django.http import HttpResponse
 from django.urls import path
@@ -12,7 +12,7 @@ from io import TextIOWrapper
 
 
 # ------------------------
-# REVIEW INLINE (CLEAN + USABLE)
+#  INLINE (CLEAN + USABLE)
 # ------------------------
 
 class CustomerReviewInline(admin.TabularInline):
@@ -42,13 +42,27 @@ class CustomerReviewInline(admin.TabularInline):
         }
     }
 
+class ProductImageInline(admin.TabularInline):
+
+    model = ProductImage
+    extra = 1
+
+class ProductVideoInline(admin.TabularInline):
+
+    model = ProductVideo
+    extra = 0
+    min_num = 0
+    can_delete = True
+    show_change_link = True
+
 
 # ------------------------
 # PRODUCT ADMIN
 # ------------------------
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+
+    inlines = [ProductImageInline,ProductVideoInline]
 
     list_display = (
         "title",
@@ -247,3 +261,8 @@ class CustomerReviewAdmin(admin.ModelAdmin):
             request,
             "admin/import_reviews_csv.html"
         )
+
+class ProductImageInline(admin.TabularInline):
+
+    model = ProductImage
+    extra = 1

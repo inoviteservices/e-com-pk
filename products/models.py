@@ -91,6 +91,26 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+class ProductImage(models.Model):
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="gallery"
+    )
+
+    image = models.ImageField(
+        upload_to="products/gallery/"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.product.title} Image"
+
 
 class HotSingle(models.Model):
 
@@ -152,3 +172,27 @@ class CustomerReview(models.Model):
 
     def __str__(self):
         return f"{self.product.title} – {self.name} ({self.rating}★)"
+    
+    
+class ProductVideo(models.Model):
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="videos"
+    )
+
+    video = models.FileField(
+        upload_to="products/videos/"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.product.title} - Video"
+
+
+

@@ -8,25 +8,65 @@
 <section class="max-w-7xl mx-auto px-4 py-12">
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
-
-   <!-- LEFT: PRODUCT IMAGE (STICKY) -->
+<!-- LEFT: PRODUCT IMAGE SLIDER (STICKY) -->
 <div class="lg:sticky lg:top-24">
 
   <div class="relative rounded-2xl bg-white shadow-sm overflow-hidden">
 
-    {% if product.image %}
+    <!-- SLIDER WRAPPER -->
+    <div
+      id="productSlider"
+      class="relative w-full h-[520px] overflow-hidden"
+    >
+
+      <!-- MAIN IMAGE -->
+      {% if product.image %}
       <img
         src="{{ product.image.url }}"
-        class="w-full h-[520px] object-contain"
+        class="slider-img absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
         alt="{{ product.title }}"
       >
-    {% else %}
-      <div class="h-[520px] flex items-center justify-center text-gray-400">
-        No image available
-      </div>
-    {% endif %}
+      {% endif %}
 
-    <!-- SOLD BADGE (TOP RIGHT) -->
+      <!-- GALLERY IMAGES -->
+      {% for img in product.gallery.all %}
+      <img
+        src="{{ img.image.url }}"
+        class="slider-img absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-700"
+        alt="{{ product.title }}"
+      >
+      {% endfor %}
+
+    </div>
+
+
+    <!-- LEFT ARROW -->
+    <button
+      onclick="prevSlide()"
+      class="absolute left-3 top-1/2 -translate-y-1/2
+             bg-black/60 text-white
+             w-9 h-9 rounded-full
+             flex items-center justify-center
+             hover:bg-black transition"
+    >
+      ‹
+    </button>
+
+
+    <!-- RIGHT ARROW -->
+    <button
+      onclick="nextSlide()"
+      class="absolute right-3 top-1/2 -translate-y-1/2
+             bg-black/60 text-white
+             w-9 h-9 rounded-full
+             flex items-center justify-center
+             hover:bg-black transition"
+    >
+      ›
+    </button>
+
+
+    <!-- SOLD BADGE -->
     {% if product.sold_units > 0 %}
     <div
       class="absolute top-4 right-4
@@ -35,7 +75,7 @@
              font-semibold
              px-4 py-1.5
              rounded-full
-             shadow-lg"
+             shadow-lg z-20"
     >
       {{ product.sold_units }}+ units sold
     </div>
@@ -44,6 +84,7 @@
   </div>
 
 </div>
+
 
     <!-- RIGHT: PRODUCT INFO -->
     <div class="space-y-8">
@@ -162,6 +203,108 @@
 >
   Need Help? WhatsApp
 </a>
+
+<!-- PRODUCT VIDEOS SCROLLER -->
+{% if product.videos.exists %}
+
+<div class="w-full max-w-xl mx-auto mt-8">
+  <h3 class="text-xl font-semibold text-gray-900 mb-4 text-center">
+  Customer Moments 🎬
+</h3>
+
+
+  <div
+    id="videoScroller"
+    class="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory
+           scrollbar-hide p-2 bg-white rounded-2xl shadow-sm"
+  >
+
+    {% for video in product.videos.all %}
+
+    <div
+      class="video-box flex-shrink-0
+             w-full md:w-[48%]
+             snap-start relative rounded-xl overflow-hidden bg-black"
+    >
+
+      <div class="video-box relative">
+
+  <video
+  class="product-video w-full aspect-[9/16]
+         object-cover hidden rounded-xl bg-black"
+  muted
+  playsinline
+  preload="metadata"
+  onerror="this.closest('.video-box').remove()"
+>
+  <source src="{{ video.video.url }}" type="video/mp4">
+</video>
+
+
+  <!-- Play Button Overlay -->
+  <div
+    class="play-overlay absolute inset-0
+           flex items-center justify-center
+           text-white text-4xl
+           bg-black/30 cursor-pointer"
+  >
+    ▶
+  </div>
+
+</div>
+
+
+      <!-- Sound Button -->
+      <button
+        class="sound-btn absolute bottom-2 right-2
+               bg-black/70 text-white text-xs
+               px-2 py-1 rounded"
+      >
+        🔊
+      </button>
+
+    </div>
+
+    {% endfor %}
+
+  </div>
+
+</div>
+<!-- VIDEO MODAL -->
+<div
+  id="videoModal"
+  onclick="closeVideoModal()"
+  class="fixed inset-0 z-50 hidden
+       bg-black/60 backdrop-blur-md
+       flex items-center justify-center px-4"
+
+>
+
+
+  <div class="relative w-full max-w-md">
+
+    <!-- Close -->
+    <button
+      onclick="closeVideoModal()"
+      class="absolute -top-10 right-0
+             text-white text-3xl"
+    >
+      ✕
+    </button>
+
+    <video
+      id="modalVideo"
+      class="w-full aspect-[9/16] object-contain rounded-xl bg-black"
+      controls
+      autoplay
+    ></video>
+
+  </div>
+
+</div>
+
+{% endif %}
+
 
       <!-- PAYMENT / TRUST BADGES -->
 <div class="w-full mt-4">
@@ -577,8 +720,52 @@
 </section>
 
 
-<!-- CUSTOM PRODUCT ADD -->
+<!-- VIDEO MODAL -->
+<div
+  id="videoModal"
+  class="fixed inset-0 z-50 hidden
+         bg-black/80 flex items-center justify-center px-4"
+>
+
+  <div
+  class="relative w-full max-w-md"
+  onclick="event.stopPropagation()"
+>
+
+
+    <!-- Close -->
+    <button
+      onclick="closeVideoModal()"
+      class="absolute -top-10 right-0
+             text-white text-3xl"
+    >
+      ✕
+    </button>
+
+    <video
+      id="modalVideo"
+      class="w-full aspect-[9/16] object-contain rounded-xl bg-black"
+      controls
+      autoplay
+    ></video>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
 <script>
+/* ==================================================
+   CUSTOM PRODUCT ADD
+================================================== */
 function addCustomToCart(productId) {
 
   const form = document.getElementById("customOrderForm");
@@ -593,41 +780,32 @@ function addCustomToCart(productId) {
       "X-CSRFToken": getCSRFToken()
     }
   })
-
   .then(res => res.json())
-
   .then(data => {
 
     if (data.error) {
-
       alert(data.error);
-
-    } else {
-
-      // Reset form
-      form.reset();
-
-      // Clear file input (Safari fix)
-      const fileInput = form.querySelector('input[type="file"]');
-      if (fileInput) fileInput.value = "";
-
-      refreshCart(data);
-      openDrawer();
-      showCartToast("Custom product added 🖼️");
+      return;
     }
 
-  })
+    form.reset();
 
-  .catch(err => {
-    console.error("Cart Error:", err);
-  });
+    const fileInput = form.querySelector('input[type="file"]');
+    if (fileInput) fileInput.value = "";
+
+    refreshCart(data);
+    openDrawer();
+    showCartToast("Custom product added 🖼️");
+
+  })
+  .catch(err => console.error("Cart Error:", err));
 
 }
-</script>
 
 
-<!-- REVIEW MODAL -->
-<script>
+/* ==================================================
+   REVIEW MODAL
+================================================== */
 function openReviewModal() {
 
   const modal = document.getElementById("reviewModal");
@@ -636,6 +814,7 @@ function openReviewModal() {
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 }
+
 
 function closeReviewModal() {
 
@@ -647,8 +826,8 @@ function closeReviewModal() {
 }
 
 
-// Close modal when clicking outside
-document.addEventListener("click", function (e) {
+// Close review modal on backdrop click
+document.addEventListener("click", e => {
 
   const modal = document.getElementById("reviewModal");
   if (!modal) return;
@@ -658,52 +837,298 @@ document.addEventListener("click", function (e) {
   }
 
 });
-</script>
 
-<!-- READ MORE REVIEWS (LOAD 3 EACH TIME) -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+
+/* ==================================================
+   REVIEWS LOAD MORE
+================================================== */
+function initReviews() {
 
   const reviews = document.querySelectorAll(".review-item");
-  const btnContainer = document.getElementById("readMoreContainer");
+  const btn = document.getElementById("readMoreContainer");
 
-  const LOAD_COUNT = 3; // how many per click
-  let visible = 3;      // start with 3
+  let visible = 3;
+  const LOAD = 3;
 
-  if (!reviews.length || !btnContainer) return;
+  if (!reviews.length || !btn) return;
 
-  // Hide all except first 3
-  reviews.forEach((review, index) => {
-    if (index >= visible) {
-      review.classList.add("hidden");
-    }
+
+  reviews.forEach((r, i) => {
+    if (i >= visible) r.classList.add("hidden");
   });
 
-  // Show button if needed
+
   if (reviews.length > visible) {
-    btnContainer.classList.remove("hidden");
+    btn.classList.remove("hidden");
   }
 
 
-  // Load more handler
   window.showAllReviews = function () {
 
-    let shown = 0;
+    let count = 0;
 
-    for (let i = visible; i < reviews.length && shown < LOAD_COUNT; i++) {
+    for (let i = visible; i < reviews.length && count < LOAD; i++) {
 
       reviews[i].classList.remove("hidden");
 
-      shown++;
       visible++;
+      count++;
     }
 
-    // Hide button if done
     if (visible >= reviews.length) {
-      btnContainer.classList.add("hidden");
+      btn.classList.add("hidden");
     }
 
   };
+
+}
+
+
+/* ==================================================
+   PRODUCT IMAGE SLIDER
+================================================== */
+function initSlider() {
+
+  const slides = document.querySelectorAll(".slider-img");
+
+  let current = 0;
+  let timer = null;
+
+  if (!slides.length) return;
+
+
+  function showSlide(index) {
+
+    slides.forEach((img, i) => {
+      img.style.opacity = i === index ? "1" : "0";
+    });
+
+  }
+
+
+  window.nextSlide = function () {
+
+    current = (current + 1) % slides.length;
+    showSlide(current);
+    reset();
+
+  };
+
+
+  window.prevSlide = function () {
+
+    current = (current - 1 + slides.length) % slides.length;
+    showSlide(current);
+    reset();
+
+  };
+
+
+  function start() {
+
+    timer = setInterval(nextSlide, 4000);
+
+  }
+
+
+  function reset() {
+
+    clearInterval(timer);
+    start();
+
+  }
+
+
+  showSlide(0);
+  start();
+
+}
+
+
+/* ==================================================
+   VIDEO SLIDER + MODAL
+================================================== */
+function initVideos() {
+
+  const videos = document.querySelectorAll(".product-video");
+  const boxes = document.querySelectorAll(".video-box");
+  const dots = document.querySelectorAll(".video-dot");
+
+  let current = 0;
+  let timer = null;
+
+  if (!videos.length) return;
+
+
+  /* Remove broken videos */
+  videos.forEach(video => {
+
+    video.addEventListener("error", function () {
+
+      const box = this.closest(".video-box");
+      if (box) box.remove();
+
+    });
+
+  });
+
+
+  /* Preload videos (Fix 3rd delay) */
+  videos.forEach(v => {
+    v.preload = "auto";
+    v.load();
+  });
+
+
+  function visibleCount() {
+    return window.innerWidth >= 768 ? 2 : 1;
+  }
+
+
+  function showVideos(start) {
+
+    const count = visibleCount();
+
+    videos.forEach((video, i) => {
+
+      const overlay = boxes[i].querySelector(".play-overlay");
+
+      if (i >= start && i < start + count) {
+
+        video.classList.remove("hidden");
+        overlay.classList.remove("hidden");
+
+        video.currentTime = 0;
+        video.muted = true;
+        video.play();
+
+      } else {
+
+        video.pause();
+        video.classList.add("hidden");
+        overlay.classList.add("hidden");
+
+      }
+
+    });
+
+
+    dots.forEach((dot, i) => {
+
+      dot.classList.toggle("bg-gray-800", i === start);
+      dot.classList.toggle("bg-gray-300", i !== start);
+
+    });
+
+  }
+
+
+  function nextSlide() {
+
+    current += visibleCount();
+
+    if (current >= videos.length) {
+      current = 0;
+    }
+
+    showVideos(current);
+    reset();
+
+  }
+
+
+  function start() {
+
+    timer = setInterval(nextSlide, 10000);
+
+  }
+
+
+  function reset() {
+
+    clearInterval(timer);
+    start();
+
+  }
+
+
+  /* Open modal */
+  boxes.forEach((box, i) => {
+
+    box.addEventListener("click", () => {
+
+      const src = videos[i].querySelector("source").src;
+      openVideoModal(src);
+
+    });
+
+  });
+
+
+  /* Dots */
+  dots.forEach(dot => {
+
+    dot.addEventListener("click", function () {
+
+      current = parseInt(this.dataset.index);
+
+      showVideos(current);
+      reset();
+
+    });
+
+  });
+
+
+  window.addEventListener("resize", () => {
+    showVideos(current);
+  });
+
+
+  showVideos(0);
+  start();
+
+}
+
+
+/* ==================================================
+   VIDEO MODAL
+================================================== */
+function openVideoModal(src) {
+
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+
+  video.src = src;
+  video.muted = false;
+  video.play();
+
+  modal.classList.remove("hidden");
+
+}
+
+
+function closeVideoModal() {
+
+  const modal = document.getElementById("videoModal");
+  const video = document.getElementById("modalVideo");
+
+  video.pause();
+  video.src = "";
+
+  modal.classList.add("hidden");
+
+}
+
+
+/* ==================================================
+   INIT ALL
+================================================== */
+document.addEventListener("DOMContentLoaded", function () {
+
+  initReviews();
+  initSlider();
+  initVideos();
 
 });
 </script>
