@@ -248,7 +248,8 @@
           class="mt-3 text-sm sm:text-base
                  font-medium text-gray-800 truncate px-2"
         >
-          {{ category.name }}
+          {{ category.name|truncatechars:12 }}
+
         </p>
 
       </a>
@@ -655,6 +656,144 @@
 </section>
 
 
+
+<section class="relative pt-2 pb-4 bg-white">
+  
+
+  <!-- Header -->
+  <div class="text-center mb-10 px-4 sm:px-6">
+
+    <h2 class="text-3xl font-extrabold uppercase tracking-wide">
+      Shop by Category
+    </h2>
+    <p class="mt-2 text-lg text-gray-800">
+      Thoughtfully curated collections to help you find the right pick
+    </p>
+   
+  </div>
+
+  <!-- Carousel Wrapper -->
+  {% if categories %}
+<div class="relative max-w-[1400px] mx-auto px-0 sm:px-6">
+
+
+  <!-- Left Arrow (desktop only) -->
+  <button
+    class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
+           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+           items-center justify-center transition"
+  >
+    ❮
+  </button>
+
+  <!-- Right Arrow (desktop only) -->
+  <button
+    class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
+           bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+           items-center justify-center transition"
+  >
+    ❯
+  </button>
+
+  <!-- Cards -->
+  <div
+  class="flex gap-6 overflow-x-auto scroll-smooth
+         pl-4 pr-4
+         scroll-pl-4 sm:scroll-pl-6
+         snap-x snap-mandatory
+         [&::-webkit-scrollbar]:hidden"
+>
+
+
+
+
+    {% for category in categories %}
+      <article
+  class="group
+         min-w-[240px] max-w-[240px]
+         sm:min-w-[280px] sm:max-w-[280px]
+         lg:min-w-[300px] lg:max-w-[300px]
+         bg-white rounded-2xl
+         shadow-md
+         snap-start
+         transition-all duration-300
+         hover:-translate-y-1 hover:shadow-xl"
+>
+
+
+
+
+        <a href="/products/category/{{ category.slug }}/">
+
+<!-- Image Wrapper -->
+<div
+  class="relative overflow-hidden rounded-t-2xl"
+>
+
+  <!-- Announcement Overlay -->
+  {% if site_announcements %}
+    {% with site_announcements.0 as ann %}
+      <div
+        class="absolute top-0 left-0 w-full z-20
+               h-6 sm:h-7
+               bg-[#062f3f]
+               text-white
+               text-[9px] sm:text-xs
+               flex items-center justify-center
+               font-medium
+               tracking-wide"
+      >
+        {{ ann.text|safe }}
+      </div>
+    {% endwith %}
+  {% endif %}
+
+  <!-- Image -->
+  {% if category.image %}
+    <img
+      src="{{ category.image.url }}"
+      alt="{{ category.name }}"
+      class="w-full aspect-[4/5]
+             object-cover
+             transition-transform duration-500 ease-out
+             group-hover:scale-[1.04]"
+    >
+  {% else %}
+    <div
+      class="w-full aspect-[4/5]
+             flex items-center justify-center
+             bg-gray-100
+             text-gray-400 text-sm font-medium"
+    >
+      No Image
+    </div>
+  {% endif %}
+
+</div>
+
+
+
+
+
+          <!-- Content -->
+          <div class="p-6 text-center">
+            <h3 class="font-semibold text-lg">
+              {{ category.name }}
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Explore collection →
+            </p>
+          </div>
+
+        </a>
+      </article>
+    {% endfor %}
+
+  </div>
+</div>
+{% endif %}
+
+</section>
 
 <div
   id="reviewOverlay"

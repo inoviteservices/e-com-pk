@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<section class="max-w-7xl mx-auto px-4 py-12">
+<section class="max-w-7xl mx-auto px-4 pt-2 pb-8">
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 <!-- LEFT: PRODUCT IMAGE SLIDER (STICKY) -->
@@ -13,75 +13,98 @@
 
   <div class="relative rounded-2xl bg-white shadow-sm overflow-hidden">
 
-    <!-- SLIDER WRAPPER -->
-    <div
-      id="productSlider"
-      class="relative w-full h-[520px] overflow-hidden"
-    >
+  <!-- SLIDER WRAPPER -->
+  <div
+    id="productSlider"
+    class="relative w-full aspect-square overflow-hidden bg-white"
 
-      <!-- MAIN IMAGE -->
-      {% if product.image %}
-      <img
-        src="{{ product.image.url }}"
-        class="slider-img absolute inset-0 w-full h-full object-contain transition-opacity duration-700"
-        alt="{{ product.title }}"
-      >
-      {% endif %}
+  >
 
-      <!-- GALLERY IMAGES -->
-      {% for img in product.gallery.all %}
-      <img
-        src="{{ img.image.url }}"
-        class="slider-img absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-700"
-        alt="{{ product.title }}"
-      >
-      {% endfor %}
+    <!-- ANNOUNCEMENT BAR (TOP INSIDE IMAGE) -->
+    {% if site_announcements %}
+      {% with site_announcements.0 as ann %}
+       <div
+  class="absolute top-0 left-0 w-full
+         h-5 sm:h-7
+         text-white
+         text-[11px] sm:text-sm
+         flex items-center justify-center
+         font-semibold z-30"
+  style="background:#062f3f;"
+>
+  {{ ann.text|safe }}
+</div>
 
-    </div>
-
-
-    <!-- LEFT ARROW -->
-    <button
-      onclick="prevSlide()"
-      class="absolute left-3 top-1/2 -translate-y-1/2
-             bg-black/60 text-white
-             w-9 h-9 rounded-full
-             flex items-center justify-center
-             hover:bg-black transition"
-    >
-      ‹
-    </button>
-
-
-    <!-- RIGHT ARROW -->
-    <button
-      onclick="nextSlide()"
-      class="absolute right-3 top-1/2 -translate-y-1/2
-             bg-black/60 text-white
-             w-9 h-9 rounded-full
-             flex items-center justify-center
-             hover:bg-black transition"
-    >
-      ›
-    </button>
-
-
-    <!-- SOLD BADGE -->
-    {% if product.sold_units > 0 %}
-    <div
-      class="absolute top-4 right-4
-             bg-red-500 text-white
-             text-xs md:text-sm
-             font-semibold
-             px-4 py-1.5
-             rounded-full
-             shadow-lg z-20"
-    >
-      {{ product.sold_units }}+ units sold
-    </div>
+      {% endwith %}
     {% endif %}
 
+
+    <!-- SOLD BADGE (INSIDE IMAGE) -->
+    {% if product.sold_units > 0 %}
+      <div
+        class="absolute top-10 right-4
+               bg-red-500 text-white
+               text-xs md:text-sm
+               font-semibold
+               px-4 py-1.5
+               rounded-full
+               shadow-lg z-30"
+      >
+        {{ product.sold_units }}+ sold
+      </div>
+    {% endif %}
+
+
+    <!-- MAIN IMAGE -->
+    {% if product.image %}
+      <img
+        src="{{ product.image.url }}"
+        class="slider-img absolute inset-0 w-full h-full object-contain
+               transition-opacity duration-700"
+        alt="{{ product.title }}"
+      >
+    {% endif %}
+
+    <!-- GALLERY IMAGES -->
+    {% for img in product.gallery.all %}
+      <img
+        src="{{ img.image.url }}"
+        class="slider-img absolute inset-0 w-full h-full object-contain
+               opacity-0 transition-opacity duration-700"
+        alt="{{ product.title }}"
+      >
+    {% endfor %}
+
   </div>
+
+
+  <!-- LEFT ARROW -->
+  <button
+    onclick="prevSlide()"
+    class="absolute left-3 top-1/2 -translate-y-1/2
+           bg-black/60 text-white
+           w-9 h-9 rounded-full
+           flex items-center justify-center
+           hover:bg-black transition z-40"
+  >
+    ‹
+  </button>
+
+
+  <!-- RIGHT ARROW -->
+  <button
+    onclick="nextSlide()"
+    class="absolute right-3 top-1/2 -translate-y-1/2
+           bg-black/60 text-white
+           w-9 h-9 rounded-full
+           flex items-center justify-center
+           hover:bg-black transition z-40"
+  >
+    ›
+  </button>
+
+</div>
+
 
 </div>
 

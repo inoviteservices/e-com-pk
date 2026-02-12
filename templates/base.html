@@ -778,7 +778,30 @@ function closeDrawer() {
   cartOverlay?.classList.add("hidden");
 }
 
-openCart?.addEventListener("click", openDrawer);
+openCart?.addEventListener("click", function (e) {
+
+  e.preventDefault();
+
+  // Get cart count
+  let count = 0;
+
+  const badge = document.querySelector("[data-cart-count]");
+
+  if (badge) {
+    count = parseInt(badge.innerText.trim()) || 0;
+  }
+
+  // If cart empty
+  if (count === 0) {
+    showCartToast("🛒 Your cart is empty. Add items first!");
+    return;
+  }
+
+  // Else open drawer
+  openDrawer();
+
+});
+
 closeCart?.addEventListener("click", closeDrawer);
 cartOverlay?.addEventListener("click", closeDrawer);
 
