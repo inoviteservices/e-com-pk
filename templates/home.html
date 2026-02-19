@@ -521,135 +521,117 @@
   <!-- Heading -->
   <div class="text-center mb-14 px-6">
     <h2 class="text-3xl font-semibold tracking-tight">
-      Real people. Real experiences.
+      Real peeps, real results!
     </h2>
     <p class="mt-2 text-sm text-gray-600">
-      What our customers are saying
+      Customer Reviews &amp; Testimonials
     </p>
   </div>
 
   <!-- Reviews Grid -->
   <div class="max-w-[1200px] mx-auto px-6">
 
-    <!-- GRID -->
-    <div
-      id="reviewGrid"
-      class="grid
-             grid-cols-1
-             md:grid-cols-2
-             lg:grid-cols-3
-             gap-10"
-    >
+    <!-- SLIDER WRAPPER -->
+<div class="relative">
+
+<!-- Left Arrow -->
+<button
+  class="review-prev hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 z-20
+         bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+         items-center justify-center transition"
+>
+  ❮
+</button>
+
+<!-- Right Arrow -->
+<button
+  class="review-next hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 z-20
+         bg-black/80 hover:bg-black text-white w-10 h-10 rounded-full
+         items-center justify-center transition"
+>
+  ❯
+</button>
+
+
+  <!-- REVIEW SLIDER -->
+  <div
+  id="reviewGrid"
+  class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 [&::-webkit-scrollbar]:hidden"
+>
+
 
       {% for review in reviews %}
 
-      <!-- REVIEW CARD -->
-      <div
-          class="review-card
-                bg-white rounded-2xl
-                border border-gray-200
-                shadow-md
-                px-8 py-10
-                text-center
-                flex flex-col items-center
-                transition hover:shadow-xl
-                cursor-pointer
+<!-- REVIEW CARD -->
+<div
+  class="review-card
+  bg-white
+  rounded-2xl
+  border border-gray-200
+  shadow-md
+  px-6 py-8
+  text-center
+  flex flex-col items-center
+  transition hover:shadow-xl
+  cursor-pointer
 
-                {% if forloop.counter > 3 %}
-                hidden review-hidden
-                {% endif %}"
-          onclick="window.openReviewModal(
-            '{{ review.name|escapejs }}',
-            '{{ review.review|escapejs }}',
-            {{ review.rating }},
-            '{% if review.photo %}{{ review.photo.url }}{% else %}{% endif %}'
-          )"
-        >
+  min-w-[85%]
+  sm:min-w-[60%]
+  md:min-w-[32%]
 
+  snap-center"
 
-        <!-- PHOTO -->
-        {% if review.photo %}
-          <img
-            src="{{ review.photo.url }}"
-            alt="{{ review.name }}"
-            class="w-24 h-32
-                   rounded-xl
-                   object-cover
-                   mb-6
-                   shadow-sm"
-          >
-        {% else %}
-          <div
-            class="w-24 h-32
-                   rounded-xl
-                   bg-gray-100
-                   flex items-center justify-center
-                   mb-6 text-gray-400 text-xs"
-          >
-            No Photo
-          </div>
-        {% endif %}
+  onclick="window.openReviewModal(
+    '{{ review.name|escapejs }}',
+    '{{ review.review|escapejs }}',
+    {{ review.rating }},
+    '{% if review.photo %}{{ review.photo.url }}{% endif %}'
+  )"
+>
 
-        <!-- REVIEW TEXT -->
-        <p
-          class="text-gray-900 text-base
-                 leading-relaxed
-                 mb-6
-                 min-h-[80px]
+  <!-- PHOTO -->
+  {% if review.photo %}
+    <img
+      src="{{ review.photo.url }}"
+      alt="{{ review.name }}"
+      class="w-24 h-32 rounded-xl object-cover mb-6 shadow-sm"
+    >
+  {% else %}
+    <div
+      class="w-24 h-32 rounded-xl bg-gray-100 flex items-center justify-center mb-6 text-gray-400 text-xs"
+    >
+      No Photo
+    </div>
+  {% endif %}
 
-                 line-clamp-3
-                 break-words
-                 break-all
-                 overflow-hidden
-                 text-ellipsis"
-        >
-          {{ review.review }}
-        </p>
+  <!-- REVIEW TEXT -->
+  <p class="text-gray-900 text-base leading-relaxed mb-6 min-h-[80px] line-clamp-3 break-words">
+    {{ review.review }}
+  </p>
 
-        <!-- STARS -->
-        <div class="flex justify-center gap-1 text-black text-lg mb-3">
+  <!-- STARS -->
+  <div class="flex justify-center gap-1 text-black text-lg mb-3">
+    {% for i in "12345" %}
+      {% if forloop.counter <= review.rating %}
+        ★
+      {% else %}
+        <span class="text-gray-300">★</span>
+      {% endif %}
+    {% endfor %}
+  </div>
 
-          {% for i in "12345" %}
-            {% if forloop.counter <= review.rating %}
-              ★
-            {% else %}
-              <span class="text-gray-300">★</span>
-            {% endif %}
-          {% endfor %}
+  <!-- NAME -->
+  <p class="text-base font-semibold text-gray-900">
+    {{ review.name }}, Buyer
+  </p>
 
-        </div>
+</div>
 
-        <!-- NAME -->
-        <p class="text-base font-semibold text-gray-900">
-          {{ review.name }}, Buyer
-        </p>
+{% endfor %}
 
-      </div>
-
-      {% endfor %}
 
     </div>
 
-    <!-- VIEW MORE BUTTON -->
-    {% if reviews|length > 3 %}
-    <div class="mt-10 text-center">
-
-      <button
-        id="viewMoreReviews"
-        class="px-6 py-2
-               bg-gray-900
-               text-white
-               rounded-full
-               text-sm
-               font-medium
-               hover:bg-gray-800
-               transition"
-      >
-        View More Reviews
-      </button>
-
-    </div>
-    {% endif %}
 
   </div>
 
@@ -987,35 +969,34 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-
 <script>
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  const btn = document.getElementById("viewMoreReviews");
-  const LOAD_COUNT = 3; // How many to load per click
+  const reviewGrid = document.getElementById("reviewGrid");
 
-  if (!btn) return;
+  if (!reviewGrid) return;
 
-  btn.addEventListener("click", () => {
+  document.querySelector(".review-next")?.addEventListener("click", () => {
 
-    const hiddenCards = document.querySelectorAll(
-      ".review-card.review-hidden.hidden"
-    );
+    reviewGrid.scrollBy({
+      left: 350,
+      behavior: "smooth"
+    });
 
-    // Show next batch
-    for (let i = 0; i < LOAD_COUNT && i < hiddenCards.length; i++) {
-      hiddenCards[i].classList.remove("hidden");
-    }
+  });
 
-    // If no more hidden reviews → hide button
-    if (document.querySelectorAll(".review-card.review-hidden.hidden").length === 0) {
-      btn.classList.add("hidden");
-    }
+  document.querySelector(".review-prev")?.addEventListener("click", () => {
+
+    reviewGrid.scrollBy({
+      left: -350,
+      behavior: "smooth"
+    });
 
   });
 
 });
-</script>
 
+</script>
 
 {% endblock %}
