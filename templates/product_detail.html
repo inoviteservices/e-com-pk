@@ -464,139 +464,281 @@
 
 
 <!-- REVIEWS SECTION -->
-<section class="w-full bg-gray-50 py-16 mt-12">
+<section class="w-full py-16 mt-12">
 
   <div class="max-w-7xl mx-auto px-4">
 
     <!-- HEADING -->
     <h2 class="text-3xl font-serif text-center mb-10">
-      Customer Reviews
+      Reviews
     </h2>
 
     <!-- SUMMARY -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center mb-12">
+    <!-- SUMMARY -->
+<div class="grid md:grid-cols-2 gap-16 items-center mb-12">
 
-      <!-- Rating -->
-      <div class="text-center">
+  <!-- LEFT SIDE BARS -->
+  <div class="space-y-3">
 
-        <!-- Stars -->
-        <div class="flex justify-center text-sky-500 text-xl mb-2">
+    <!-- 5 -->
+    <div class="flex items-center gap-4 text-sm">
 
-          {% for i in "12345" %}
-            {% if avg_rating >= forloop.counter %}
-              ★
-            {% else %}
-              ☆
-            {% endif %}
-          {% endfor %}
+      <span class="w-16">5 stars</span>
 
-        </div>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full">
 
-        <p class="text-2xl font-semibold">
-          {{ avg_rating }} / 5
-        </p>
-
-        <p class="text-sm text-gray-600">
-          Based on {{ total_reviews }} reviews ✔
-        </p>
-
-      </div>
-
-      <!-- Bars -->
-      <div class="space-y-2">
-
-        <!-- 5 Star -->
-        <div class="flex items-center gap-3 text-sm">
-          <span>5★</span>
-
-          <div class="flex-1 bg-gray-200 h-2 rounded">
-            <div
-              class="bg-sky-500 h-2 rounded"
-              style="width: {{ star_percentages.5 }}%;">
-            </div>
-          </div>
-
-          <span>{{ star_counts.5 }}</span>
-        </div>
-
-        <!-- 4 Star -->
-        <div class="flex items-center gap-3 text-sm">
-          <span>4★</span>
-
-          <div class="flex-1 bg-gray-200 h-2 rounded">
-            <div
-  class="bg-sky-400 h-2 rounded"
-  style="width: {{ star_percentages.4 }}%;">
-</div>
-
-          </div>
-
-          <span>{{ star_counts.4 }}</span>
-        </div>
-
-        <!-- 3 Star -->
-        <div class="flex items-center gap-3 text-sm">
-          <span>3★</span>
-
-          <div class="flex-1 bg-gray-200 h-2 rounded">
-  <div
-    class="bg-sky-300 h-2 rounded"
-    style="width: {{ star_percentages.3 }}%;">
-  </div>
-</div>
-
-
-          <span>{{ star_counts.3 }}</span>
-        </div>
-
-        <!-- 2 Star -->
-        <div class="flex items-center gap-3 text-sm">
-          <span>2★</span>
-
-          <div class="flex-1 bg-gray-200 h-2 rounded">
-  <div
-    class="bg-sky-200 h-2 rounded"
-    style="width: {{ star_percentages.2 }}%;">
-  </div>
-</div>
-
-
-          <span>{{ star_counts.2 }}</span>
-        </div>
-
-        <!-- 1 Star -->
-        <div class="flex items-center gap-3 text-sm">
-          <span>1★</span>
-
-          <div class="flex-1 bg-gray-200 h-2 rounded">
-  <div
-    class="bg-sky-100 h-2 rounded"
-    style="width: {{ star_percentages.1 }}%;">
-  </div>
-</div>
-
-
-          <span>{{ star_counts.1 }}</span>
+        <div
+          class="h-3 bg-orange-600 rounded-full"
+          style="width: {{ star_percentages.5 }}%">
         </div>
 
       </div>
 
-      <!-- CTA -->
-      <div class="text-center">
-
-  <button
-    type="button"
-    onclick="openReviewModal()"
-    class="bg-sky-500 text-white px-8 py-3 rounded-lg
-           font-medium hover:bg-sky-600 transition">Write a Review</button>
-
-</div>
-
-      
+      <span>{{ star_counts.5 }}</span>
 
     </div>
 
-    
+
+    <!-- 4 -->
+    <div class="flex items-center gap-4 text-sm">
+
+      <span class="w-16">4 stars</span>
+
+      <div class="flex-1 h-3 bg-gray-200 rounded-full">
+
+        <div
+          class="h-3 bg-orange-600 rounded-full"
+          style="width: {{ star_percentages.4 }}%">
+        </div>
+
+      </div>
+
+      <span>{{ star_counts.4 }}</span>
+
+    </div>
+
+
+    <!-- 3 -->
+    <div class="flex items-center gap-4 text-sm">
+
+      <span class="w-16">3 stars</span>
+
+      <div class="flex-1 h-3 bg-gray-200 rounded-full">
+
+        <div
+          class="h-3 bg-orange-600 rounded-full"
+          style="width: {{ star_percentages.3 }}%">
+        </div>
+
+      </div>
+
+      <span>{{ star_counts.3 }}</span>
+
+    </div>
+
+
+    <!-- 2 -->
+    <div class="flex items-center gap-4 text-sm">
+
+      <span class="w-16">2 stars</span>
+
+      <div class="flex-1 h-3 bg-gray-200 rounded-full">
+
+        <div
+          class="h-3 bg-orange-600 rounded-full"
+          style="width: {{ star_percentages.2 }}%">
+        </div>
+
+      </div>
+
+      <span>{{ star_counts.2 }}</span>
+
+    </div>
+
+
+    <!-- 1 -->
+    <div class="flex items-center gap-4 text-sm">
+
+      <span class="w-16">1 stars</span>
+
+      <div class="flex-1 h-3 bg-gray-200 rounded-full">
+
+        <div
+          class="h-3 bg-orange-600 rounded-full"
+          style="width: {{ star_percentages.1 }}%">
+        </div>
+
+      </div>
+
+      <span>{{ star_counts.1 }}</span>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- RIGHT SIDE OVERALL -->
+<div class="flex flex-col md:items-start md:justify-center gap-4">
+
+  <!-- Rating Row -->
+  <div class="flex items-center gap-4">
+
+    <!-- Number -->
+    <span class="text-6xl font-semibold leading-none">
+      {{ avg_rating }}
+    </span>
+
+    <!-- Stars + Reviews -->
+    <div>
+
+      <div class="text-orange-600 text-xl leading-none">
+
+        {% for i in "12345" %}
+          {% if avg_rating >= forloop.counter %}
+            ★
+          {% else %}
+            ☆
+          {% endif %}
+        {% endfor %}
+
+      </div>
+
+      <div class="text-sm text-gray-600 mt-1">
+        {{ total_reviews }} Reviews
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Recommendation text -->
+  <p class="text-sm text-gray-500">
+    {{ star_counts.5 }} out of {{ total_reviews }}
+    reviewers recommend this product
+  </p>
+
+
+  <!-- BUTTON -->
+  <button
+    type="button"
+    onclick="openReviewModal()"
+    class="
+    mt-2
+    bg-orange-600
+    hover:bg-orange-700
+    text-white
+    font-semibold
+    px-10
+    py-3
+    rounded-lg
+    transition
+    shadow-sm
+    "
+  >
+    Write a Review
+  </button>
+
+</div>
+
+
+</div>
+
+
+<hr class="border-gray-200 mb-12">
+
+
+<!-- CUSTOMER IMAGES AND VIDEOS -->
+<div class="mb-16">
+
+  <h3 class="text-xl font-semibold text-center mb-6">
+    Customer Images and Videos
+  </h3>
+
+
+  <div
+  style="
+    overflow:hidden;
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    margin-right:calc(50% - 50vw);
+    position:relative;
+  "
+>
+
+
+
+    <!-- TRACK -->
+    <div
+      style="
+        display:flex;
+        gap:16px;
+        width:max-content;
+        animation: scrollLoop 80s linear infinite;
+      "
+    >
+
+      <!-- ORIGINAL -->
+      <img src="https://bhootiya.com/cdn/shop/files/2_50c1602a-557c-42a4-ab60-09c6dc8f84b6.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/8.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/1_15d4b95c-2961-407f-8f8f-4a2b8de7502a.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/6_b3dde6af-af5c-49a8-bbcf-2efd4bf9e308.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/5_2cb71c46-92e0-4c55-9a37-77f2e6a59bae.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+
+      <!-- DUPLICATE -->
+      <img src="https://bhootiya.com/cdn/shop/files/2_50c1602a-557c-42a4-ab60-09c6dc8f84b6.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/8.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/1_15d4b95c-2961-407f-8f8f-4a2b8de7502a.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/6_b3dde6af-af5c-49a8-bbcf-2efd4bf9e308.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/5_2cb71c46-92e0-4c55-9a37-77f2e6a59bae.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+
+      <!-- DUPLICATE -->
+      <img src="https://bhootiya.com/cdn/shop/files/2_50c1602a-557c-42a4-ab60-09c6dc8f84b6.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/8.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/1_15d4b95c-2961-407f-8f8f-4a2b8de7502a.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/6_b3dde6af-af5c-49a8-bbcf-2efd4bf9e308.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+
+      <img src="https://bhootiya.com/cdn/shop/files/5_2cb71c46-92e0-4c55-9a37-77f2e6a59bae.png"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+      
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+
     <!-- REVIEWS LIST -->
 <div class="divide-y">
 
@@ -608,15 +750,15 @@
 
 
         <!-- LEFT: NAME -->
-        <div class="font-semibold text-xl text-gray-900">
+        <div class="font-semibold text-gray-900 text-lg">
           {{ review.name }}
         </div>
 
         <!-- RIGHT: REVIEW CONTENT -->
-        <div class="md:col-span-3 space-y-3">
+        <div class="md:col-span-3 space-y-2">
 
           <!-- Stars -->
-          <div class="flex items-center text-sky-500 text-2xl font-semibold tracking-tight">
+          <div class="flex items-center text-orange-600 text-2xl font-semibold tracking-tight">
 
             {% for i in "12345" %}
               {% if review.rating >= forloop.counter %}
@@ -627,18 +769,24 @@
             {% endfor %}
 
           </div>
+          
+
+    <!-- REVIEW TITLE (FIRST LINE) -->
+    <div class="text-orange-600 font-semibold">
+
+      {{ review.review|truncatewords:4 }}
+
+    </div>
+
 
        
+  <!-- FULL REVIEW TEXT -->
+    <p class="text-gray-600 leading-relaxed text-sm">
 
-          <!-- Review Description -->
-          <p class="text-gray-600 text-base leading-relaxed">
-            {{ review.review }}
-          </p>
+      {{ review.review }}
 
-          <!-- Date -->
-          <p class="text-sm text-gray-400 pt-2">
-            {{ review.created_at|date:"d M Y" }}
-          </p>
+    </p>
+
 
         </div>
 
@@ -660,8 +808,8 @@
 
   <button
     onclick="showAllReviews()"
-    class="px-6 py-2 border border-sky-500 text-sky-500 rounded-lg
-           hover:bg-sky-500 hover:text-white transition font-medium">
+    class="px-6 py-2 border border-orange-500 text-orange-500 rounded-lg
+           hover:bg-orange-500 hover:text-white transition font-medium">
 
     Read More Reviews
 
@@ -730,8 +878,8 @@
       <!-- Submit -->
       <button
         type="submit"
-        class="w-full bg-sky-500 text-white py-2 rounded-lg
-               hover:bg-sky-600 transition">
+        class="w-full bg-orange-500 text-white py-2 rounded-lg
+               hover:bg-orange-600 transition">
         Submit Review
       </button>
 
@@ -780,6 +928,67 @@
 
 
 
+<!-- KEYFRAMES MUST STILL EXIST -->
+<style>
+
+@keyframes scrollLoop
+{
+  0%
+  {
+    transform: translateX(0);
+  }
+
+  100%
+  {
+    transform: translateX(calc(-50% - 8px));
+  }
+}
+
+</style>
+
+
+<script>
+
+
+const track = document.getElementById("mediaTrack");
+
+let scrollSpeed = 0.1;
+
+
+
+function autoScroll()
+{
+
+  track.scrollLeft += scrollSpeed;
+
+
+  if(track.scrollLeft >= track.scrollWidth / 2)
+  {
+
+    track.scrollLeft = 0;
+
+  }
+
+}
+
+
+setInterval(autoScroll, 10);
+
+
+
+function manualScroll(direction)
+{
+
+  track.scrollBy(
+  {
+    left: direction * 300,
+    behavior:"smooth"
+  });
+
+}
+
+
+</script>
 
 
 
