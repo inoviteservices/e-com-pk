@@ -7,7 +7,7 @@
 
 <section class="max-w-7xl mx-auto px-4 pt-2 pb-8">
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-1 lg:gap-x-8 items-start">
 <!-- LEFT: PRODUCT IMAGE SLIDER (STICKY) -->
 <div class="lg:sticky lg:top-24">
 
@@ -110,13 +110,13 @@
 
 
     <!-- RIGHT: PRODUCT INFO -->
-    <div class="space-y-8">
+    <div class="space-y-3">
 
       <!-- REVIEWS + SOCIAL PROOF -->
 <div class="flex items-center gap-4 text-sm text-gray-600">
 
   <!-- Stars -->
-  <div class="flex items-center gap-1 text-sky-500 text-2xl font-bold tracking-tight drop-shadow-sm">
+  <div class="flex items-center gap-1 text-indigo-900 text-2xl font-bold tracking-tight drop-shadow-sm">
 
     {% for i in "12345" %}
       {% if avg_rating >= forloop.counter %}
@@ -140,7 +140,7 @@
 
 
       <!-- TITLE -->
-      <h1 class="text-3xl lg:text-4xl font-sans font-semibold leading-snug tracking-tight text-slate-900">
+      <h1 class="text-3xl lg:text-4xl font-sans font-semibold leading-snug tracking-tight text-indigo-900 drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
   {{ product.title }}
 </h1>
 
@@ -154,11 +154,46 @@
         <span class="text-red-600 text-3xl font-semibold">
           ₹{{ product.price }}
         </span>
-        <p class="text-sm text-gray-500 mt-1">Tax included.</p>
+      </div>
+      <!-- OFFERS -->
+<div class="space-y-1.5 mt-2">
+
+  <!-- Prepaid Discount Grey Box -->
+  <div class="inline-block bg-gray-100 border border-gray-200 rounded-md px-2.5 py-1.5 text-xs">
+
+  <span class="font-bold text-red-600">Get 7%</span>
+
+  <span class="text-black font-medium">
+    Additional Discount on Prepaid order
+  </span>
+
+</div>
+
+
+  <!-- Free Gift -->
+  <div class="flex items-start gap-1.5 text-xs">
+
+    <!-- Gift Icon -->
+    <span class="text-sm">🎁</span>
+
+    <div>
+
+      <span class="font-semibold text-orange-600">
+        Get free Wire art worth ₹999
+      </span>
+
+      <div class="text-gray-500 text-[11px] leading-tight">
+        on prepaid purchase worth ₹3,999
       </div>
 
+    </div>
+
+  </div>
+
+</div>
+
       <!-- ORDER FORM -->
-      <form id="customOrderForm" enctype="multipart/form-data" class="space-y-6">
+      <form id="customOrderForm" enctype="multipart/form-data" class="space-y-3">
         {% csrf_token %}
 
         {% if product.requires_custom_image %}
@@ -199,19 +234,17 @@
           <button
             type="button"
             onclick="addCustomToCart({{ product.id }})"
-            class="w-full bg-black text-white py-4 rounded-xl text-lg
-                   hover:bg-gray-900 transition"
-          >
-            Add to cart
+            class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 rounded-xl
+         hover:bg-indigo-950 active:bg-[#2c2c6c] transition">
+            BUY NOW
           </button>
         {% else %}
           <button
             type="button"
             onclick="addToCart({{ product.id }})"
-            class="w-full bg-black text-white py-4 rounded-xl text-lg
-                   hover:bg-gray-900 transition"
-          >
-            Add to cart
+            class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 rounded-xl
+         hover:bg-indigo-950 active:bg-[#2c2c6c] transition">
+            BUY NOW
           </button>
         {% endif %}
       </form>
@@ -221,11 +254,23 @@
   href="https://wa.me/919834898303?text=Hi%20ArtGift%20Team%2C%20I%20need%20help%20with%20this%20product%3A%20{{ product.title|urlencode }}%0A%0A{{ request.build_absolute_uri|urlencode }}"
   target="_blank"
   class="flex items-center justify-center gap-2
-         bg-green-500 text-white py-3 rounded-xl
-         font-medium hover:bg-green-600 transition"
->
+         bg-[#128C7E] text-white py-3 rounded-xl font-medium
+         hover:bg-[#0f7268] active:bg-[#0b5a52] transition">
   Need Help? WhatsApp
 </a>
+
+
+
+      <!-- PAYMENT / TRUST BADGES -->
+<div class="w-full mt-4">
+  <img
+    src="{% static 'images/payments.jpg' %}"
+    alt="Customer Reviews"
+    class="w-full h-auto rounded-xl shadow-sm"
+    loading="lazy"
+  >
+</div>
+
 
 <!-- PRODUCT VIDEOS SCROLLER -->
 {% if product.videos.exists %}
@@ -327,21 +372,8 @@
 </div>
 
 {% endif %}
-
-
-      <!-- PAYMENT / TRUST BADGES -->
-<div class="w-full mt-4">
-  <img
-    src="{% static 'images/payments.jpg' %}"
-    alt="Customer Reviews"
-    class="w-full h-auto rounded-xl shadow-sm"
-    loading="lazy"
-  >
-</div>
-
-
       <!-- PRODUCT DESCRIPTION -->
-      <div class="pt-10 border-t space-y-6 text-gray-800">
+      <div class="pt-10 border-t space-y-3 text-gray-800">
 
         
 
@@ -925,6 +957,25 @@
 </div>
 
 
+<!-- Mobile Sticky Buy Button -->
+<div id="mobileBuyBtn" class="fixed bottom-0 left-0 w-full md:hidden z-50">
+
+{% if product.requires_custom_image %}
+<button
+  onclick="addCustomToCart({{ product.id }})"
+  class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 active:bg-[#2c2c6c]">
+  Buy Now
+</button>
+{% else %}
+<button
+  onclick="addToCart({{ product.id }})"
+  class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 active:bg-[#2c2c6c]">
+  Buy Now
+</button>
+{% endif %}
+
+</div>
+
 
 
 
@@ -1366,5 +1417,37 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+<script>
+
+const buyBtn = document.getElementById("mobileBuyBtn");
+
+function toggleBuyButton() {
+
+  // mobile only
+  if (window.innerWidth >= 768) {
+    buyBtn.classList.add("hidden");
+    return;
+  }
+
+  // show after scrolling 400px
+  if (window.scrollY > 400) {
+
+    buyBtn.classList.remove("hidden");
+
+  } else {
+
+    buyBtn.classList.add("hidden");
+
+  }
+
+}
+
+// Run on scroll
+window.addEventListener("scroll", toggleBuyButton);
+
+// Run on page load (THIS FIXES YOUR ISSUE)
+window.addEventListener("load", toggleBuyButton);
+
+</script>
 
 {% endblock %}

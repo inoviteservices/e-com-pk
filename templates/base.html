@@ -1,834 +1,706 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>ArtGift</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
+  <head>
+    <meta charset="utf-8" />
+    <title>ArtGift</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/static/images/favicon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/static/images/favicon.png"
+    />
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Bootstrap Icons CDN (icons only, not CSS framework) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-</head>
+    <!-- Bootstrap Icons CDN (icons only, not CSS framework) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
 
-<body class="antialiased font-sans">
+  <body class="antialiased font-sans">
+    <!-- Top Announcement Bar -->
+    {% if site_announcements %}
+    <div
+      style="
+        width: 100%;
+        background: #062f3f;
+        color: white;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 5px 0;
+        position: relative;
+        letter-spacing: 0.25px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, &quot;SF Pro Display&quot;,
+          &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      "
+    >
+      <div
+        style="
+          display: flex;
+          width: max-content;
+          animation: scroll-left 24s linear infinite;
+          align-items: center;
+        "
+      >
+        <!-- Loop 1 -->
+        {% for ann in site_announcements %}
+        <span style="margin: 0 40px; flex-shrink: 0">
+          {{ ann.text|safe }}
+        </span>
+        {% endfor %}
 
-        <!-- Top Announcement Bar -->
-        {% if site_announcements %}
-        <div
-          style="
-            width:100%;
-            background:#062f3f;
-            color:white;
-            overflow:hidden;
-            white-space:nowrap;
-            font-size:15px;
-            font-weight:600;
-            padding:5px 0;
-            position:relative;
-            letter-spacing:0.25px;
-            font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display',
-                        'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            border-bottom:1px solid rgba(255,255,255,0.06);
-          "
-        >
-          <div
-            style="
-              display:flex;
-              width:max-content;
-              animation:scroll-left 24s linear infinite;
-              align-items:center;
-            "
-          >
+        <!-- Loop 2 -->
+        {% for ann in site_announcements %}
+        <span style="margin: 0 40px; flex-shrink: 0">
+          {{ ann.text|safe }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
 
-            <!-- Loop 1 -->
-            {% for ann in site_announcements %}
-              <span style="margin:0 40px; flex-shrink:0;">
-                {{ ann.text|safe }}
-              </span>
-            {% endfor %}
-
-            <!-- Loop 2 -->
-            {% for ann in site_announcements %}
-              <span style="margin:0 40px; flex-shrink:0;">
-                {{ ann.text|safe }}
-              </span>
-            {% endfor %}
-
-          </div>
-        </div>
-
-        <style>
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+    <style>
+      @keyframes scroll-left {
+        0% {
+          transform: translateX(0);
         }
-        </style>
-        {% endif %}
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+    </style>
+    {% endif %}
 
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-gradient-to-r from-white to-sky-400">
+      <div
+        class="max-w-[1400px] mx-auto px-3 sm:px-5 md:px-8 lg:px-10 py-2 sm:py-3"
+      >
+        <!-- Row 1: Logo - Search - Cart -->
+        <div class="flex items-center gap-2 sm:gap-4">
+          <!-- Logo -->
+          <a href="/" class="flex-shrink-0 group">
+            {% if site_logo %}
+            <img
+              src="{{ site_logo.image.url }}"
+              alt="Art Gift"
+              class="h-9 sm:h-11 md:h-12 w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-105"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/logo.png' %}"
+              alt="Art Gift"
+              class="h-9 sm:h-11 md:h-12 w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-105"
+            />
+            {% endif %}
+          </a>
 
+          <!-- Search -->
+          <form
+            action="{% url 'shop_all' %}"
+            method="get"
+            class="relative flex-1 min-w-0 mx-2 sm:mx-auto sm:max-w-[640px] md:max-w-[720px]"
+          >
+            <div
+              class="flex items-center bg-white/95 rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.08)] px-4 sm:px-5 py-1.5 sm:py-2 border border-black/5 transition-all duration-200 focus-within:shadow-[0_4px_14px_rgba(0,0,0,0.12)] focus-within:border-black/10"
+            >
+              <input
+                id="searchInput"
+                type="search"
+                name="q"
+                placeholder="Search products"
+                autocomplete="off"
+                class="flex-1 min-w-0 bg-transparent outline-none text-[13px] sm:text-sm px-1 sm:px-2 text-gray-800 placeholder-gray-400 font-medium tracking-wide font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Display','Segoe_UI',Roboto,Helvetica,Arial,sans-serif]"
+              />
 
-<!-- Navbar -->
-<nav class="sticky top-0 z-50 bg-gradient-to-r from-white to-sky-400">
-  <div
-    class="max-w-[1400px] mx-auto
-           px-3 sm:px-5 md:px-8 lg:px-10
-           py-2 sm:py-3"
-  >
+              <button
+                type="submit"
+                class="flex-shrink-0 text-gray-900 hover:text-black transition-colors duration-200"
+              >
+                <i class="bi bi-search text-lg sm:text-xl font-bold"></i>
+              </button>
+            </div>
 
-    <!-- Row 1: Logo - Search - Cart -->
-    <div class="flex items-center gap-2 sm:gap-4">
+            <!-- Search Popup -->
+            <div
+              id="searchPopup"
+              class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 hidden z-50 overflow-hidden"
+            ></div>
+            <div
+              id="searchPopup"
+              class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 hidden z-50 overflow-hidden"
+            ></div>
+          </form>
 
-      <!-- Logo -->
-     <a href="/" class="flex-shrink-0 group">
-  {% if site_logo %}
-    <img
-      src="{{ site_logo.image.url }}"
-      alt="Art Gift"
-      class="h-9 sm:h-11 md:h-12 w-auto object-contain
-             transition-transform duration-300 ease-out
-             group-hover:scale-105"
-    />
-  {% else %}
-    <img
-      src="{% static 'images/logo.png' %}"
-      alt="Art Gift"
-      class="h-9 sm:h-11 md:h-12 w-auto object-contain
-             transition-transform duration-300 ease-out
-             group-hover:scale-105"
-    />
-  {% endif %}
-</a>
+          <!-- Cart Button -->
+          <button
+            id="openCart"
+            class="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/70 backdrop-blur-md border border-white/40 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105"
+          >
+            <!-- Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 sm:w-6 sm:h-6 text-black"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.8"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
+              />
+            </svg>
 
+            {% if cart_count > 0 %}
+            <span
+              data-cart-count
+              class="absolute -top-1 -right-1 bg-black text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+            >
+              {{ cart_count }}
+            </span>
+            {% endif %}
+          </button>
 
+          <!-- CART OVERLAY -->
+          <div
+            id="cartOverlay"
+            class="fixed inset-0 z-40 hidden bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+          ></div>
 
-</a>
+          <!-- CART DRAWER -->
+          <aside
+            id="cartDrawer"
+            class="fixed top-0 right-0 h-full w-[90%] sm:w-[420px] lg:w-[500px] max-w-full bg-white z-50 transform translate-x-full transition-transform duration-300 ease-out shadow-2xl flex flex-col"
+          >
+            <!-- Header -->
+            <!-- CART HEADER -->
+            <div class="border-b">
+              <!-- Top Row -->
+              <div
+                class="flex items-center justify-between px-5 py-2 border-b bg-white"
+              >
+                <h2 class="text-xl font-semibold text-gray-900">
+                  Your Shopping Cart ({{ cart_count }})
+                </h2>
 
+                <button
+                  id="closeCart"
+                  class="text-2xl text-gray-500 hover:text-black transition"
+                >
+                  &times;
+                </button>
+              </div>
 
-<!-- Search -->
-<form
-  action="{% url 'shop_all' %}"
-  method="get"
-  class="relative flex-1 min-w-0
-         mx-2 sm:mx-auto
-         sm:max-w-[640px] md:max-w-[720px]"
->
-  <div
-    class="flex items-center bg-white/95 rounded-full
-           shadow-[0_2px_10px_rgba(0,0,0,0.08)]
-           px-4 sm:px-5 py-1.5 sm:py-2
-           border border-black/5
-           transition-all duration-200
-           focus-within:shadow-[0_4px_14px_rgba(0,0,0,0.12)]
-           focus-within:border-black/10"
-  >
-    <input
-      id="searchInput"
-      type="search"
-      name="q"
-      placeholder="Search products"
-      autocomplete="off"
-      class="flex-1 min-w-0 bg-transparent outline-none
-             text-[13px] sm:text-sm
-             px-1 sm:px-2
-             text-gray-800
-             placeholder-gray-400
-             font-medium
-             tracking-wide
-             font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Display','Segoe_UI',Roboto,Helvetica,Arial,sans-serif]"
-    />
+              <div
+                class="bg-sky-300 text-white text-center text-[14px] py-1.5 font-medium tracking-tight"
+              >
+                Free shipping on all orders above ₹499!
+              </div>
+            </div>
 
-    <button
-      type="submit"
-      class="flex-shrink-0 text-gray-900
-             hover:text-black
-             transition-colors duration-200"
-    >
-      <i class="bi bi-search text-lg sm:text-xl font-bold"></i>
-    </button>
-  </div>
-
-  <!-- Search Popup -->
-  <div
-    id="searchPopup"
-    class="absolute left-0 right-0 mt-2
-           bg-white rounded-xl shadow-xl
-           border border-gray-100
-           hidden z-50 overflow-hidden"
-  ></div>
-  <div id="searchPopup"
-     class="absolute left-0 right-0 mt-2
-            bg-white rounded-xl shadow-xl
-            border border-gray-100
-            hidden z-50 overflow-hidden">
-</div>
-
-</form>
-
-
-
-
-      <!-- Cart Button -->
-<button
-  id="openCart"
-  class="relative flex items-center justify-center
-         w-11 h-11 sm:w-12 sm:h-12
-         rounded-full
-         bg-white/70 backdrop-blur-md
-         border border-white/40
-         shadow-md
-         transition-all duration-300
-         hover:shadow-lg hover:scale-105"
->
-  <!-- Icon -->
-  <svg xmlns="http://www.w3.org/2000/svg"
-       class="w-5 h-5 sm:w-6 sm:h-6 text-black"
-       fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 6h13M9 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
-  </svg>
-
-  {% if cart_count > 0 %}
-<span
-  data-cart-count
-  class="absolute -top-1 -right-1
-         bg-black text-white
-         text-[10px] px-1.5 py-0.5
-         rounded-full
-         min-w-[18px] text-center"
->
-  {{ cart_count }}
-</span>
-{% endif %}
-
-</button>
-
-
-
-<!-- CART OVERLAY -->
-<div
-  id="cartOverlay"
-  class="fixed inset-0 z-40 hidden
-         bg-black/40
-         backdrop-blur-sm
-         transition-opacity duration-300"
-></div>
-
-
-<!-- CART DRAWER -->
-<aside id="cartDrawer"
-   class="fixed top-0 right-0 h-full
-         w-[90%] sm:w-[420px] lg:w-[500px]
-         max-w-full
-         bg-white z-50
-         transform translate-x-full
-         transition-transform duration-300 ease-out
-         shadow-2xl flex flex-col">
-
-  <!-- Header -->
-  <!-- CART HEADER -->
-<div class="border-b">
-
-  <!-- Top Row -->
-<div class="flex items-center justify-between px-5 py-2 border-b bg-white">
-
-    <h2 class="text-xl font-semibold text-gray-900">
-      Your Shopping Cart ({{ cart_count }})
-    </h2>
-
-    <button
-      id="closeCart"
-      class="text-2xl text-gray-500 hover:text-black transition"
-    >
-      &times;
-    </button>
-
-  </div>
-
-<div class="bg-sky-300 text-white text-center text-[14px] py-1.5 font-medium tracking-tight">
-  Free shipping on all orders above ₹499!
-</div>
-
-
-
-
-</div>
-
-
-<!-- Cart Items -->
-<div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4">
-
-  {% if cart_items %}
-    {% for item in cart_items %}
-      <div class="flex gap-4 mb-6">
-
-        <!-- Image -->
-        <!-- Image Wrapper -->
-<div class="relative w-20 h-20 flex-shrink-0">
-
-  {% if item.custom_image %}
-    <!-- IMAGE STACK -->
-    <div class="relative w-full h-full overflow-hidden rounded-lg">
-
-      <!-- Product Image -->
-      <img
-        src="{{ item.image }}"
-        class="absolute inset-0 w-full h-full object-cover
+            <!-- Cart Items -->
+            <div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4">
+              {% if cart_items %} {% for item in cart_items %}
+              <div class="flex gap-4 mb-6">
+                <!-- Image -->
+                <!-- Image Wrapper -->
+                <div class="relative w-20 h-20 flex-shrink-0">
+                  {% if item.custom_image %}
+                  <!-- IMAGE STACK -->
+                  <div
+                    class="relative w-full h-full overflow-hidden rounded-lg"
+                  >
+                    <!-- Product Image -->
+                    <img
+                      src="{{ item.image }}"
+                      class="absolute inset-0 w-full h-full object-cover
                transition-opacity duration-300
                cart-img-product-{{ item.cart_key }}"
-      >
+                    />
 
-      <!-- Custom Image -->
-      <img
-        src="/media/{{ item.custom_image }}"
-        class="absolute inset-0 w-full h-full object-cover
+                    <!-- Custom Image -->
+                    <img
+                      src="/media/{{ item.custom_image }}"
+                      class="absolute inset-0 w-full h-full object-cover
                opacity-0 transition-opacity duration-300
                cart-img-custom-{{ item.cart_key }}"
-      >
-      
-    </div>
+                    />
+                  </div>
 
-    <!-- TOGGLE DOTS -->
-    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2
-                flex gap-1 bg-white/90 px-1.5 py-0.5 rounded-full shadow">
+                  <!-- TOGGLE DOTS -->
+                  <div
+                    class="absolute -bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-white/90 px-1.5 py-0.5 rounded-full shadow"
+                  >
+                    <button
+                      class="w-1.5 h-1.5 rounded-full bg-black"
+                      onclick="showCartImage('{{ item.cart_key }}', 'product')"
+                    ></button>
 
-      <button
-        class="w-1.5 h-1.5 rounded-full bg-black"
-        onclick="showCartImage('{{ item.cart_key }}', 'product')"
-      ></button>
+                    <button
+                      class="w-1.5 h-1.5 rounded-full bg-gray-400"
+                      onclick="showCartImage('{{ item.cart_key }}', 'custom')"
+                    ></button>
+                  </div>
 
-      <button
-        class="w-1.5 h-1.5 rounded-full bg-gray-400"
-        onclick="showCartImage('{{ item.cart_key }}', 'custom')"
-      ></button>
-    </div>
+                  {% else %}
+                  <!-- NORMAL PRODUCT -->
+                  <img
+                    src="{{ item.image }}"
+                    class="w-20 h-20 object-cover rounded-lg"
+                    alt="{{ item.title }}"
+                  />
+                  {% endif %}
+                </div>
 
-  {% else %}
-    <!-- NORMAL PRODUCT -->
-    <img
-      src="{{ item.image }}"
-      class="w-20 h-20 object-cover rounded-lg"
-      alt="{{ item.title }}"
-    >
-  {% endif %}
+                <div class="flex-1">
+                  <p class="text-sm text-gray-500">{{ item.category }}</p>
 
-</div>
+                  <p class="font-medium leading-snug">{{ item.title }}</p>
 
+                  <p class="text-sm mt-1">₹{{ item.price }}</p>
 
-        <div class="flex-1">
-          <p class="text-sm text-gray-500">
-            {{ item.category }}
-          </p>
+                  <!-- Quantity -->
+                  <div class="flex items-center gap-3 mt-3">
+                    <div
+                      class="flex items-center bg-gray-100 rounded-lg px-3 py-1"
+                    >
+                      <button
+                        onclick="decreaseCart('{{ item.cart_key }}')"
+                        class="px-2"
+                      >
+                        −
+                      </button>
 
-          <p class="font-medium leading-snug">
-            {{ item.title }}
-          </p>
+                      <span class="px-2">{{ item.quantity }}</span>
 
-          <p class="text-sm mt-1">
-            ₹{{ item.price }}
-          </p>
+                      <button
+                        onclick="increaseCart('{{ item.cart_key }}')"
+                        class="px-2"
+                      >
+                        +
+                      </button>
+                    </div>
 
-          <!-- Quantity -->
-          <div class="flex items-center gap-3 mt-3">
-            <div class="flex items-center bg-gray-100 rounded-lg px-3 py-1">
+                    <!-- Remove -->
+                    <button
+                      onclick="removeFromCart('{{ item.cart_key }}')"
+                      class="text-gray-400 hover:text-black"
+                      title="Remove item"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              <!-- FREE GIFT -->
+              <div
+                class="flex items-center gap-4 py-4 mt-2 bg-green-50 rounded-xl px-4"
+              >
+                <!-- Gift Icon -->
+                <div
+                  class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-lg text-2xl"
+                >
+                  🎁
+                </div>
 
-              <button
-                onclick="decreaseCart('{{ item.cart_key }}')"
-                class="px-2"
-              >−</button>
+                <!-- Gift Info -->
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-medium"
+                    >
+                      FREE
+                    </span>
 
-              <span class="px-2">{{ item.quantity }}</span>
+                    <p class="font-medium text-gray-900 text-sm">
+                      Free Surprise Gift
+                    </p>
+                  </div>
 
-              <button
-                onclick="increaseCart('{{ item.cart_key }}')"
+                  <p class="text-xs text-gray-500 mt-1">
+                    Worth ₹299 • Included with your order
+                  </p>
+                </div>
 
-                class="px-2"
-              >+</button>
+                <!-- Price -->
+                <div class="text-right text-sm font-semibold text-green-600">
+                  ₹0
+                </div>
+              </div>
 
+              {% else %}
+              <p class="text-center text-gray-500 mt-10">Your cart is empty.</p>
+              {% endif %}
             </div>
-            
-            <!-- Remove -->
-            <button
-              onclick="removeFromCart('{{ item.cart_key }}')"
-              class="text-gray-400 hover:text-black"
-              title="Remove item"
+
+            <!-- CART FOOTER -->
+            <div class="border-t px-6 py-4 bg-white">
+              <!-- ORDER SUMMARY TOGGLE -->
+              <button
+                onclick="toggleSummary()"
+                class="w-full flex items-center justify-between text-sm font-medium text-gray-800 mb-3"
+              >
+                <span>Order Summary</span>
+                <span id="summaryArrow">›</span>
+              </button>
+              <!-- SUMMARY DETAILS -->
+              <div
+                id="orderSummaryDetails"
+                class="hidden space-y-2 text-sm text-gray-700 mb-3"
+              >
+                <div class="flex justify-between">
+                  <span>Selling Price</span>
+                  <span>₹{{ cart_total }}</span>
+                </div>
+
+                <div class="flex justify-between text-green-600">
+                  <span>Prepaid Discount</span>
+                  <span>- ₹50</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>Shipping Charges</span>
+                  <span class="text-green-600 font-medium">FREE</span>
+                </div>
+
+                <hr class="my-2" />
+              </div>
+
+              <!-- SUBTOTAL -->
+              <div
+                class="flex justify-between items-center text-base font-semibold mb-4"
+              >
+                <span>SUBTOTAL</span>
+                <span data-cart-total>₹{{ cart_total|add:"-50" }}</span>
+              </div>
+
+              <!-- CHECKOUT BUTTON -->
+              <a
+                href="{% url 'checkout' %}"
+                class="block w-full bg-sky-400 hover:bg-sky-500 text-white text-center py-3 rounded-lg font-semibold text-base transition"
+              >
+                Checkout
+              </a>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Row 2: Nav Links -->
+        <div class="mt-2 sm:mt-3 flex justify-center">
+          <ul
+            class="flex gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm font-medium"
+          >
+            <!-- Shop All -->
+            <li>
+              <a
+                href="{% url 'shop_all' %}"
+                class="relative inline-block group {% if active_nav == 'shop' %} font-semibold {% endif %}"
+              >
+                Shop All
+
+                <span
+                  class="absolute left-0 -bottom-0.5 h-[1.5px] bg-black transition-all duration-300 ease-out {% if active_nav == 'shop' %} w-full {% else %} w-0 group-hover:w-full {% endif %}"
+                ></span>
+              </a>
+            </li>
+
+            <!-- Bulk Corporate Orders -->
+            <li>
+              <a
+                href="/bulk-orders/"
+                class="relative inline-block group {% if active_nav == 'bulk' %} font-semibold {% endif %}"
+              >
+                Bulk Corporate Orders
+
+                <span
+                  class="absolute left-0 -bottom-0.5 h-[1.5px] bg-black transition-all duration-300 ease-out {% if active_nav == 'bulk' %} w-full {% else %} w-0 group-hover:w-full {% endif %}"
+                ></span>
+              </a>
+            </li>
+
+            <!-- Track Order -->
+            <li>
+              <a
+                href="/track-order/"
+                class="relative inline-block group {% if active_nav == 'track' %} font-semibold {% endif %}"
+              >
+                Track Order
+
+                <span
+                  class="absolute left-0 -bottom-0.5 h-[1.5px] bg-black transition-all duration-300 ease-out {% if active_nav == 'track' %} w-full {% else %} w-0 group-hover:w-full {% endif %}"
+                ></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main>{% block content %}{% endblock %}</main>
+    <!-- FOOTER RIBBON IMAGE -->
+    <div class="w-full overflow-hidden">
+      <img
+        src="{% static 'images/FOOTER.jpg' %}"
+        alt="ArtGift Ribbon"
+        class="w-full h-auto block object-cover"
+      />
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white">
+      <!-- TOP SECTION -->
+      <div class="max-w-[1400px] mx-auto px-6 py-14">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <!-- Newsletter -->
+          <div>
+            <p
+              class="text-2xl md:text-3xl font-light leading-snug tracking-tight max-w-xl"
             >
-              🗑️
-            </button>
+              Stay up to date with our latest offers and product launches & be
+              the first to get exclusive offers and sale information.
+              <span class="text-xs text-gray-400">(T&amp;C)</span>
+            </p>
+
+            <form
+              id="newsletterForm"
+              class="mt-8 max-w-xl flex items-center bg-white rounded-full shadow-xl ring-1 ring-black/10 overflow-hidden"
+            >
+              {% csrf_token %}
+
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="Your email"
+                class="flex-1 px-6 py-4 text-black text-base placeholder-gray-400 outline-none bg-transparent"
+              />
+
+              <button
+                type="submit"
+                class="mr-2 px-6 py-2.5 rounded-full bg-black text-white text-sm font-medium hover:bg-gray-900 active:scale-[0.98] transition-all duration-200"
+              >
+                Subscribe
+              </button>
+            </form>
+
+            <p id="newsletterMsg" class="mt-3 text-sm hidden"></p>
+          </div>
+
+          <!-- Help Links -->
+          <div class="grid grid-cols-2 gap-10 text-base">
+            <div>
+              <h4
+                class="text-sm font-medium tracking-widest text-gray-400 mb-5"
+              >
+                HELP
+              </h4>
+              <ul class="space-y-3 text-gray-200">
+                <li>
+                  <a href="/track-order/" class="hover:text-white transition"
+                    >Track my Order</a
+                  >
+                </li>
+                <li>
+                  <a href="/bulk-orders/" class="hover:text-white transition"
+                    >Get in Touch</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="/terms-of-service/"
+                    class="hover:text-white transition"
+                    >Terms of Use</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div class="pt-8">
+              <ul class="space-y-3 text-gray-200">
+                <li>
+                  <a href="#" class="hover:text-white transition"
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a href="#" class="hover:text-white transition">About Us</a>
+                </li>
+                <li>
+                  <a href="/return-policy/" class="hover:text-white transition"
+                    >Shipping & Returns</a
+                  >
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-    {% endfor %}
-    <!-- FREE GIFT -->
-<div class="flex items-center gap-4 py-4 mt-2 bg-green-50 rounded-xl px-4">
 
-  <!-- Gift Icon -->
-  <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-lg text-2xl">
-    🎁
-  </div>
+      <!-- Divider -->
+      <div class="border-t border-gray-700"></div>
 
-  <!-- Gift Info -->
-  <div class="flex-1">
+      <!-- BOTTOM SECTION -->
+      <div class="py-12 text-center px-6">
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+          <a href="/" class="group">
+            {% if site_logo %}
+            <img
+              src="{{ site_logo.image.url }}"
+              alt="Art Gift"
+              class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/logo.png' %}"
+              alt="Art Gift"
+              class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+            {% endif %}
+          </a>
+        </div>
 
-    <div class="flex items-center gap-2">
+        <!-- Socials -->
+        <div class="flex justify-center gap-6 text-2xl text-gray-300 mb-6">
+          <a href="#" class="hover:text-white transition">📺</a>
+          <a href="#" class="hover:text-white transition">💬</a>
+          <a href="#" class="hover:text-white transition">📷</a>
+          <a href="#" class="hover:text-white transition">📘</a>
+          <a href="#" class="hover:text-white transition">📌</a>
+        </div>
 
-      <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-        FREE
-      </span>
-
-      <p class="font-medium text-gray-900 text-sm">
-        Free Surprise Gift
-      </p>
-
-    </div>
-
-    <p class="text-xs text-gray-500 mt-1">
-      Worth ₹299 • Included with your order
-    </p>
-
-  </div>
-
-  <!-- Price -->
-  <div class="text-right text-sm font-semibold text-green-600">
-    ₹0
-  </div>
-
-</div>
-
-
-  {% else %}
-    <p class="text-center text-gray-500 mt-10">
-      Your cart is empty.
-    </p>
-  {% endif %}
-
-</div>
-
-
-
-<!-- CART FOOTER -->
-<div class="border-t px-6 py-4 bg-white">
-
-  <!-- ORDER SUMMARY TOGGLE -->
-  <button
-    onclick="toggleSummary()"
-    class="w-full flex items-center justify-between text-sm font-medium text-gray-800 mb-3">
-
-    <span>Order Summary</span>
-    <span id="summaryArrow">›</span>
-
-  </button>
-<!-- SUMMARY DETAILS -->
-<div id="orderSummaryDetails" class="hidden space-y-2 text-sm text-gray-700 mb-3">
-
-  <div class="flex justify-between">
-    <span>Selling Price</span>
-    <span>₹{{ cart_total }}</span>
-  </div>
-
-  <div class="flex justify-between text-green-600">
-    <span>Prepaid Discount</span>
-    <span>- ₹50</span>
-  </div>
-
-  <div class="flex justify-between">
-    <span>Shipping Charges</span>
-    <span class="text-green-600 font-medium">FREE</span>
-  </div>
-
-  <hr class="my-2">
-
-</div>
-
-
-  <!-- SUBTOTAL -->
-  <div class="flex justify-between items-center text-base font-semibold mb-4">
-
-    <span>SUBTOTAL</span>
-    <span data-cart-total>₹{{ cart_total|add:"-50" }}</span>
-
-
-  </div>
-
-  <!-- CHECKOUT BUTTON -->
-  <a
-    href="{% url 'checkout' %}"
-    class="block w-full bg-sky-400 hover:bg-sky-500
-           text-white text-center py-3 rounded-lg
-           font-semibold text-base transition">
-
-    Checkout
-
-  </a>
-
-</div>
-
-
-
-</aside>
-
-
-    </div>
-
-    <!-- Row 2: Nav Links -->
-   <div class="mt-2 sm:mt-3 flex justify-center">
- 
-    
-    <ul
-  class="flex gap-4 sm:gap-6 md:gap-8
-         text-xs sm:text-sm font-medium"
->
-
-  <!-- Shop All -->
-  <li>
-    <a
-      href="{% url 'shop_all' %}"
-      class="relative inline-block group
-             {% if active_nav == 'shop' %}
-               font-semibold
-             {% endif %}"
-    >
-      Shop All
-
-      <span
-        class="absolute left-0 -bottom-0.5
-               h-[1.5px] bg-black
-               transition-all duration-300 ease-out
-               {% if active_nav == 'shop' %}
-                 w-full
-               {% else %}
-                 w-0 group-hover:w-full
-               {% endif %}"
-      ></span>
-    </a>
-  </li>
-
-  <!-- Bulk Corporate Orders -->
-  <li>
-    <a
-      href="/bulk-orders/"
-      class="relative inline-block group
-             {% if active_nav == 'bulk' %}
-               font-semibold
-             {% endif %}"
-    >
-      Bulk Corporate Orders
-
-      <span
-        class="absolute left-0 -bottom-0.5
-               h-[1.5px] bg-black
-               transition-all duration-300 ease-out
-               {% if active_nav == 'bulk' %}
-                 w-full
-               {% else %}
-                 w-0 group-hover:w-full
-               {% endif %}"
-      ></span>
-    </a>
-  </li>
-
-  <!-- Track Order -->
-  <li>
-    <a
-      href="/track-order/"
-      class="relative inline-block group
-             {% if active_nav == 'track' %}
-               font-semibold
-             {% endif %}"
-    >
-      Track Order
-
-      <span
-        class="absolute left-0 -bottom-0.5
-               h-[1.5px] bg-black
-               transition-all duration-300 ease-out
-               {% if active_nav == 'track' %}
-                 w-full
-               {% else %}
-                 w-0 group-hover:w-full
-               {% endif %}"
-      ></span>
-    </a>
-  </li>
-
-</ul>
-
-
-</div>
-
-
-  </div>
-</nav>
-
-
-
-
-
-  <!-- Main -->
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-<!-- FOOTER RIBBON IMAGE -->
-<div class="w-full overflow-hidden ">
-
-  <img
-    src="{% static 'images/FOOTER.jpg' %}"
-    alt="ArtGift Ribbon"
-    class="w-full h-auto block
-           object-cover"
-  >
-
-</div>
-
-  <!-- Footer -->
-<footer class="bg-black text-white">
-
-  <!-- TOP SECTION -->
-  <div class="max-w-[1400px] mx-auto px-6 py-14">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-
-      <!-- Newsletter -->
-      <div>
-        <p class="text-2xl md:text-3xl font-light leading-snug tracking-tight max-w-xl">
-          Stay up to date with our latest offers and product launches & be the
-          first to get exclusive offers and sale information.
-          <span class="text-xs text-gray-400">(T&amp;C)</span>
+        <!-- Address -->
+        <p
+          class="text-sm text-gray-500 font-light leading-relaxed max-w-3xl mx-auto"
+        >
+          © ARTGIFT VENTURES PRIVATE LIMITED <br />
+          G-157, Sector D-1, Pocket-3, TDS City, Ghaziabad, Uttar Pradesh –
+          201103
         </p>
 
-       <form id="newsletterForm"
-      class="mt-8 max-w-xl flex items-center
-             bg-white rounded-full shadow-xl
-             ring-1 ring-black/10
-             overflow-hidden">
-
-  {% csrf_token %}
-
-  <input
-    type="email"
-    name="email"
-    required
-    placeholder="Your email"
-    class="flex-1 px-6 py-4 text-black text-base
-           placeholder-gray-400
-           outline-none bg-transparent"
-  >
-
-  <button
-    type="submit"
-    class="mr-2 px-6 py-2.5
-           rounded-full
-           bg-black text-white
-           text-sm font-medium
-           hover:bg-gray-900
-           active:scale-[0.98]
-           transition-all duration-200"
-  >
-    Subscribe
-  </button>
-</form>
-
-
-<p id="newsletterMsg" class="mt-3 text-sm hidden"></p>
-
+        <p class="text-sm text-gray-600 font-light mt-4">
+          © 2025 ArtGift. All Rights Reserved.
+        </p>
       </div>
+    </footer>
 
-      <!-- Help Links -->
-      <div class="grid grid-cols-2 gap-10 text-base">
-        <div>
-          <h4 class="text-sm font-medium tracking-widest text-gray-400 mb-5">
-            HELP
-          </h4>
-          <ul class="space-y-3 text-gray-200">
-            <li><a href="/track-order/" class="hover:text-white transition">Track my Order</a></li>
-            <li><a href="/bulk-orders/" class="hover:text-white transition">Get in Touch</a></li>
-            <li><a href="/terms-of-service/" class="hover:text-white transition">Terms of Use</a></li>
-          </ul>
-        </div>
-
-        <div class="pt-8">
-          <ul class="space-y-3 text-gray-200">
-            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-            <li><a href="#" class="hover:text-white transition">About Us</a></li>
-            <li><a href="/return-policy/" class="hover:text-white transition">Shipping & Returns</a></li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Divider -->
-  <div class="border-t border-gray-700"></div>
-
-  <!-- BOTTOM SECTION -->
-  <div class="py-12 text-center px-6">
-
-    <!-- Logo -->
-    <div class="flex justify-center mb-6">
-      <a href="/" class="group">
-        {% if site_logo %}
-          <img
-            src="{{ site_logo.image.url }}"
-            alt="Art Gift"
-            class="h-10 sm:h-12 w-auto object-contain
-                   transition-transform duration-300
-                   group-hover:scale-105"
-          />
-        {% else %}
-          <img
-            src="{% static 'images/logo.png' %}"
-            alt="Art Gift"
-            class="h-10 sm:h-12 w-auto object-contain
-                   transition-transform duration-300
-                   group-hover:scale-105"
-          />
-        {% endif %}
-      </a>
-    </div>
-
-    <!-- Socials -->
-    <div class="flex justify-center gap-6 text-2xl text-gray-300 mb-6">
-      <a href="#" class="hover:text-white transition">📺</a>
-      <a href="#" class="hover:text-white transition">💬</a>
-      <a href="#" class="hover:text-white transition">📷</a>
-      <a href="#" class="hover:text-white transition">📘</a>
-      <a href="#" class="hover:text-white transition">📌</a>
-    </div>
-
-    <!-- Address -->
-    <p class="text-sm text-gray-500 font-light leading-relaxed max-w-3xl mx-auto">
-      © ARTGIFT VENTURES PRIVATE LIMITED <br>
-      G-157, Sector D-1, Pocket-3, TDS City, Ghaziabad,
-      Uttar Pradesh – 201103
-    </p>
-
-    <p class="text-sm text-gray-600 font-light mt-4">
-      © 2025 ArtGift. All Rights Reserved.
-    </p>
-
-  </div>
-
-</footer>
-
-
-<!-- =========================
+    <!-- =========================
    CART TOAST (GLOBAL)
 ========================= -->
-<div
-  id="cartToast"
-  class="fixed bottom-6 left-1/2 -translate-x-1/2
-         bg-black text-white
-         px-5 py-3 rounded-xl shadow-lg
-         text-sm font-medium
-         opacity-0 pointer-events-none
-         transition-all duration-300 z-[9999]"
-></div>
+    <div
+      id="cartToast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium opacity-0 pointer-events-none transition-all duration-300 z-[9999]"
+    ></div>
 
-
-
-
-
-
-
-<script>
-/* =========================
+    <script>
+      /* =========================
    UTILITIES
 ========================= */
-function getCSRFToken() {
-  return document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-}
+      function getCSRFToken() {
+        return document.querySelector("[name=csrfmiddlewaretoken]")?.value;
+      }
 
-function showCartToast(message = "Added to cart 🛒") {
-  const toast = document.getElementById("cartToast");
-  if (!toast) return;
+      function showCartToast(message = "Added to cart 🛒") {
+        const toast = document.getElementById("cartToast");
+        if (!toast) return;
 
-  toast.textContent = message;
-  toast.classList.remove("opacity-0");
-  toast.classList.add("opacity-100");
+        toast.textContent = message;
+        toast.classList.remove("opacity-0");
+        toast.classList.add("opacity-100");
 
-  setTimeout(() => {
-    toast.classList.remove("opacity-100");
-    toast.classList.add("opacity-0");
-  }, 2200);
-}
+        setTimeout(() => {
+          toast.classList.remove("opacity-100");
+          toast.classList.add("opacity-0");
+        }, 2200);
+      }
 
-/* =========================
+      /* =========================
    CART DRAWER
 ========================= */
-const openCart = document.getElementById("openCart");
-const closeCart = document.getElementById("closeCart");
-const cartDrawer = document.getElementById("cartDrawer");
-const cartOverlay = document.getElementById("cartOverlay");
+      const openCart = document.getElementById("openCart");
+      const closeCart = document.getElementById("closeCart");
+      const cartDrawer = document.getElementById("cartDrawer");
+      const cartOverlay = document.getElementById("cartOverlay");
 
-function openDrawer() {
-  cartDrawer?.classList.remove("translate-x-full");
-  cartOverlay?.classList.remove("hidden");
-}
+      function openDrawer() {
+        cartDrawer?.classList.remove("translate-x-full");
+        cartOverlay?.classList.remove("hidden");
+      }
 
-function closeDrawer() {
-  cartDrawer?.classList.add("translate-x-full");
-  cartOverlay?.classList.add("hidden");
-}
+      function closeDrawer() {
+        cartDrawer?.classList.add("translate-x-full");
+        cartOverlay?.classList.add("hidden");
+      }
 
-openCart?.addEventListener("click", function (e) {
+      openCart?.addEventListener("click", function (e) {
+        e.preventDefault();
 
-  e.preventDefault();
+        // Get cart count
+        let count = 0;
 
-  // Get cart count
-  let count = 0;
+        const badge = document.querySelector("[data-cart-count]");
 
-  const badge = document.querySelector("[data-cart-count]");
+        if (badge) {
+          count = parseInt(badge.innerText.trim()) || 0;
+        }
 
-  if (badge) {
-    count = parseInt(badge.innerText.trim()) || 0;
-  }
+        // If cart empty
+        if (count === 0) {
+          showCartToast("🛒 Your cart is empty. Add items first!");
+          return;
+        }
 
-  // If cart empty
-  if (count === 0) {
-    showCartToast("🛒 Your cart is empty. Add items first!");
-    return;
-  }
+        // Else open drawer
+        openDrawer();
+      });
 
-  // Else open drawer
-  openDrawer();
+      closeCart?.addEventListener("click", closeDrawer);
+      cartOverlay?.addEventListener("click", closeDrawer);
 
-});
-
-closeCart?.addEventListener("click", closeDrawer);
-cartOverlay?.addEventListener("click", closeDrawer);
-
-/* =========================
+      /* =========================
    CART UI UPDATE
 ========================= */
-async function refreshCart(data) {
-  // Cart badge
-  document.querySelectorAll("[data-cart-count]").forEach(el => {
-    el.innerText = data.cart_count || 0;
-    el.classList.toggle("hidden", !data.cart_count);
-  });
+      async function refreshCart(data) {
+        // Cart badge
+        document.querySelectorAll("[data-cart-count]").forEach((el) => {
+          el.innerText = data.cart_count || 0;
+          el.classList.toggle("hidden", !data.cart_count);
+        });
 
-  const container = document.getElementById("cartItems");
-  const totalEl = document.querySelector("[data-cart-total]");
+        const container = document.getElementById("cartItems");
+        const totalEl = document.querySelector("[data-cart-total]");
 
-  if (!data.cart_items || data.cart_items.length === 0) {
-    container.innerHTML = `
+        if (!data.cart_items || data.cart_items.length === 0) {
+          container.innerHTML = `
       <p class="text-center text-gray-500 mt-10">
         Your cart is empty.
       </p>
     `;
-    if (totalEl) totalEl.innerText = "₹0";
-    return;
-  }
+          if (totalEl) totalEl.innerText = "₹0";
+          return;
+        }
 
-  container.innerHTML = data.cart_items.map(item => `
+        container.innerHTML = data.cart_items
+          .map(
+            (item) => `
     <div class="flex gap-4 mb-6">
 
       <!-- IMAGE -->
@@ -897,232 +769,235 @@ async function refreshCart(data) {
         </div>
       </div>
     </div>
-  `).join("");
+  `,
+          )
+          .join("");
 
-  if (totalEl) totalEl.innerText = "₹" + data.cart_total;
-}
+        if (totalEl) totalEl.innerText = "₹" + data.cart_total;
+      }
 
-/* =========================
+      /* =========================
    CART ACTIONS
 ========================= */
-async function addToCart(id) {
-  const res = await fetch(`/cart/add/${id}/`);
-  const data = await res.json();
-  refreshCart(data);
-  openDrawer();
-  showCartToast("Added to cart 🛒");
-}
+      async function addToCart(id) {
+        const res = await fetch(`/cart/add/${id}/`);
+        const data = await res.json();
+        refreshCart(data);
+        openDrawer();
+        showCartToast("Added to cart 🛒");
+      }
 
-async function increaseCart(id) {
-  const res = await fetch(`/cart/add/${id}/`);
-  const data = await res.json();
-  refreshCart(data);
-  showCartToast("Quantity increased ➕");
-}
+      async function increaseCart(id) {
+        const res = await fetch(`/cart/add/${id}/`);
+        const data = await res.json();
+        refreshCart(data);
+        showCartToast("Quantity increased ➕");
+      }
 
-async function decreaseCart(id) {
-  const res = await fetch(`/cart/decrease/${id}/`);
-  const data = await res.json();
-  refreshCart(data);
-  showCartToast("Quantity decreased ➖");
-}
+      async function decreaseCart(id) {
+        const res = await fetch(`/cart/decrease/${id}/`);
+        const data = await res.json();
+        refreshCart(data);
+        showCartToast("Quantity decreased ➖");
+      }
 
-async function removeFromCart(cartKey) {
-  try {
-    const res = await fetch(`/cart/remove/${cartKey}/`);
-    const data = await res.json();
+      async function removeFromCart(cartKey) {
+        try {
+          const res = await fetch(`/cart/remove/${cartKey}/`);
+          const data = await res.json();
 
-    refreshCart(data);
-    showCartToast("Removed from cart 🗑️");
-  } catch (err) {
-    console.error("Remove failed", err);
-    showCartToast("Failed to remove item ❌");
-  }
-}
+          refreshCart(data);
+          showCartToast("Removed from cart 🗑️");
+        } catch (err) {
+          console.error("Remove failed", err);
+          showCartToast("Failed to remove item ❌");
+        }
+      }
 
+      window.addToCart = addToCart;
+      window.increaseCart = increaseCart;
+      window.decreaseCart = decreaseCart;
+      window.removeFromCart = removeFromCart;
 
-window.addToCart = addToCart;
-window.increaseCart = increaseCart;
-window.decreaseCart = decreaseCart;
-window.removeFromCart = removeFromCart;
-
-/* =========================
+      /* =========================
    IMAGE TOGGLE (CUSTOM)
 ========================= */
-function showCartImage(productId, type) {
-  const productImg = document.querySelector(`.cart-img-product-${productId}`);
-  const customImg = document.querySelector(`.cart-img-custom-${productId}`);
-  if (!productImg || !customImg) return;
+      function showCartImage(productId, type) {
+        const productImg = document.querySelector(
+          `.cart-img-product-${productId}`,
+        );
+        const customImg = document.querySelector(
+          `.cart-img-custom-${productId}`,
+        );
+        if (!productImg || !customImg) return;
 
-  productImg.style.opacity = type === "product" ? "1" : "0";
-  customImg.style.opacity = type === "custom" ? "1" : "0";
-}
+        productImg.style.opacity = type === "product" ? "1" : "0";
+        customImg.style.opacity = type === "custom" ? "1" : "0";
+      }
+    </script>
 
-</script>
+    <script>
+      (function () {
+        const input = document.getElementById("searchInput");
+        const popup = document.getElementById("searchPopup");
 
-<script>
-(function(){
+        if (!input || !popup) return;
 
-  const input = document.getElementById("searchInput");
-  const popup = document.getElementById("searchPopup");
+        let timer = null;
 
-  if (!input || !popup) return;
+        input.addEventListener("input", function () {
+          clearTimeout(timer);
 
-  let timer = null;
+          const q = this.value.trim();
 
-  input.addEventListener("input", function () {
-
-    clearTimeout(timer);
-
-    const q = this.value.trim();
-
-    if (q.length < 2) {
-      popup.classList.add("hidden");
-      return;
-    }
-
-    timer = setTimeout(() => {
-
-      fetch(`/products/search-suggestions/?q=${encodeURIComponent(q)}`)
-        .then(res => res.json())
-        .then(data => {
-
-          if (!data.length) {
+          if (q.length < 2) {
             popup.classList.add("hidden");
             return;
           }
 
-          let html = "";
+          timer = setTimeout(() => {
+            fetch(`/products/search-suggestions/?q=${encodeURIComponent(q)}`)
+              .then((res) => res.json())
+              .then((data) => {
+                if (!data.length) {
+                  popup.classList.add("hidden");
+                  return;
+                }
 
-          data.forEach(p => {
-            html += `
+                let html = "";
+
+                data.forEach((p) => {
+                  html += `
               <a href="/products/product/${p.slug}/"
                  class="block px-4 py-2 text-sm
                         text-gray-700 hover:bg-gray-100">
                 ${p.title}
               </a>
             `;
-          });
+                });
 
-          popup.innerHTML = html;
-          popup.classList.remove("hidden");
-
-        })
-        .catch(() => {
-          popup.classList.add("hidden");
+                popup.innerHTML = html;
+                popup.classList.remove("hidden");
+              })
+              .catch(() => {
+                popup.classList.add("hidden");
+              });
+          }, 250);
         });
 
-    }, 250);
+        // Hide popup on outside click
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest("form")) {
+            popup.classList.add("hidden");
+          }
+        });
+      })();
+    </script>
 
-  });
-
-  // Hide popup on outside click
-  document.addEventListener("click", function(e){
-    if (!e.target.closest("form")) {
-      popup.classList.add("hidden");
-    }
-  });
-
-})();
-</script>
-
-
-<script>
-/* =========================
+    <script>
+      /* =========================
    AUTO SLIDE CART IMAGES
 ========================= */
-function startCartImageAutoSlide() {
-  document.querySelectorAll("[class*='cart-img-product-']").forEach(img => {
-    const match = img.className.match(/cart-img-product-([a-zA-Z0-9_]+)/);
-    if (!match) return;
+      function startCartImageAutoSlide() {
+        document
+          .querySelectorAll("[class*='cart-img-product-']")
+          .forEach((img) => {
+            const match = img.className.match(
+              /cart-img-product-([a-zA-Z0-9_]+)/,
+            );
+            if (!match) return;
 
-    const cartKey = match[1];
-    const productImg = document.querySelector(`.cart-img-product-${cartKey}`);
-    const customImg = document.querySelector(`.cart-img-custom-${cartKey}`);
+            const cartKey = match[1];
+            const productImg = document.querySelector(
+              `.cart-img-product-${cartKey}`,
+            );
+            const customImg = document.querySelector(
+              `.cart-img-custom-${cartKey}`,
+            );
 
-    if (!productImg || !customImg) return;
+            if (!productImg || !customImg) return;
 
-    let showProduct = true;
+            let showProduct = true;
 
-    // clear old interval if exists (important on refresh)
-    if (productImg.dataset.intervalId) {
-      clearInterval(productImg.dataset.intervalId);
-    }
+            // clear old interval if exists (important on refresh)
+            if (productImg.dataset.intervalId) {
+              clearInterval(productImg.dataset.intervalId);
+            }
 
-    const intervalId = setInterval(() => {
-      if (showProduct) {
-        productImg.style.opacity = "0";
-        customImg.style.opacity = "1";
-      } else {
-        productImg.style.opacity = "1";
-        customImg.style.opacity = "0";
+            const intervalId = setInterval(() => {
+              if (showProduct) {
+                productImg.style.opacity = "0";
+                customImg.style.opacity = "1";
+              } else {
+                productImg.style.opacity = "1";
+                customImg.style.opacity = "0";
+              }
+              showProduct = !showProduct;
+            }, 3500); // ⏱️ 3.5 sec (sweet spot)
+
+            productImg.dataset.intervalId = intervalId;
+          });
       }
-      showProduct = !showProduct;
-    }, 3500); // ⏱️ 3.5 sec (sweet spot)
 
-    productImg.dataset.intervalId = intervalId;
-  });
-}
+      /* Re-run auto slide after cart refresh */
+      const _refreshCart = refreshCart;
+      refreshCart = async function (data) {
+        await _refreshCart(data);
+        startCartImageAutoSlide();
+      };
 
-/* Re-run auto slide after cart refresh */
-const _refreshCart = refreshCart;
-refreshCart = async function (data) {
-  await _refreshCart(data);
-  startCartImageAutoSlide();
-};
+      /* Initial run */
+      document.addEventListener("DOMContentLoaded", startCartImageAutoSlide);
+    </script>
 
-/* Initial run */
-document.addEventListener("DOMContentLoaded", startCartImageAutoSlide);
-</script>
+    <script>
+      document
+        .getElementById("newsletterForm")
+        ?.addEventListener("submit", async function (e) {
+          e.preventDefault(); // 🔴 THIS is critical
 
-<script>
-document.getElementById("newsletterForm")?.addEventListener("submit", async function (e) {
-  e.preventDefault(); // 🔴 THIS is critical
+          const form = e.target;
+          const email = form.querySelector("input[name='email']").value;
+          const msg = document.getElementById("newsletterMsg");
+          const csrf = document.querySelector(
+            "[name=csrfmiddlewaretoken]",
+          ).value;
 
-  const form = e.target;
-  const email = form.querySelector("input[name='email']").value;
-  const msg = document.getElementById("newsletterMsg");
-  const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value;
+          const res = await fetch("/subscribe/", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrf,
+            },
+            body: new URLSearchParams({ email }),
+          });
 
-  const res = await fetch("/subscribe/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrf,
-    },
-    body: new URLSearchParams({ email })
-  });
+          const data = await res.json();
 
-  const data = await res.json();
+          msg.classList.remove("hidden");
 
-  msg.classList.remove("hidden");
+          if (data.success) {
+            msg.textContent = "🎉 " + data.message;
+            msg.className = "mt-3 text-sm text-green-600";
+            form.reset();
+          } else {
+            msg.textContent = "😊 " + data.message;
+            msg.className = "mt-3 text-sm text-red-600";
+          }
+        });
+    </script>
+    <script>
+      function toggleSummary() {
+        const box = document.getElementById("orderSummaryDetails");
+        const arrow = document.getElementById("summaryArrow");
 
-  if (data.success) {
-    msg.textContent = "🎉 " + data.message;
-    msg.className = "mt-3 text-sm text-green-600";
-    form.reset();
-  } else {
-    msg.textContent = "😊 " + data.message;
-    msg.className = "mt-3 text-sm text-red-600";
-  }
-});
-</script>
-<script>
-function toggleSummary() {
-
-  const box = document.getElementById("orderSummaryDetails");
-  const arrow = document.getElementById("summaryArrow");
-
-  if (box.classList.contains("hidden")) {
-    box.classList.remove("hidden");
-    arrow.textContent = "⌄";
-  } else {
-    box.classList.add("hidden");
-    arrow.textContent = "›";
-  }
-
-}
-</script>
-
-
-</body>
+        if (box.classList.contains("hidden")) {
+          box.classList.remove("hidden");
+          arrow.textContent = "⌄";
+        } else {
+          box.classList.add("hidden");
+          arrow.textContent = "›";
+        }
+      }
+    </script>
+  </body>
 </html>

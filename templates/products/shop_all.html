@@ -148,11 +148,11 @@
             {% if product.requires_custom_image %}
               <a href="{% url 'product_detail' product.slug %}"
                  class="w-full flex items-center justify-between
-                        bg-black text-white
-                        py-3 px-4 rounded-lg
-                        text-sm font-medium">
+                        bg-blue-400 text-white
+                        py-2.5 px-4 rounded-md
+                        text-sm font-semibold">
                 <span>Customize</span>
-                <span class="flex items-center gap-1 text-xs text-gray-300">
+                <span class="flex items-center gap-1 text-xs text-white/90 ml-3">
                   <!-- before price hidden on mobile -->
                   {% if product.compare_at_price %}
                     <span class="hidden lg:inline line-through">
