@@ -76,6 +76,10 @@
     {% endfor %}
 
   </div>
+  <!-- DOTS -->
+<div id="sliderDots"
+     class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-40">
+</div>
 
 
   <!-- LEFT ARROW -->
@@ -505,7 +509,6 @@
       Reviews
     </h2>
 
-    <!-- SUMMARY -->
     <!-- SUMMARY -->
 <div class="grid md:grid-cols-2 gap-16 items-center mb-12">
 
@@ -1447,6 +1450,66 @@ window.addEventListener("scroll", toggleBuyButton);
 
 // Run on page load (THIS FIXES YOUR ISSUE)
 window.addEventListener("load", toggleBuyButton);
+
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const slides = document.querySelectorAll(".slider-img");
+  const dotsContainer = document.getElementById("sliderDots");
+
+  if (!dotsContainer || slides.length === 0) return;
+
+  let currentSlide = 0;
+
+  slides.forEach((_, index) => {
+
+    const dot = document.createElement("div");
+
+    dot.className =
+      "w-2 h-2 rounded-full bg-gray-300 cursor-pointer transition-all duration-300";
+
+    dot.onclick = () => showSlide(index);
+
+    dotsContainer.appendChild(dot);
+
+  });
+
+  const dots = dotsContainer.children;
+
+  function showSlide(index) {
+
+    slides.forEach(slide => slide.style.opacity = "0");
+
+    slides[index].style.opacity = "1";
+
+    Array.from(dots).forEach(dot => {
+
+      dot.classList.remove("bg-indigo-900","w-4");
+      dot.classList.add("bg-gray-300","w-2");
+
+    });
+
+    dots[index].classList.remove("bg-gray-300","w-2");
+    dots[index].classList.add("bg-indigo-900","w-4");
+
+    currentSlide = index;
+
+  }
+
+  window.nextSlide = function () {
+    showSlide((currentSlide + 1) % slides.length);
+  };
+
+  window.prevSlide = function () {
+    showSlide((currentSlide - 1 + slides.length) % slides.length);
+  };
+
+  showSlide(0);
+
+});
 
 </script>
 
