@@ -310,6 +310,11 @@
               </div>
               {% endfor %}
               <!-- FREE GIFT -->
+              
+
+              {% else %}
+              <p class="text-center text-gray-500 mt-10">Your cart is empty.</p>
+              {% endif %}
               <div
                 class="flex items-center gap-4 py-4 mt-2 bg-green-50 rounded-xl px-4"
               >
@@ -344,11 +349,8 @@
                   ₹0
                 </div>
               </div>
-
-              {% else %}
-              <p class="text-center text-gray-500 mt-10">Your cart is empty.</p>
-              {% endif %}
             </div>
+            
 
             <!-- CART FOOTER -->
             <div class="border-t px-6 py-4 bg-white">
