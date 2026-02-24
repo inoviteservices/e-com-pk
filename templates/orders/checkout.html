@@ -11,61 +11,8 @@
 
   <body class="bg-gray-100 text-gray-900 antialiased">
     <div class="min-h-screen bg-[#f6f6f6] flex">
-      <!-- MOBILE ORDER SUMMARY DROPDOWN -->
-      <div
-        id="orderSummaryMobile"
-        class="hidden lg:hidden bg-[#f6f6f6] px-6 py-6 border-b border-gray-200"
-      >
-        <!-- ITEMS -->
-        {% for item in cart_items %}
-
-        <div class="flex gap-4 mb-6 items-start">
-          <div class="relative">
-            <img src="{{ item.image }}" class="w-16 h-16 rounded-lg border" />
-
-            <span
-              class="absolute -top-2 -right-2 bg-gray-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
-            >
-              {{ item.quantity }}
-            </span>
-          </div>
-
-          <div>
-            <p class="text-sm font-medium">{{ item.title }}</p>
-
-            <p class="text-sm font-semibold">₹{{ item.price }}</p>
-          </div>
-        </div>
-
-        {% endfor %}
-
-        <hr class="my-4" />
-
-        <div class="space-y-1 text-sm">
-          <div class="flex justify-between">
-            <span>Subtotal</span>
-            <span>₹{{ cart_total }}</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>COD Charge</span>
-            <span>₹49</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>Shipping</span>
-            <span class="text-green-600">FREE</span>
-          </div>
-        </div>
-
-        <hr class="my-4" />
-
-        <div class="flex justify-between font-bold">
-          <span>Total</span>
-
-          <span>₹{{ cart_total|add:"+49" }}</span>
-        </div>
-      </div>
+      
+       
 
       <!-- FORM -->
       <form method="POST" action="{% url 'checkout' %}" class="w-full">
@@ -73,30 +20,223 @@
 
         <div class="flex flex-col lg:flex-row w-full max-w-6xl">
           <!-- MOBILE SUMMARY BAR -->
-          <div
-            class="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-50"
-          >
-            <button
-              onclick="toggleSummary()"
-              class="w-full flex justify-between items-center px-6 py-4 font-medium"
-            >
-              <span> Show order summary </span>
+<div class="lg:hidden bg-white border-b border-gray-200 top-0 z-50">
+<!-- Top Announcement Bar -->
+    {% if site_announcements %}
+    <div
+      style="
+        width: 100%;
+        background: #062f3f;
+        color: white;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 5px 0;
+        position: relative;
+        letter-spacing: 0.25px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, &quot;SF Pro Display&quot;,
+          &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      "
+    >
+      <div
+        style="
+          display: flex;
+          width: max-content;
+          animation: scroll-left 24s linear infinite;
+          align-items: center;
+        "
+      >
+        <!-- Loop 1 -->
+        {% for ann in site_announcements %}
+        <span style="margin: 0 40px; flex-shrink: 0">
+          {{ ann.text|safe }}
+        </span>
+        {% endfor %}
 
-              <span class="flex items-center gap-2">
-                ₹{{ cart_total|add:"+49" }}
+        <!-- Loop 2 -->
+        {% for ann in site_announcements %}
+        <span style="margin: 0 40px; flex-shrink: 0">
+          {{ ann.text|safe }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
 
-                <svg
-                  id="arrow"
-                  class="w-4 h-4 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </span>
-            </button>
+    <style>
+      @keyframes scroll-left {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+    </style>
+    {% endif %}
+
+    <!-- Purple Offer Bar -->
+<div
+  style="
+    width:100%;
+    background:#8b6fd6;
+    color:white;
+    text-align:center;
+    font-weight:700;
+    font-size:16px;
+    padding:10px 8px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  "
+>
+  GET UPTO ₹100 OFF* & FREE PRODUCT WORTH ₹299 ON ONLINE PAYMENT
+</div>
+  <!-- ✅ BUTTON (VISIBLE ALWAYS) -->
+  <button
+  type="button"
+  onclick="toggleSummary()"
+  class="w-full flex justify-between items-center px-6 py-4"
+>
+
+  <!-- LEFT -->
+  <div class="flex items-center gap-3">
+
+    <!-- ICON -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-5 h-5 text-green-600"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="9" cy="21" r="1"/>
+      <circle cx="20" cy="21" r="1"/>
+      <path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>
+    </svg>
+
+
+    <!-- TEXT -->
+    <div class="text-black leading-tight">
+
+      <div class="font-medium leading-tight m-0 p-0">
+        Show order summary
+      </div>
+
+      <div class="text-sm text-gray-500 leading-tight m-0 p-0">
+        ({{ cart_items|length }} item{{ cart_items|length|pluralize }})
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- RIGHT -->
+  <div class="flex items-center gap-2 text-black font-semibold">
+
+    ₹{{ cart_total|add:"+49" }}
+
+    <svg
+      id="arrow"
+      class="w-4 h-4 transition-transform"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+
+  </div>
+
+</button>
           </div>
+          <!-- ✅ DROPDOWN -->
+<div
+  id="orderSummaryMobile"
+  class="hidden lg:hidden bg-[#f6f6f6] px-6 py-6 border-b border-gray-200"
+>
+
+  <!-- your items here -->
+   <div class="w-full">
+              <!-- ITEMS -->
+              {% for item in cart_items %}
+              <div class="flex gap-4 mb-6 items-start">
+                <!-- IMAGE WITH QTY BADGE -->
+                <div class="relative">
+                  <img
+                    src="{{ item.image }}"
+                    class="w-20 h-20 rounded-xl object-cover border"
+                  />
+
+                  <!-- QTY BADGE -->
+                  <span
+                    class="absolute -top-2 -right-2 bg-gray-600 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-semibold"
+                  >
+                    {{ item.quantity }}
+                  </span>
+                </div>
+
+                <!-- DETAILS -->
+                <div class="text-sm">
+                  <!-- TITLE -->
+                  <p class="font-medium leading-snug text-gray-900">
+                    {{ item.title }}
+                  </p>
+
+                  <!-- PRICE BELOW TITLE -->
+                  <p class="text-lg font-semibold text-gray-700 mt-1">
+                    ₹{{ item.price }}
+                  </p>
+
+                  <!-- CUSTOM MESSAGE -->
+                  {% if item.custom_message %}
+
+                  <p class="text-xs italic text-gray-500 mt-1">
+                    "{{ item.custom_message }}"
+                  </p>
+
+                  {% endif %}
+                </div>
+              </div>
+
+              {% endfor %}
+
+              <hr class="my-5" />
+
+              <!-- PRICE BREAKUP -->
+              <div class="space-y-2 text-sm text-gray-600">
+                <div class="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{{ cart_total }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>Cod Charge</span>
+                  <span> ₹49</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>Shipping</span>
+                  <span class="text-green-600">FREE</span>
+                </div>
+              </div>
+
+              <hr class="my-5" />
+
+              <!-- TOTAL -->
+              <div class="flex justify-between text-xl font-bold">
+                <span>Total</span>
+
+                <span> ₹{{ cart_total|add:"+49" }} </span>
+              </div>
+
+            
+            </div>
+
+</div>
 
           <!-- LEFT SIDE -->
           <div
