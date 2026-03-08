@@ -45,7 +45,10 @@ def shipping_policy(request):
 
 
 def return_policy(request):
-    return render(request, "pages/return-policy.html")
+    return render(request, "pages/refund-and-replacement.html")
+
+def about_us(request):
+    return render(request, "pages/about-us.html")
 
 
 def privacy_policy(request):
