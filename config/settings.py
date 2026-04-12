@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     '143.244.132.1',
     'artgift.in',
     'www.artgift.in',
+    '127.0.0.1'
     
 ]
 
