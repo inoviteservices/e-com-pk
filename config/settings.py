@@ -165,9 +165,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
 MSG91_AUTH_KEY = os.getenv("MSG91_AUTH_KEY")
-CASHFREE_BASE_URL = "https://api.cashfree.com"  
 
 
+if CASHFREE_MODE == "LIVE":
+    CASHFREE_BASE_URL = "https://api.cashfree.com/pg"
+else:
+    CASHFREE_BASE_URL = "https://sandbox.cashfree.com"
 
 
 MSG91_SENDER_ID = "KARBUI"
