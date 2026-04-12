@@ -14,7 +14,6 @@ staticfiles/
 media/
 
 # Secrets / local config
-config/settings.py
 config/.env
 .env
 
