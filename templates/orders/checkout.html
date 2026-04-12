@@ -346,14 +346,15 @@
                 type="hidden"
                 name="payment_type"
                 id="paymentType"
-                value="COD"
+                value="PREPAID"
               />
 
               <!-- PREPAID -->
-              <div
-                onclick="selectPayment('PREPAID')"
-                class="relative bg-white border rounded-xl p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition"
-              >
+                          <div
+              id="prepaidCard"
+              onclick="selectPayment('PREPAID')"
+              class="relative bg-white border-2 border-emerald-500 ring-2 ring-emerald-200 rounded-xl p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition"
+            >
                 <!-- Badge -->
                 <span
                   class="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] px-2 py-0.5 lg:text-xs lg:px-3 lg:py-1 rounded-full font-medium shadow whitespace-nowrap"
@@ -382,9 +383,10 @@
               <br />
               <!-- COD -->
               <div
-                onclick="selectPayment('COD')"
-                class="relative bg-white border-2 border-red-500 rounded-xl p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition"
-              >
+  id="codCard"
+  onclick="selectPayment('COD')"
+  class="relative bg-white border rounded-xl p-5 flex items-center justify-between cursor-pointer hover:shadow-md transition"
+>
                 <!-- Badge -->
                 <span
                   class="absolute -top-2 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[9px] sm:text-[10px] lg:text-xs px-2 sm:px-2.5 lg:px-3 py-0.5 rounded-full font-medium shadow whitespace-nowrap"
@@ -582,30 +584,30 @@
         }
       });
     </script>
-    <script>
-      function selectPayment(type) {
-        const paymentInput = document.getElementById("paymentType");
+    
+    
+    
+<script>
+function selectPayment(type) {
+  const paymentInput = document.getElementById("paymentType");
+  const prepaid = document.getElementById("prepaidCard");
+  const cod = document.getElementById("codCard");
 
-        // ❌ PREPAID NOT AVAILABLE
-        if (type === "PREPAID") {
-          alert(
-            "🚧 Prepaid payments are temporarily unavailable.\nPlease use Cash on Delivery.",
-          );
+  paymentInput.value = type;
 
-          // Force COD
-          paymentInput.value = "COD";
+  // Reset styles
+  prepaid.classList.remove("border-2", "border-emerald-500", "ring-2", "ring-emerald-200");
+  cod.classList.remove("border-2", "border-red-500", "ring-2", "ring-red-200");
 
-          return;
-        }
-
-        // ✅ COD SELECTED
-        if (type === "COD") {
-          paymentInput.value = "COD";
-
-          alert("⚠️ Cash on Delivery selected.\n₹49 COD fee will be added.");
-        }
-      }
-    </script>
+  // Apply selected styles
+  if (type === "PREPAID") {
+    prepaid.classList.add("border-2", "border-emerald-500", "ring-2", "ring-emerald-200");
+  } else {
+    cod.classList.add("border-2", "border-red-500", "ring-2", "ring-red-200");
+  }
+}
+</script>
+    
     <script>
       function toggleSummary() {
         const mobile = document.getElementById("orderSummaryMobile");

@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
-
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,16 +24,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)$6ubapxn&39b=t+c3=lbn_n%k+m$a3kq2!vz^wd=)!(yzl-1+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
+DEBUG = False 
 
 ALLOWED_HOSTS = [
     '143.244.132.1',
     'artgift.in',
     'www.artgift.in',
-    "127.0.0.1", "localhost"
-
+    
 ]
 
+BASE_URL = "https://artgift.in"
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://artgift.in",
+    "https://www.artgift.in"
+]
 
 
 # Application definition
@@ -134,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -152,5 +158,23 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
+CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
+MSG91_AUTH_KEY = os.getenv("MSG91_AUTH_KEY")
+CASHFREE_BASE_URL = "https://api.cashfree.com"  
+
+
+
+
+MSG91_SENDER_ID = "KARBUI"
+MSG91_FLOW_ID = "64f1c9d2a3b2c1abc123456"
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

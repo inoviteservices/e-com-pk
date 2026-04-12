@@ -18,4 +18,5 @@ urlpatterns = [
     path("privacy-policy/", privacy_policy, name="privacy_policy"),
     path("about-us/", about_us, name="about_us"),
     path("subscribe/", subscribe_newsletter, name="subscribe_newsletter"),
+    
 ]
