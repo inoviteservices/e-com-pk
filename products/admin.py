@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from .models import Product, Category, CustomerReview, HotSingle, ProductImage, ProductVideo, ProductVariant
+from .models import Product, Category, CustomerReview, HotSingle, ProductImage, ProductVideo
 import csv
 from django.http import HttpResponse
 from django.urls import path
@@ -25,6 +25,7 @@ class CustomerReviewInline(admin.TabularInline):
         "name",
         "rating",
         "review",
+        "media",
         "is_active",
         "created_at",
     )
@@ -55,13 +56,6 @@ class ProductVideoInline(admin.TabularInline):
     can_delete = True
     show_change_link = True
 
-class ProductVariantInline(admin.TabularInline):
-    model = ProductVariant
-    extra = 1
-    min_num = 0
-    can_delete = True
-    show_change_link = True
-
 
 # ------------------------
 # PRODUCT ADMIN
@@ -69,11 +63,10 @@ class ProductVariantInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    inlines = [ProductImageInline,ProductVideoInline,ProductVariantInline ]
+    inlines = [ProductImageInline,ProductVideoInline]
 
     list_display = (
         "title",
-        "has_variants",
         "price",
         "stock",
         "sold_units",
@@ -81,7 +74,6 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
     list_editable = (
-        "has_variants",
         "stock",
         "sold_units",
         "is_active",
@@ -91,7 +83,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     search_fields = ("title", "sku")
 
-    list_filter = ("is_active", "category", "has_variants")
+    list_filter = ("is_active", "category")
 
 
 # ------------------------
@@ -132,9 +124,30 @@ class CustomerReviewAdmin(admin.ModelAdmin):
         "product",
         "name",
         "rating",
+        "media_preview",
         "is_active",
         "created_at",
     )
+    def media_preview(self, obj):
+        from django.utils.html import format_html
+
+        if obj.media:
+            url = obj.media.url.lower()
+
+            if url.endswith((".mp4", ".webm", ".mov")):
+                return format_html(
+                    '<video width="80" controls><source src="{}"></video>',
+                    obj.media.url
+                )
+            else:
+                return format_html(
+                    '<img src="{}" width="60" height="60" style="object-fit:cover;border-radius:6px;">',
+                    obj.media.url
+                )
+
+        return "No Media"
+
+    media_preview.short_description = "Media"
 
     list_filter = (
         "rating",
@@ -271,7 +284,3 @@ class CustomerReviewAdmin(admin.ModelAdmin):
             "admin/import_reviews_csv.html"
         )
 
-class ProductImageInline(admin.TabularInline):
-
-    model = ProductImage
-    extra = 1

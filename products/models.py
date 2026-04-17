@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
@@ -169,8 +169,6 @@ class CustomerReview(models.Model):
         help_text="Customer name"
     )
 
-    
-
     review = models.TextField(
         max_length=500,
         help_text="Customer review (max 500 characters)"
@@ -184,6 +182,19 @@ class CustomerReview(models.Model):
         help_text="Rating from 1 to 5"
     )
 
+    # 🔥 SINGLE MEDIA (auto-detected)
+    media = models.FileField(
+        upload_to="reviews/",
+        blank=True,
+        null=True,
+        help_text="Upload image or video"
+    )
+
+    is_video = models.BooleanField(
+        default=False,
+        help_text="Auto-detected: whether media is video"
+    )
+
     is_active = models.BooleanField(
         default=True,
         help_text="Uncheck to hide this review"
@@ -194,9 +205,24 @@ class CustomerReview(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
+    def clean(self):
+        # Optional: enforce at least one media
+        # remove this if media is optional
+        if not self.media:
+            raise ValidationError("Please upload an image or video.")
+
+    def save(self, *args, **kwargs):
+        # 🔥 AUTO-DETECT FILE TYPE
+        if self.media:
+            if self.media.name.lower().endswith((".mp4", ".mov", ".avi", ".webm")):
+                self.is_video = True
+            else:
+                self.is_video = False
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.product.title} – {self.name} ({self.rating}★)"
-    
     
 class ProductVideo(models.Model):
 

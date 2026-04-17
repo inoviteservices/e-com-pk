@@ -56,6 +56,8 @@ def product_detail(request, slug):
         name = request.POST.get("name")
         rating = request.POST.get("rating")
         review_text = request.POST.get("review")
+        media = request.FILES.get("media")
+
 
         if name and rating and review_text:
 
@@ -64,6 +66,7 @@ def product_detail(request, slug):
                 name=name.strip(),
                 rating=int(rating),
                 review=review_text.strip(),
+                media=media,
                 is_active=True,
             )
 
