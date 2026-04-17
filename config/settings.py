@@ -24,13 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)$6ubapxn&39b=t+c3=lbn_n%k+m$a3kq2!vz^wd=)!(yzl-1+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+DEBUG = True 
 
 ALLOWED_HOSTS = [
     '143.244.132.1',
     'artgift.in',
     'www.artgift.in',
-    '127.0.0.1'
+    '127.0.0.1',
     
 ]
 
@@ -162,6 +162,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CASHFREE_MODE = os.getenv("CASHFREE_MODE", "TEST")
 CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
 MSG91_AUTH_KEY = os.getenv("MSG91_AUTH_KEY")
