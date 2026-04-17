@@ -155,9 +155,31 @@
             ₹{{ product.compare_at_price }}
           </span>
         {% endif %}
-        <span class="text-red-600 text-3xl font-semibold">
-          ₹{{ product.price }}
-        </span>
+        <span id="product-price" class="text-red-600 text-3xl font-semibold">
+            ₹{{ product.price }}
+          </span>
+          {% if variants %}
+<div class="mt-4">
+
+  <p class="font-semibold mb-2">Select Size:</p>
+
+  <div class="flex gap-2 flex-wrap">
+
+    {% for v in variants %}
+      <button
+        type="button"
+        class="variant-btn border px-4 py-2 rounded-lg hover:bg-black hover:text-white transition"
+        data-id="{{ v.id }}"
+        data-price="{{ v.price }}"
+      >
+        {{ v.size }}
+      </button>
+    {% endfor %}
+
+  </div>
+
+</div>
+{% endif %}
       </div>
       <!-- OFFERS -->
 <div class="space-y-1.5 mt-2">
@@ -199,6 +221,9 @@
       <!-- ORDER FORM -->
       <form id="customOrderForm" enctype="multipart/form-data" class="space-y-3">
         {% csrf_token %}
+
+        <input type="hidden" name="variant_id" id="variant_id">
+
 
         {% if product.requires_custom_image %}
           <div>
@@ -245,7 +270,7 @@
         {% else %}
           <button
             type="button"
-            onclick="addToCart({{ product.id }})"
+            onclick="addToCart({{ product.id }}, selectedVariantId)"
             class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 rounded-xl
          hover:bg-indigo-950 active:bg-[#2c2c6c] transition">
             BUY NOW
@@ -971,7 +996,7 @@
 </button>
 {% else %}
 <button
-  onclick="addToCart({{ product.id }})"
+  onclick="addToCart({{ product.id }}, selectedVariantId)"
   class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 active:bg-[#2c2c6c]">
   Buy Now
 </button>
@@ -1056,6 +1081,10 @@ function addCustomToCart(productId) {
 
   const form = document.getElementById("customOrderForm");
   if (!form) return;
+
+  // 🔥 ADD THIS LINE HERE
+  document.getElementById("variant_id").value = selectedVariantId;
+
 
   const formData = new FormData(form);
 
@@ -1512,5 +1541,39 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+<script>
+let selectedVariantId = null;
 
+document.addEventListener("DOMContentLoaded", function () {
+
+  const buttons = document.querySelectorAll(".variant-btn");
+  const priceBox = document.getElementById("product-price");
+
+  if (!buttons.length) return;
+
+  buttons.forEach(btn => {
+
+    btn.addEventListener("click", function () {
+
+      // remove active styles
+      buttons.forEach(b => b.classList.remove("bg-black", "text-white"));
+
+      // add active
+      this.classList.add("bg-black", "text-white");
+
+      // set selected variant
+      selectedVariantId = this.dataset.id;
+
+      // update price
+      priceBox.innerText = "₹" + this.dataset.price;
+
+    });
+
+  });
+
+  // 🔥 AUTO SELECT FIRST VARIANT (VERY IMPORTANT UX)
+  buttons[0].click();
+
+});
+</script>
 {% endblock %}

@@ -10,24 +10,39 @@ class Cart:
         request.session["cart"] = self.cart
 
     # ➕ ADD TO CART
-    def add(self, product_id, quantity=1, custom_image=None, custom_message=""):
+    def add(
+        self,
+        product_id,
+        quantity=1,
+        variant_id=None,
+        price=None,
+        size=None,
+        custom_image=None,
+        custom_message=""
+    ):
         product = Product.objects.get(id=product_id)
 
-        # 🔑 unique key per customized item
-        cart_key = (
-            f"{product_id}_{uuid.uuid4().hex}"
-            if custom_image
-            else str(product_id)
-        )
+        # 🔑 KEY LOGIC (VERY IMPORTANT)
+        if custom_image:
+            cart_key = f"{product_id}_{variant_id}_{uuid.uuid4().hex}"
+        elif variant_id:
+            cart_key = f"{product_id}_{variant_id}"
+        else:
+            cart_key = str(product_id)
+
+        # 🔥 PRICE LOGIC
+        final_price = price if price else product.price
 
         if cart_key not in self.cart:
             self.cart[cart_key] = {
                 "cart_key": cart_key,
-                "product_id": product.id,   # ALWAYS INT
+                "product_id": product.id,
                 "title": product.title,
-                "price": str(product.price),
+                "price": str(final_price),
                 "quantity": quantity,
                 "image": product.image.url if product.image else "",
+                "variant_id": variant_id,
+                "size": size,
                 "custom_image": custom_image,
                 "custom_message": custom_message,
             }

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from .models import Product, Category, CustomerReview, HotSingle, ProductImage, ProductVideo
+from .models import Product, Category, CustomerReview, HotSingle, ProductImage, ProductVideo, ProductVariant
 import csv
 from django.http import HttpResponse
 from django.urls import path
@@ -55,6 +55,13 @@ class ProductVideoInline(admin.TabularInline):
     can_delete = True
     show_change_link = True
 
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1
+    min_num = 0
+    can_delete = True
+    show_change_link = True
+
 
 # ------------------------
 # PRODUCT ADMIN
@@ -62,10 +69,11 @@ class ProductVideoInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
 
-    inlines = [ProductImageInline,ProductVideoInline]
+    inlines = [ProductImageInline,ProductVideoInline,ProductVariantInline ]
 
     list_display = (
         "title",
+        "has_variants",
         "price",
         "stock",
         "sold_units",
@@ -73,6 +81,7 @@ class ProductAdmin(admin.ModelAdmin):
     )
 
     list_editable = (
+        "has_variants",
         "stock",
         "sold_units",
         "is_active",
@@ -82,7 +91,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     search_fields = ("title", "sku")
 
-    list_filter = ("is_active", "category")
+    list_filter = ("is_active", "category", "has_variants")
 
 
 # ------------------------

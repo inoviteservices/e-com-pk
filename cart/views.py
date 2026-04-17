@@ -5,24 +5,52 @@ from PIL import Image
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from products.models import ProductVariant
 from products.models import Product
 from .cart import Cart
 
 MAX_FILE_SIZE_MB = 5
+import json
+
 
 
 def cart_add(request, product_id):
+
     cart = Cart(request)
-    cart.add(product_id)
+
+    # 🔥 SAFE JSON HANDLING
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except (json.JSONDecodeError, TypeError):
+            data = {}
+    else:
+        data = {}
+
+    variant_id = data.get("variant_id")
+
+    # 🔥 VARIANT LOGIC
+    if variant_id:
+        try:
+            variant = ProductVariant.objects.get(id=variant_id)
+
+            cart.add(
+                product_id=product_id,
+                variant_id=variant_id,
+                price=variant.price,
+                size=variant.size
+            )
+        except ProductVariant.DoesNotExist:
+            return JsonResponse({"error": "Invalid variant"}, status=400)
+
+    else:
+        cart.add(product_id=product_id)
 
     return JsonResponse({
         "cart_count": cart.count(),
         "cart_items": cart.get_items(),
         "cart_total": cart.get_total_price(),
     })
-
-
 
 def cart_decrease(request, cart_key):
     cart = Cart(request)
@@ -33,8 +61,6 @@ def cart_decrease(request, cart_key):
         "cart_items": cart.get_items(),
         "cart_total": cart.get_total_price(),
     })
-
-
 def cart_remove(request, cart_key):
     cart = Cart(request)
     cart.remove(cart_key)
@@ -121,12 +147,24 @@ def cart_add_custom(request, product_id):
                 f.write(image_bytes)
 
         temp_path = f"temp_uploads/{filename}"
+    variant_id = request.POST.get("variant_id")
+    if variant_id:
+        variant = ProductVariant.objects.get(id=variant_id)
 
-    cart.add(
-        product_id=product_id,
-        custom_image=temp_path,
-        custom_message=message
-    )
+        cart.add(
+            product_id=product_id,
+            variant_id=variant_id,
+            price=variant.price,
+            size=variant.size,
+            custom_image=temp_path,
+            custom_message=message
+        )
+    else:
+        cart.add(
+            product_id=product_id,
+            custom_image=temp_path,
+            custom_message=message
+        )
 
     return JsonResponse({
         "cart_count": cart.count(),

@@ -799,16 +799,39 @@
       /* =========================
    CART ACTIONS
 ========================= */
-      async function addToCart(id) {
-        const res = await fetch(`/cart/add/${id}/`);
+      async function addToCart(productId, variantId = null) {
+
+        const res = await fetch(`/cart/add/${productId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+          },
+          body: JSON.stringify({
+            variant_id: variantId
+          })
+        });
+
         const data = await res.json();
+
         refreshCart(data);
         openDrawer();
         showCartToast("Added to cart 🛒");
       }
 
-      async function increaseCart(id) {
-        const res = await fetch(`/cart/add/${id}/`);
+      async function increaseCart(id, variantId = null) {
+
+        const res = await fetch(`/cart/add/${id}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+          },
+          body: JSON.stringify({
+            variant_id: variantId
+          })
+        });
+
         const data = await res.json();
         refreshCart(data);
         showCartToast("Quantity increased ➕");

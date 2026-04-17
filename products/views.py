@@ -45,6 +45,8 @@ def product_detail(request, slug):
 
     product = get_object_or_404(Product, slug=slug, is_active=True)
 
+    variants = product.variants.filter(is_active=True)
+
     # Fake interest count
     interest_count = (product.id % 5) + random.randint(6, 18)
 
@@ -97,7 +99,7 @@ def product_detail(request, slug):
     return render(request, "product_detail.html", {
         "product": product,
         "interest_count": interest_count,
-
+        "variants": variants,
         "reviews": reviews,
         "avg_rating": avg_rating,
         "total_reviews": total_reviews,
