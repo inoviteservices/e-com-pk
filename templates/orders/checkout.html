@@ -137,7 +137,9 @@
   <!-- RIGHT -->
   <div class="flex items-center gap-2 text-black font-semibold">
 
-    ₹{{ cart_total|add:"+49" }}
+    <span id="finalPriceMobile">
+  ₹{{ cart_total|add:"+49" }}
+</span>
 
     <svg
       id="arrow"
@@ -230,7 +232,9 @@
               <div class="flex justify-between text-xl font-bold">
                 <span>Total</span>
 
-                <span> ₹{{ cart_total|add:"+49" }} </span>
+                <span id="finalPriceSummaryMobile">
+  ₹{{ cart_total|add:"+49" }}
+</span>
               </div>
 
             
@@ -359,7 +363,7 @@
                 <span
                   class="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-[10px] px-2 py-0.5 lg:text-xs lg:px-3 lg:py-1 rounded-full font-medium shadow whitespace-nowrap"
                 >
-                  🎁 Save ₹50 + Get Free Product
+                  🎁 Get Free Product on Prepaid
                 </span>
 
                 <!-- Left -->
@@ -375,7 +379,7 @@
 
                 <!-- Right -->
                 <div class="flex items-center gap-2 text-lg font-semibold">
-                  ₹{{ cart_total|add:"-50" }}
+                  ₹{{ cart_total }}
                   <span class="text-gray-400">›</span>
                 </div>
               </div>
@@ -411,7 +415,7 @@
 
                 <!-- Right -->
                 <div class="flex items-center gap-2 text-lg font-semibold">
-                  ₹{{ cart_total }}
+                  ₹{{ cart_total|add:"+49"  }}
                   <span class="text-gray-400">›</span>
                 </div>
               </div>
@@ -532,7 +536,7 @@
               <div class="flex justify-between text-xl font-bold">
                 <span>Total</span>
 
-                <span> ₹{{ cart_total|add:"+49" }} </span>
+                <span id="finalPrice"> ₹{{ cart_total|add:"+49" }} </span>
               </div>
 
               <!-- Coupon Section -->
@@ -557,13 +561,51 @@
         </div>
       </form>
     </div>
-
+    <script id="cart-data">
+  const baseCartTotal = {{ cart_total }};
+</script>
     <script>
       function paymentNotAvailable() {
         alert("⚠️ Payment option not available right now. Please try later.");
       }
     </script>
+    
+    <script id="payment-fix">
+      document.addEventListener("DOMContentLoaded", () => {
+  selectPayment("PREPAID");
+});
 
+function selectPayment(type) {
+
+  const priceEl = document.getElementById("finalPrice");
+  const priceMobile = document.getElementById("finalPriceMobile");
+  const priceSummaryMobile = document.getElementById("finalPriceSummaryMobile");
+  const input = document.getElementById("paymentType");
+
+  input.value = type;
+
+  let finalPrice = baseCartTotal;
+
+  if (type === "PREPAID") {
+    finalPrice = baseCartTotal;   // ✅ no discount
+  } else if (type === "COD") {
+    finalPrice = baseCartTotal + 49;
+  }
+
+  if (priceEl) priceEl.innerText = "₹" + finalPrice;
+  if (priceMobile) priceMobile.innerText = "₹" + finalPrice;
+  if (priceSummaryMobile) priceSummaryMobile.innerText = "₹" + finalPrice;
+
+  document.getElementById("prepaidCard").classList.remove("ring-2","ring-emerald-200","border-emerald-500");
+  document.getElementById("codCard").classList.remove("ring-2","ring-red-200","border-red-500");
+
+  if (type === "PREPAID") {
+    document.getElementById("prepaidCard").classList.add("ring-2","ring-emerald-200","border-emerald-500");
+  } else {
+    document.getElementById("codCard").classList.add("ring-2","ring-red-200","border-red-500");
+  }
+}
+</script>
     <!-- PINCODE AUTO -->
     <script>
       document.getElementById("pincode").addEventListener("input", (e) => {
@@ -587,26 +629,7 @@
     
     
     
-<script>
-function selectPayment(type) {
-  const paymentInput = document.getElementById("paymentType");
-  const prepaid = document.getElementById("prepaidCard");
-  const cod = document.getElementById("codCard");
 
-  paymentInput.value = type;
-
-  // Reset styles
-  prepaid.classList.remove("border-2", "border-emerald-500", "ring-2", "ring-emerald-200");
-  cod.classList.remove("border-2", "border-red-500", "ring-2", "ring-red-200");
-
-  // Apply selected styles
-  if (type === "PREPAID") {
-    prepaid.classList.add("border-2", "border-emerald-500", "ring-2", "ring-emerald-200");
-  } else {
-    cod.classList.add("border-2", "border-red-500", "ring-2", "ring-red-200");
-  }
-}
-</script>
     
     <script>
       function toggleSummary() {
