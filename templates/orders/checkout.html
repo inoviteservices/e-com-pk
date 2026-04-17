@@ -215,7 +215,7 @@
                   <span>₹{{ cart_total }}</span>
                 </div>
 
-                <div class="flex justify-between">
+                <div id="codChargeRow" class="flex justify-between hidden">
                   <span>Cod Charge</span>
                   <span> ₹49</span>
                 </div>
@@ -519,11 +519,10 @@
                   <span>₹{{ cart_total }}</span>
                 </div>
 
-                <div class="flex justify-between">
+                <div id="codChargeRowDesktop" class="flex justify-between hidden">
                   <span>Cod Charge</span>
                   <span> ₹49</span>
                 </div>
-
                 <div class="flex justify-between">
                   <span>Shipping</span>
                   <span class="text-green-600">FREE</span>
@@ -578,7 +577,10 @@
 function selectPayment(type) {
 
   const priceEl = document.getElementById("finalPrice");
+  const codRow = document.getElementById("codChargeRow");
   const priceMobile = document.getElementById("finalPriceMobile");
+  const codRowDesktop = document.getElementById("codChargeRowDesktop");
+
   const priceSummaryMobile = document.getElementById("finalPriceSummaryMobile");
   const input = document.getElementById("paymentType");
 
@@ -588,8 +590,11 @@ function selectPayment(type) {
 
   if (type === "PREPAID") {
     finalPrice = baseCartTotal;   // ✅ no discount
+    if (codRow) codRow.classList.add("hidden");
   } else if (type === "COD") {
     finalPrice = baseCartTotal + 49;
+    if (codRow) codRow.classList.remove("hidden");
+
   }
 
   if (priceEl) priceEl.innerText = "₹" + finalPrice;
