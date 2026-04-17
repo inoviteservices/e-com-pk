@@ -463,12 +463,25 @@
     <main>{% block content %}{% endblock %}</main>
     <!-- FOOTER RIBBON IMAGE -->
     <div class="w-full overflow-hidden">
-      <img
-        src="{% static 'images/FOOTER.jpg' %}"
-        alt="ArtGift Ribbon"
-        class="w-full h-auto block object-cover"
-      />
-    </div>
+  <img
+    src="{% static 'images/FOOTER.jpg' %}"
+    alt="ArtGift Ribbon"
+    draggable="false"
+    oncontextmenu="return false"
+    onmousedown="return false"
+    style="
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    "
+  />
+</div>
 
     <!-- Footer -->
     <footer class="bg-black text-white">
