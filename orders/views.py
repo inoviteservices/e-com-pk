@@ -195,6 +195,7 @@ def checkout(request):
         # CASHFREE
         # --------------------
         response = create_cashfree_order(order)
+        print("🔥 SESSION:", response.get("payment_session_id") if response else "NO RESPONSE")
 
         if not response or "payment_session_id" not in response:
             order.payment_status = "FAILED"
@@ -208,7 +209,8 @@ def checkout(request):
 
         return render(request, "orders/cashfree_payment.html", {
             "payment_session_id": response.get("payment_session_id"),
-            "order_id": order.public_order_id
+            "order_id": order.public_order_id,
+            "cashfree_mode": settings.CASHFREE_MODE   
         })
 
     # ============================
@@ -234,6 +236,9 @@ def checkout(request):
         "cart_items": cart_items,
         "total": float(cart.get_total_price()),
     })
+
+
+
 # ============================
 # BULK ORDER
 # ============================

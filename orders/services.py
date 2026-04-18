@@ -50,8 +50,8 @@ def create_cashfree_order(order):
         logger.info(f"📡 Cashfree Status: {response.status_code}")
         logger.info(f"📡 Cashfree Response: {response.text}")
 
-        if response.status_code != 200:
-            logger.error("❌ Cashfree returned non-200 response")
+        if response.status_code not in [200, 201]:
+            logger.error("❌ Cashfree returned non-success response")
             return None
 
         data = response.json()

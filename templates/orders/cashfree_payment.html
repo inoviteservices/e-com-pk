@@ -15,7 +15,7 @@
 window.onload = function () {
 
     const cashfree = Cashfree({
-        mode: "sandbox"
+        mode: "{{ 'production' if cashfree_mode == 'LIVE' else 'sandbox' }}"
     });
 
     cashfree.checkout({

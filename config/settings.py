@@ -8,7 +8,10 @@ from dotenv import load_dotenv
 
 # =========================
 
-BASE_DIR = Path(__file__).resolve().parent.parentload_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "LOCAL")  # LOCAL / PRODUCTION
 
@@ -25,7 +28,7 @@ DEBUG = ENVIRONMENT != "PRODUCTION"
 if DEBUG:
     ALLOWED_HOSTS = []
 else:
-    ALLOWED_HOSTS = ["artgift.in", "[www.artgift.in](http://www.artgift.in)"]
+    ALLOWED_HOSTS = ["artgift.in", "www.artgift.in"]
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
 
@@ -125,23 +128,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # =========================
 
-if ENVIRONMENT == "PRODUCTION":
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv("DB_NAME"),
-            'USER': os.getenv("DB_USER"),
-            'PASSWORD': os.getenv("DB_PASSWORD"),
-            'HOST': os.getenv("DB_HOST"),
-            'PORT': '5432',
-        }
+
+DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        }
 }
 
 # =========================
