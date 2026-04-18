@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 def create_cashfree_order(order):
 
-    url = f"{settings.CASHFREE_BASE_URL}/pg/orders"
+    url = f"{settings.CASHFREE_BASE_URL}/orders"
 
     # Ensure valid amount
     try:
