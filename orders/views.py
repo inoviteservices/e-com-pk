@@ -196,6 +196,7 @@ def checkout(request):
         # --------------------
         response = create_cashfree_order(order)
         print("🔥 SESSION:", response.get("payment_session_id") if response else "NO RESPONSE")
+        
 
         if not response or "payment_session_id" not in response:
             order.payment_status = "FAILED"
