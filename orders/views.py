@@ -10,6 +10,7 @@ from .models import Order, OrderItem, BulkOrder
 from .services import create_cashfree_order, verify_cashfree_payment
 import random
 import time
+from products.models import Product  # add at top if not already
 
 # ============================
 # CHECKOUT
@@ -115,28 +116,23 @@ def checkout(request):
         # ============================
         if payment_type == "COD":
 
-            import random, time
-
             otp = random.randint(100000, 999999)
 
             request.session["cod_otp"] = str(otp)
             request.session["otp_time"] = time.time()
-
             request.session["cod_order_data"] = request.POST.dict()
-            
+
             clean_cart = []
 
             for item in cart.get_items():
                 clean_cart.append({
-                    "product_id": item["product_id"],
-                    "quantity": item["quantity"],
-                    "price": float(item["price"]),  # 🔥 FIX HERE
+                    "product_id": item.get("product_id"),
+                    "quantity": item.get("quantity", 0),
+                    "price": float(item.get("price", 0)),
                     "custom_message": item.get("custom_message", "")
                 })
 
             request.session["cart_data"] = clean_cart
-
-
             request.session["final_amount"] = float(final_amount)
 
             send_cod_otp_sms(phone, otp)
@@ -162,7 +158,7 @@ def checkout(request):
             payment_type="PREPAID",
             status="INITIATED",
             payment_status="PENDING",
-            total_amount=final_amount,
+            total_amount=float(final_amount),
             is_repeat_order=is_repeat,
             order_tags=["Repeat Buyer"] if is_repeat else [],
             checkout_source="website",
@@ -175,9 +171,9 @@ def checkout(request):
 
             order_item = OrderItem.objects.create(
                 order=order,
-                product_id=item["product_id"],
-                quantity=item["quantity"],
-                price=item["price"],
+                product_id=item.get("product_id"),
+                quantity=item.get("quantity", 0),
+                price=float(item.get("price", 0)),
                 custom_message=item.get("custom_message", "")
             )
 
@@ -203,7 +199,6 @@ def checkout(request):
         if not response or "payment_session_id" not in response:
             order.payment_status = "FAILED"
             order.save()
-
             return render(request, "orders/payment_failed.html")
 
         order.gateway_order_id = response.get("order_id")
@@ -216,11 +211,29 @@ def checkout(request):
             "order_id": order.public_order_id
         })
 
-    return render(request, "orders/checkout.html", {
-        "cart_items": cart.get_items(),
-        "total": cart.get_total_price(),
-    })
+    # ============================
+    # FIXED GET RESPONSE (IMPORTANT)
+    # ============================
 
+    cart_items = []
+
+    for item in cart.get_items():
+        try:
+            product = Product.objects.get(id=item.get("product_id"))
+        except Product.DoesNotExist:
+            continue
+
+        cart_items.append({
+            "product": product,
+            "quantity": item.get("quantity", 0),
+            "price": float(item.get("price", 0)),
+            "custom_message": item.get("custom_message", ""),
+        })
+
+    return render(request, "orders/checkout.html", {
+        "cart_items": cart_items,
+        "total": float(cart.get_total_price()),
+    })
 # ============================
 # BULK ORDER
 # ============================

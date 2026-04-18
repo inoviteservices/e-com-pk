@@ -1,0 +1,152 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Failed | ArtGift</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<!-- Optional: your main CSS -->
+<!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #f6f7fb;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .card {
+        background: #fff;
+        padding: 40px 30px;
+        border-radius: 14px;
+        text-align: center;
+        max-width: 450px;
+        width: 100%;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+
+    .icon {
+        font-size: 70px;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        margin: 10px 0;
+        font-size: 26px;
+        color: #e63946;
+    }
+
+    p {
+        color: #555;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    .order-id {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        margin: 6px;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #000;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: #333;
+    }
+
+    .btn-secondary {
+        background: #e9ecef;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #d6d8db;
+    }
+
+    .help {
+        margin-top: 20px;
+        font-size: 13px;
+        color: #777;
+    }
+
+    .help a {
+        color: #000;
+        text-decoration: underline;
+    }
+</style>
+```
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="card">
+
+```
+    <div class="icon">❌</div>
+
+    <h1>Payment Failed</h1>
+
+    {% if order %}
+        <div class="order-id">
+            Order ID: {{ order.public_order_id }}
+        </div>
+    {% endif %}
+
+    <p>
+        We couldn't process your payment. This may happen due to network issues,
+        incorrect payment details, or cancellation during the process.
+    </p>
+
+    <p>
+        Don't worry — your order is safe. You can retry or switch to Cash on Delivery.
+    </p>
+
+    <!-- Actions -->
+    <div>
+        <a href="/checkout/" class="btn btn-primary">
+            Retry Payment
+        </a>
+
+        <a href="/" class="btn btn-secondary">
+            Back to Home
+        </a>
+    </div>
+
+    <div class="help">
+        Need help? Contact us or try again after a few minutes.
+    </div>
+
+</div>
+```
+
+</div>
+
+</body>
+</html>
