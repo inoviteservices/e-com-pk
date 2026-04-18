@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # =========================
 
@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-
+load_dotenv(find_dotenv())
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "LOCAL")  # LOCAL / PRODUCTION
+print("ENVIRONMENT:", ENVIRONMENT)
 
 # =========================
 
@@ -184,7 +184,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CASHFREE_MODE = os.getenv("CASHFREE_MODE", "TEST")
 CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
-
+print("CASHFREE_APP_ID:", os.getenv("CASHFREE_APP_ID"))
+print("CASHFREE_SECRET_KEY:", os.getenv("CASHFREE_SECRET_KEY"))
 if CASHFREE_MODE == "LIVE":
     CASHFREE_BASE_URL = "https://api.cashfree.com/pg"
 else:

@@ -198,10 +198,14 @@ def checkout(request):
         print("🔥 SESSION:", response.get("payment_session_id") if response else "NO RESPONSE")
         
 
-        if not response or "payment_session_id" not in response:
+        if not response or not isinstance(response, dict) or "payment_session_id" not in response:
             order.payment_status = "FAILED"
             order.save()
-            return render(request, "orders/payment_failed.html")
+
+            return render(request, "orders/payment_failed.html", {
+                "order": order,
+                "error": "Payment initialization failed"
+            })
 
         order.gateway_order_id = response.get("order_id")
         order.payment_gateway = "cashfree"
