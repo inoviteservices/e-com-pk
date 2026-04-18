@@ -31,7 +31,7 @@ def create_cashfree_order(order):
         },
 
         "order_meta": {
-            "return_url": f"{settings.BASE_URL}/payment-result/?order_id={{order_id}}",
+            "return_url": f"{settings.BASE_URL}/payment-result/?order_id={order.public_order_id}",
             "notify_url": f"{settings.BASE_URL}/cashfree/webhook/"
         }
     }
@@ -65,7 +65,7 @@ def create_cashfree_order(order):
 
 def verify_cashfree_payment(order_id):
 
-    url = f"{settings.CASHFREE_BASE_URL}/pg/orders/{order_id}/payments"
+    url = f"{settings.CASHFREE_BASE_URL}/orders/{order_id}/payments"
 
     headers = {
         "x-api-version": "2022-09-01",
