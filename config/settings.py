@@ -31,7 +31,22 @@ else:
     ALLOWED_HOSTS = ["artgift.in", "www.artgift.in"]
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
+# =========================
 
+# DELHIVERY ONE API
+
+# =========================
+
+# DELHIVERY_API_KEY = os.getenv("DELHIVERY_API_KEY")
+DELHIVERY_API_KEY = os.getenv("DELHIVERY_API_KEY") if ENVIRONMENT == "PRODUCTION" else None
+
+# =========================
+
+# META API
+
+# =========================
+META_PIXEL_ID = os.getenv("META_PIXEL_ID") or "937692779161438"
+META_ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN")
 # =========================
 
 # CSRF

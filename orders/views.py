@@ -11,7 +11,9 @@ from .services import create_cashfree_order, verify_cashfree_payment
 import random
 import time
 from products.models import Product  # add at top if not already
-
+from .services_delhivery import create_delhivery_shipment
+from orders.meta import send_meta_event
+import uuid
 # ============================
 # CHECKOUT
 # ============================
@@ -65,6 +67,22 @@ def verify_cod_otp(request):
                 )
 
             send_order_confirmation_sms(order)
+            create_delhivery_shipment(order)
+
+
+           
+
+            # event_id = str(uuid.uuid4())
+            event_id = f"order_{order.public_order_id}"
+
+            response = send_meta_event(
+                email=order.email,
+                value=order.total_amount,
+                event_name="Purchase",
+                event_id=event_id
+            )
+
+            print("META STATUS:", response)
 
             request.session.flush()
 
@@ -338,7 +356,20 @@ def cashfree_webhook(request):
             # 🚀 NEXT STEP (VERY IMPORTANT)
             # send_sms(order)
             send_order_confirmation_sms(order)
-            # create_shipment(order)
+            create_delhivery_shipment(order)
+
+
+            # event_id = str(uuid.uuid4())
+            event_id = f"order_{order.public_order_id}"
+
+            response = send_meta_event(
+                email=order.email,
+                value=order.total_amount,
+                event_name="Purchase",
+                event_id=event_id
+            )
+
+            print("META STATUS:", response)
 
         # ❌ USER DROPPED / NOT ATTEMPTED
         elif payment_status in ["USER_DROPPED", "NOT_ATTEMPTED"]:

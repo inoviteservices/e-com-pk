@@ -19,6 +19,11 @@ HEADERS = {
 # ============================
 def send_order_confirmation_sms(order):
 
+    # 🚫 BLOCK IN LOCAL / STAGING
+    if settings.ENVIRONMENT != "PRODUCTION":
+        print(f"📵 ORDER SMS BLOCKED ({settings.ENVIRONMENT}): {order.public_order_id}")
+        return "BLOCKED"
+
     payload = {
         "template_id": "69d7790a2a459fa76a090263",  # ✅ ORDER TEMPLATE ID
         "short_url": "0",
@@ -48,6 +53,11 @@ def send_order_confirmation_sms(order):
 # OTP SMS (COD VERIFICATION)
 # ============================
 def send_cod_otp_sms(phone, otp):
+
+    # 🚫 BLOCK IN LOCAL / STAGING
+    if settings.ENVIRONMENT != "PRODUCTION":
+        print(f"📵 OTP BLOCKED ({settings.ENVIRONMENT}): {otp}")
+        return "BLOCKED"
 
     payload = {
         "template_id": "69db8bfc88951461260dbbb2",  
