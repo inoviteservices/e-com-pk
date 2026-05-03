@@ -25,7 +25,7 @@ def home(request):
     ).select_related("product").annotate(
         avg_rating=Avg("product__reviews__rating"),
         review_count=Count("product__reviews")
-    )[:8]
+    )[:20]
 
 
     return render(request, "home.html", {
