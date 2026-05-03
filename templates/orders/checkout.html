@@ -260,10 +260,27 @@
               <input
                 type="tel"
                 name="phone"
+                id="phoneInput"
                 required
                 placeholder="Phone Number *"
-                class="w-full rounded-xl border px-5 py-4 focus:ring-2 focus:ring-sky-400"
+                maxlength="10"
+                pattern="[0-9]{10}"
+                style="
+                  width:100%;
+                  border:1px solid #ccc;
+                  padding:14px 18px;
+                  border-radius:12px;
+                  outline:none;
+                  transition:0.2s;
+                "
               />
+
+              <!-- Error message -->
+              <p id="phoneError"
+                style="color:red; font-size:12px; margin-top:6px; display:none;">
+                Enter valid 10 digit number
+              </p>
+
 
               <input
                 type="email"
@@ -634,7 +651,25 @@ function selectPayment(type) {
     </script>
     
     
-    
+    <script>
+const phoneInput = document.getElementById("phoneInput");
+const phoneError = document.getElementById("phoneError");
+
+phoneInput.addEventListener("input", function () {
+  const value = this.value;
+
+  // Allow only numbers
+  this.value = value.replace(/[^0-9]/g, '');
+
+  if (this.value.length === 10) {
+    this.style.border = "1px solid #22c55e"; // green
+    phoneError.style.display = "none";
+  } else {
+    this.style.border = "1px solid red";
+    phoneError.style.display = "block";
+  }
+});
+</script>
 
     
     <script>

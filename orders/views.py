@@ -58,13 +58,29 @@ def verify_cod_otp(request):
             )
 
             for item in cart_items:
-                OrderItem.objects.create(
+
+                order_item = OrderItem.objects.create(   # 🔥 STORE OBJECT
                     order=order,
                     product_id=item["product_id"],
                     quantity=item["quantity"],
                     price=item["price"],
                     custom_message=item.get("custom_message", "")
                 )
+
+                temp_path = item.get("custom_image")
+
+                if temp_path:
+                    full_path = os.path.join(settings.MEDIA_ROOT, temp_path)
+
+                    if os.path.exists(full_path):
+                        with open(full_path, "rb") as f:
+                            order_item.custom_image.save(
+                                os.path.basename(full_path),
+                                File(f),
+                                save=True
+                            )
+
+                        os.remove(full_path)  # optional cleanup
 
             send_order_confirmation_sms(order)
             create_delhivery_shipment(order)
@@ -147,7 +163,9 @@ def checkout(request):
                     "product_id": item.get("product_id"),
                     "quantity": item.get("quantity", 0),
                     "price": float(item.get("price", 0)),
-                    "custom_message": item.get("custom_message", "")
+                    "custom_message": item.get("custom_message", ""),
+                    "custom_image": item.get("custom_image")   # 🔥 ADD THIS
+
                 })
 
             request.session["cart_data"] = clean_cart
@@ -155,7 +173,10 @@ def checkout(request):
 
             send_cod_otp_sms(phone, otp)
 
-            return render(request, "orders/verify_otp.html")
+            # return render(request, "orders/verify_otp.html")
+            return render(request, "orders/verify_otp.html", {
+                "phone": phone
+            })
 
         # ============================
         # PREPAID FLOW (CREATE ORDER)

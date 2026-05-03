@@ -158,6 +158,8 @@
             ₹{{ product.price }}
           </span>
           {% if variants %}
+
+          
 <div class="mt-4">
 
   <p class="font-semibold mb-2">Select Size:</p>
@@ -233,10 +235,11 @@
             <input
               type="file"
               name="custom_image"
+              id="imageInput"
               accept="image/*"
               required
               class="w-full border rounded-xl px-4 py-3"
-            >
+            />
 
             <p class="text-xs text-gray-500 mt-2">
   Upload any clear photo • Max size 5MB
@@ -1134,7 +1137,6 @@
 
 
 
-
 <!-- KEYFRAMES MUST STILL EXIST -->
 <style>
 
@@ -1207,12 +1209,14 @@ function manualScroll(direction)
 ================================================== */
 function addCustomToCart(productId) {
 
+  if (!imageReady) {
+    alert("Processing image... wait 1 sec");
+    return;
+  }
+
   const form = document.getElementById("customOrderForm");
-  if (!form) return;
 
-  // 🔥 ADD THIS LINE HERE
   document.getElementById("variant_id").value = selectedVariantId;
-
 
   const formData = new FormData(form);
 
@@ -1232,16 +1236,13 @@ function addCustomToCart(productId) {
     }
 
     form.reset();
-
-    const fileInput = form.querySelector('input[type="file"]');
-    if (fileInput) fileInput.value = "";
+    imageReady = false;
 
     refreshCart(data);
     openDrawer();
     showCartToast("Custom product added 🖼️");
 
-  })
-  .catch(err => console.error("Cart Error:", err));
+  });
 
 }
 
@@ -1756,4 +1757,127 @@ document.getElementById("reviews-link").addEventListener("click", function(e) {
   });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
+
+<script>
+let imageReady = true;
+
+const input = document.getElementById("imageInput");
+const btn = document.querySelector("[onclick^='addCustomToCart']");
+
+// 🔥 Smart compression
+function compressToTarget(canvas, file, targetKB = 150) {
+
+  let quality = 0.9;
+
+  function tryCompress() {
+    canvas.toBlob(function (blob) {
+
+      const sizeKB = blob.size / 1024;
+
+      if (sizeKB > targetKB && quality > 0.4) {
+        quality -= 0.05;
+        tryCompress();
+      } else {
+
+        const compressedFile = new File([blob], file.name, {
+          type: "image/jpeg"
+        });
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(compressedFile);
+        input.files = dataTransfer.files;
+
+        console.log("Final size:", Math.round(sizeKB) + "KB");
+
+        imageReady = true;
+        btn.innerText = "BUY NOW";
+        btn.disabled = false;
+        btn.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+
+    }, "image/jpeg", quality);
+  }
+
+  tryCompress();
+}
+
+// 🔥 Convert HEIC → JPG
+async function handleHeic(file) {
+
+  try {
+    const convertedBlob = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.9
+    });
+
+    return new File([convertedBlob], file.name.replace(/\.(heic|heif)/i, ".jpg"), {
+      type: "image/jpeg"
+    });
+
+  } catch (err) {
+    alert("Failed to process HEIC image");
+    return null;
+  }
+}
+
+// 🔥 Main logic
+if (input && btn) {
+
+  input.addEventListener("change", async function () {
+
+    let file = this.files[0];
+    if (!file) return;
+
+    // 🚨 disable button
+    imageReady = false;
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+    btn.classList.add("opacity-50", "cursor-not-allowed");
+
+    const isHeic = file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif");
+
+    // 🔥 convert HEIC first
+    if (isHeic) {
+      console.log("Converting HEIC...");
+      const converted = await handleHeic(file);
+      if (!converted) return;
+      file = converted;
+    }
+
+    if (!file.type.startsWith("image/")) return;
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+
+    img.onload = function () {
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const MAX_WIDTH = 1200;
+      const scale = Math.min(MAX_WIDTH / img.width, 1);
+
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 🔥 compress final image
+      compressToTarget(canvas, file, 150);
+    };
+
+  });
+
+}
+</script>
+
+
 {% endblock %}

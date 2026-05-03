@@ -1,148 +1,119 @@
 {% extends "base.html" %}
 {% block content %}
 
-<section class="bg-gray-50 py-20">
+<section class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16">
 
-  <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-8 sm:p-10 text-center">
+  <div class="max-w-xl mx-auto bg-white rounded-3xl shadow-2xl p-8 text-center">
 
-    <!-- SUCCESS ICON -->
-    <div class="w-20 h-20 mx-auto mb-6 flex items-center justify-center
-                rounded-full bg-emerald-100 text-emerald-600 text-4xl">
+    <!-- ICON -->
+    <div class="w-16 h-16 mx-auto mb-5 flex items-center justify-center
+                rounded-full bg-emerald-100 text-emerald-600 text-3xl">
       ✓
     </div>
 
     <!-- TITLE -->
-    <h1 class="text-3xl sm:text-4xl font-semibold text-gray-900 mb-3">
-      Order Confirmed 🎉
+    <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
+      Thank you, {{ order.first_name }} 🎉
     </h1>
 
-    <p class="text-gray-600 text-base sm:text-lg">
-      Thank you for shopping with ArtGift. Your order is being processed.
+    <p class="text-gray-500">
+      Your order has been placed successfully.
     </p>
 
-
     <!-- ORDER ID -->
-    <div class="mt-6 bg-gray-100 rounded-xl py-4 px-6">
+    <div class="mt-6 bg-gray-50 border rounded-xl py-4 px-6">
 
-      <p class="text-sm text-gray-500">
+      <p class="text-xs text-gray-400 uppercase tracking-wide">
         Order ID
       </p>
 
       <p
-  id="orderId"
-  class="text-lg font-semibold tracking-wide text-gray-900 mt-1 cursor-pointer hover:text-blue-600 select-all"
-  onclick="copyOrderId()"
-  title="Click to copy"
->
-  {% if order.public_order_id %}
-    {{ order.public_order_id }}
-  {% else %}
-    #{{ order.id }}
-  {% endif %}
-</p>
-
+        id="orderId"
+        class="text-lg font-semibold mt-1 cursor-pointer hover:text-blue-600 select-all"
+        onclick="copyOrderId()"
+      >
+        {{ order.public_order_id|default:order.id }}
+      </p>
 
     </div>
 
 
     <!-- STATUS -->
-    <div class="mt-6 flex justify-center gap-3 text-sm flex-wrap">
+    <div class="mt-6 flex justify-center gap-2 flex-wrap text-xs sm:text-sm">
 
-      <span class="px-4 py-1.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+      <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">
         📦 Processing
       </span>
 
-      <span class="px-4 py-1.5 rounded-full bg-sky-100 text-sky-700 font-medium">
-        🚚 Cash On Delivery
+      <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-700 font-medium">
+        🚚 COD
       </span>
 
-      <span class="px-4 py-1.5 rounded-full bg-green-100 text-green-700 font-medium">
+      <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
         ✔ Verified
       </span>
 
     </div>
 
-
     <!-- MESSAGE -->
-    <div class="mt-6 text-gray-700 leading-relaxed">
-
-      <p>
-        Our team will contact you before dispatch to confirm your order.
+    <div class="mt-6 text-gray-600 text-sm">
+      <p>We’ll contact you before dispatch.</p>
+      <p class="mt-1">
+        Delivery: <span class="font-semibold">3–6 days</span>
       </p>
-
-      <p class="mt-2">
-        Estimated delivery: <strong>3–6 working days</strong>
-      </p>
-
     </div>
 
+    <!-- BUTTONS -->
+    <div class="mt-8 flex flex-col sm:flex-row gap-3">
 
-    <!-- ACTION BUTTONS -->
-    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-
-
-      <!-- DOWNLOAD INVOICE -->
       <button
         onclick="downloadInvoice()"
-        class="inline-flex items-center justify-center gap-2
-               bg-black text-white px-6 py-3 rounded-xl
-               font-medium hover:bg-gray-900 transition"
+        class="flex-1 bg-black text-white py-3 rounded-xl font-medium
+               hover:bg-gray-800 transition"
       >
-        📄 Download Invoice
+        Download Invoice
       </button>
 
-
-      <!-- TRACK ORDER -->
       <a
         href="{% url 'track_order' %}"
-        class="inline-flex items-center justify-center gap-2
-               border border-gray-300 px-6 py-3 rounded-xl
-               font-medium text-gray-700 hover:bg-gray-100 transition"
+        class="flex-1 border border-gray-300 py-3 rounded-xl
+               text-gray-700 hover:bg-gray-100 transition"
       >
-        📍 Track Order
+        Track Order
       </a>
 
-
     </div>
-
 
     <!-- SUPPORT -->
     <div class="mt-8 border-t pt-6">
 
-      <p class="text-sm text-gray-500 mb-3">
-        Need help with your order?
+      <p class="text-sm text-gray-400 mb-2">
+        Need help?
       </p>
 
       <a
-        href="https://wa.me/919834898303"
+        href="https://wa.me/917387543238"
         target="_blank"
-        class="inline-flex items-center gap-2
-               text-green-600 font-medium hover:underline"
+        class="text-green-600 font-medium hover:underline"
       >
-        💬 Chat on WhatsApp
+        Chat on WhatsApp
       </a>
 
     </div>
 
-
     <!-- CONTINUE -->
-    <div class="mt-8">
-
-      <a
-        href="/"
-        class="text-sky-600 font-medium hover:underline"
-      >
+    <div class="mt-6">
+      <a href="/" class="text-blue-600 text-sm hover:underline">
         ← Continue Shopping
       </a>
-
     </div>
 
   </div>
 
 </section>
 
+<!-- INVOICE SCRIPT -->
 
-<!-- INVOICE GENERATOR -->
 <script>
 function downloadInvoice() {
 
@@ -151,83 +122,62 @@ function downloadInvoice() {
   const phone = "{{ order.phone }}";
   const total = "{{ order.total_amount }}";
 
+  // optional fields
+  const email = "{{ order.email|default:'' }}";
+
+  // full address (adjust based on your model fields)
+  const address = `
+  {{ order.address }}
+  {{ order.building|default:'' }}
+  {{ order.city }} - {{ order.pincode }}
+  {{ order.state|default:'' }}
+  `;
+
+  // payment mode
+  const paymentMode = "{{ order.payment_method|default:'COD' }}";
+  const paymentLabel = paymentMode === "ONLINE" ? "Prepaid" : "Cash on Delivery";
+
   const date = new Date().toLocaleDateString("en-IN");
+
+  // conditionally render email
+  const emailHTML = email ? `<p><strong>Email:</strong> ${email}</p>` : "";
 
   const invoiceHTML = `
   <html>
   <head>
-    <title>Invoice - ${orderId}</title>
-
+    <title>Invoice</title>
     <style>
-
-      body {
-        font-family: Arial, sans-serif;
-        padding: 40px;
-        color: #111;
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-
-      .header h1 {
-        margin-bottom: 5px;
-      }
-
-      .box {
-        border: 1px solid #ddd;
-        padding: 25px;
-        border-radius: 12px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-      }
-
-      th, td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-      }
-
-      th {
-        background: #f3f4f6;
-      }
-
-      .total {
-        text-align: right;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 20px;
-      }
-
-      .footer {
-        margin-top: 40px;
-        text-align: center;
-        font-size: 12px;
-        color: #666;
-      }
-
+      body { font-family: Arial; padding:40px; }
+      .box { border:1px solid #ddd; padding:20px; border-radius:10px; }
+      table { width:100%; margin-top:20px; border-collapse: collapse; }
+      th, td { border:1px solid #ddd; padding:10px; }
+      th { background:#f3f4f6; }
+      .total { text-align:right; margin-top:15px; font-weight:bold; }
+      .section { margin-top:15px; }
     </style>
   </head>
-
   <body>
 
-    <div class="header">
-      <h1>ArtGift</h1>
-      <p>Official Invoice</p>
-    </div>
+    <h2>ArtGift Invoice</h2>
 
     <div class="box">
 
       <p><strong>Order ID:</strong> ${orderId}</p>
       <p><strong>Date:</strong> ${date}</p>
 
-      <p><strong>Customer:</strong> ${name}</p>
-      <p><strong>Phone:</strong> ${phone}</p>
+      <div class="section">
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        ${emailHTML}
+      </div>
+
+      <div class="section">
+        <p><strong>Address:</strong><br>${address}</p>
+      </div>
+
+      <div class="section">
+        <p><strong>Payment Mode:</strong> ${paymentLabel}</p>
+      </div>
 
       <hr>
 
@@ -236,9 +186,8 @@ function downloadInvoice() {
           <th>Description</th>
           <th>Amount</th>
         </tr>
-
         <tr>
-          <td>ArtGift Order Purchase</td>
+          <td>Order Purchase</td>
           <td>₹${total}</td>
         </tr>
       </table>
@@ -249,45 +198,27 @@ function downloadInvoice() {
 
     </div>
 
-    <div class="footer">
-      <p>Thank you for shopping with ArtGift ❤️</p>
-      <p>Support: +91 9834898303</p>
-    </div>
-
   </body>
   </html>
   `;
 
-
   const win = window.open("", "_blank");
-
   win.document.write(invoiceHTML);
   win.document.close();
 
   setTimeout(() => {
+    win.focus();
     win.print();
-  }, 500);
-
+  }, 400);
 }
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-  // Auto download after 1.5 sec
-  setTimeout(() => {
-    downloadInvoice();
-  }, 1500);
-
-});
-</script>
 <script>
 function copyOrderId() {
   const text = document.getElementById("orderId").innerText.trim();
 
   navigator.clipboard.writeText(text).then(() => {
-    alert("Order ID copied: " + text);
-  }).catch(() => {
-    alert("Failed to copy!");
+    alert("Copied: " + text);
   });
 }
 </script>
