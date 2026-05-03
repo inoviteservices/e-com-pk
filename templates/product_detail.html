@@ -133,7 +133,7 @@
   </div>
 
   <!-- Review Count -->
-  <a href="#reviews"
+  <a href="#reviews" id="reviews-link"
      class="underline font-medium cursor-pointer hover:text-sky-600 transition">
 
     {{ total_reviews }} reviews
@@ -524,7 +524,7 @@
 
 
 <!-- REVIEWS SECTION -->
-<section class="w-full py-16 mt-12">
+<section id="reviews" class="w-full py-16 mt-12">
 
   <div class="max-w-7xl mx-auto px-4">
 
@@ -1702,5 +1702,18 @@ document.addEventListener("click", function(e) {
   }
 });
 
+</script>
+
+<script>
+document.getElementById("reviews-link").addEventListener("click", function(e) {
+  e.preventDefault();
+
+  const target = document.getElementById("reviews");
+
+  window.scrollTo({
+    top: target.offsetTop - 80, // adjust for navbar
+    behavior: "smooth"
+  });
+});
 </script>
 {% endblock %}
