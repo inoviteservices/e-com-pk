@@ -126,7 +126,7 @@
 
           </div>
         </a>
-
+        <a href="{% url 'product_detail' product.slug %}">
         <!-- CONTENT -->
         <div class="p-4 flex flex-col flex-1">
 
@@ -137,11 +137,32 @@
 
           <!-- RATING -->
           <div class="flex items-center gap-2 text-sm mb-3">
-            <span class="text-blue-500 text-lg leading-none">★</span>
-            <span class="text-gray-800 font-medium">4.5/5</span>
-            <span class="text-gray-400">- 5769</span>
-          </div>
 
+            <!-- Star -->
+            <span class="text-blue-500 text-lg leading-none">★</span>
+
+            {% if product.total_reviews %}
+
+              <!-- Rating -->
+              <span class="text-gray-800 font-medium">
+                {{ product.avg_rating|floatformat:1 }}/5
+              </span>
+
+              <!-- Count -->
+              <span class="text-gray-400">
+                - {{ product.total_reviews }}
+              </span>
+
+            {% else %}
+
+              <span class="text-gray-400 text-xs">
+                No reviews yet 
+              </span>
+
+            {% endif %}
+
+          </div>
+          </a>
           <!-- CTA -->
           <div class="mt-auto">
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, CustomerReview
-from django.db.models import Avg
+from django.db.models import Avg, Count, Value
+from django.db.models.functions import Coalesce
 import random
 from django.http import JsonResponse
 
@@ -25,14 +26,25 @@ def category_redirect(request, slug):
     return redirect(f"/products/category/all/?category={slug}")
 
 
+
+
 def shop_all(request):
     categories = Category.objects.all()
-    products = Product.objects.filter(is_active=True)
+
+    products = Product.objects.filter(
+        is_active=True
+    ).annotate(
+        avg_rating=Coalesce(Avg("reviews__rating"), Value(0.0)),
+        total_reviews=Count("reviews", distinct=True)
+    )
 
     active_category = request.GET.get("category")
 
     if active_category:
         products = products.filter(category__slug=active_category)
+
+    # optional but recommended
+    products = products.order_by("-total_reviews")
 
     return render(request, "products/shop_all.html", {
         "categories": categories,
@@ -40,7 +52,6 @@ def shop_all(request):
         "active_category": active_category,
         "active_nav": "shop",
     })
-
 def product_detail(request, slug):
 
     product = get_object_or_404(Product, slug=slug, is_active=True)
