@@ -227,7 +227,7 @@
 
 
         {% if product.requires_custom_image %}
-          <div>
+          <div id="uploadSection">
             <label class="block font-medium mb-2">
               Upload your Image <span class="text-red-500">*</span>
             </label>
@@ -1121,7 +1121,7 @@
 
 {% if product.requires_custom_image %}
 <button
-  onclick="addCustomToCart({{ product.id }})"
+  onclick="handleBuyClick({{ product.id }})"
   class="w-full bg-indigo-900 text-white text-lg font-semibold py-4 active:bg-[#2c2c6c]">
   Buy Now
 </button>
@@ -1878,6 +1878,31 @@ if (input && btn) {
 
 }
 </script>
+<script>
+function handleBuyClick(productId) {
 
+  const input = document.getElementById("imageInput");
+  const section = document.getElementById("uploadSection");
+
+  // 🚨 If no image selected
+  if (!input || !input.files || input.files.length === 0) {
+
+    // smooth scroll
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    // optional: focus input
+    if (input) {
+      setTimeout(() => input.focus(), 500);
+    }
+
+    return;
+  }
+
+  // ✅ Image exists → proceed normally
+  addCustomToCart(productId);
+}
+</script>
 
 {% endblock %}
