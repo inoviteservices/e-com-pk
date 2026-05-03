@@ -405,18 +405,57 @@
 
         
 
-        <p class="text-center text-lg font-semibold">
+        
+        <!-- REVIEWS IMAGE -->
+
+  {% if reviews %}
+  <p class="text-center text-lg font-semibold">
           <span class="text-red-600">10,000+</span> HAPPY CUSTOMERS
         </p>
-        <!-- REVIEWS IMAGE -->
-<div class="w-full mt-4">
-  <img
-    src="{% static 'images/reviews.webp' %}"
-    alt="Customer Reviews"
-    class="w-full h-auto rounded-xl shadow-sm"
-    loading="lazy"
-  >
-</div>
+
+    <div class="flex gap-4 overflow-x-auto pb-2">
+      
+
+      {% for review in reviews|dictsortreversed:"created_at" %}
+      
+
+        {% if review.media and review.media.name %}
+
+          {% with url=review.media.url|lower %}
+          
+
+            {% if ".mp4" in url or ".webm" in url or ".mov" in url %}
+
+              <video
+                onclick="openMedia('{{ review.media.url }}', 'video')"
+                class="w-40 h-40 object-cover rounded-lg flex-shrink-0 cursor-pointer hover:scale-105 transition">
+                <source src="{{ review.media.url }}">
+              </video>
+
+            {% else %}
+
+              <img src="{{ review.media.url }}"
+                   onclick="openMedia('{{ review.media.url }}', 'image')"
+                   class="w-40 h-40 object-cover rounded-lg flex-shrink-0 cursor-pointer hover:scale-105 transition">
+
+            {% endif %}
+
+          {% endwith %}
+
+        {% endif %}
+
+      {% endfor %}
+
+    </div>
+
+  {% else %}
+
+    <p class="text-center text-gray-500">
+      No customer photos or videos yet.
+    </p>
+
+  {% endif %}
+
 <h2 class="text-xl font-semibold">Product Description</h2>
 
 <!-- FORMATTED PRODUCT DESCRIPTION -->
@@ -532,6 +571,7 @@
     <h2 class="text-3xl font-serif text-center mb-10">
       Reviews
     </h2>
+    
 <!-- CUSTOMER MEDIA FROM REVIEWS -->
 <div class="mb-10">
 
