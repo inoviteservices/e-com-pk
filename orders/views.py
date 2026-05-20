@@ -31,6 +31,7 @@ def verify_cod_otp(request):
 
             data = request.session.get("cod_order_data")
             cart_items = request.session.get("cart_data")
+            
 
             # 🔥 FIX START
             phone = str(data.get("phone"))[-10:]
@@ -271,6 +272,7 @@ def checkout(request):
 
         cart_items.append({
             "product": product,
+            "image": product.image.name if product.image else "",
             "quantity": item.get("quantity", 0),
             "price": float(item.get("price", 0)),
             "custom_message": item.get("custom_message", ""),
@@ -314,7 +316,8 @@ def bulk_order_view(request):
 # TRACK ORDER
 # ============================
 
-ORDER_STEPS = ["INITIATED", "PAID", "SHIPPED", "DELIVERED"]
+# ORDER_STEPS = ["INITIATED", "PAID", "SHIPPED", "DELIVERED"]
+ORDER_STEPS = ["INITIATED", "PAID", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED"]
 
 
 def track_order(request):
@@ -413,6 +416,61 @@ def cashfree_webhook(request):
         print("❌ WEBHOOK ERROR:", str(e))
 
     return HttpResponse("OK")
+
+@csrf_exempt
+def delhivery_webhook(request):
+
+    try:
+        data = json.loads(request.body)
+
+        print("📦 DELHIVERY WEBHOOK:", data)
+
+        shipments = data.get("ShipmentData", [])
+
+        for s in shipments:
+            shipment = s.get("Shipment", {})
+
+            awb = shipment.get("AWB")
+            status = shipment.get("Status", {}).get("Status")
+
+            if not awb or not status:
+                continue
+
+            try:
+                order = Order.objects.get(tracking_id=awb)
+
+                # 🔥 STATUS MAP (VERY IMPORTANT)
+                status_map = {
+                    "Manifested": "PAID",
+                    "In Transit": "SHIPPED",
+                    "Out for Delivery": "OUT_FOR_DELIVERY",
+                    "Delivered": "DELIVERED"
+                }
+
+                mapped_status = status_map.get(status, "SHIPPED")
+
+                # avoid duplicate save
+                if order.status != mapped_status:
+                    order.status = mapped_status
+                    order.save()
+
+                    print(f"✅ Order {order.public_order_id} → {mapped_status}")
+
+                    if mapped_status == "OUT_FOR_DELIVERY":
+                        send_out_for_delivery_sms(order)
+
+                    elif mapped_status == "DELIVERED":
+                        send_delivered_sms(order)
+
+            except Order.DoesNotExist:
+                print("⚠️ Order not found for AWB:", awb)
+
+        return HttpResponse("OK")
+
+    except Exception as e:
+        print("❌ DELHIVERY WEBHOOK ERROR:", str(e))
+        return HttpResponse("ERROR", status=500)
+    
 
 def payment_result(request):
 

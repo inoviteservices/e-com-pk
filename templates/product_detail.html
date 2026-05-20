@@ -234,7 +234,8 @@
 
             <input
               type="file"
-              name="custom_image"
+              name="custom_images"
+              multiple
               id="imageInput"
               accept="image/*"
               required
@@ -1759,94 +1760,19 @@ document.getElementById("reviews-link").addEventListener("click", function(e) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 
+
 <script>
 let imageReady = true;
 
 const input = document.getElementById("imageInput");
 const btn = document.querySelector("[onclick^='addCustomToCart']");
 
-// 🔥 Smart compression
-function compressToTarget(canvas, file, targetKB = 150) {
+/* =========================================
+   COMPRESS IMAGE
+========================================= */
+async function compressImage(file, targetKB = 150) {
 
-  let quality = 0.9;
-
-  function tryCompress() {
-    canvas.toBlob(function (blob) {
-
-      const sizeKB = blob.size / 1024;
-
-      if (sizeKB > targetKB && quality > 0.4) {
-        quality -= 0.05;
-        tryCompress();
-      } else {
-
-        const compressedFile = new File([blob], file.name, {
-          type: "image/jpeg"
-        });
-
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(compressedFile);
-        input.files = dataTransfer.files;
-
-        console.log("Final size:", Math.round(sizeKB) + "KB");
-
-        imageReady = true;
-        btn.innerText = "BUY NOW";
-        btn.disabled = false;
-        btn.classList.remove("opacity-50", "cursor-not-allowed");
-      }
-
-    }, "image/jpeg", quality);
-  }
-
-  tryCompress();
-}
-
-// 🔥 Convert HEIC → JPG
-async function handleHeic(file) {
-
-  try {
-    const convertedBlob = await heic2any({
-      blob: file,
-      toType: "image/jpeg",
-      quality: 0.9
-    });
-
-    return new File([convertedBlob], file.name.replace(/\.(heic|heif)/i, ".jpg"), {
-      type: "image/jpeg"
-    });
-
-  } catch (err) {
-    alert("Failed to process HEIC image");
-    return null;
-  }
-}
-
-// 🔥 Main logic
-if (input && btn) {
-
-  input.addEventListener("change", async function () {
-
-    let file = this.files[0];
-    if (!file) return;
-
-    // 🚨 disable button
-    imageReady = false;
-    btn.innerText = "Processing...";
-    btn.disabled = true;
-    btn.classList.add("opacity-50", "cursor-not-allowed");
-
-    const isHeic = file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif");
-
-    // 🔥 convert HEIC first
-    if (isHeic) {
-      console.log("Converting HEIC...");
-      const converted = await handleHeic(file);
-      if (!converted) return;
-      file = converted;
-    }
-
-    if (!file.type.startsWith("image/")) return;
+  return new Promise((resolve) => {
 
     const img = new Image();
     const reader = new FileReader();
@@ -1863,6 +1789,7 @@ if (input && btn) {
       const ctx = canvas.getContext("2d");
 
       const MAX_WIDTH = 1200;
+
       const scale = Math.min(MAX_WIDTH / img.width, 1);
 
       canvas.width = img.width * scale;
@@ -1870,14 +1797,170 @@ if (input && btn) {
 
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // 🔥 compress final image
-      compressToTarget(canvas, file, 150);
+      let quality = 0.9;
+
+      function tryCompress() {
+
+        canvas.toBlob(function (blob) {
+
+          const sizeKB = blob.size / 1024;
+
+          if (sizeKB > targetKB && quality > 0.4) {
+
+            quality -= 0.05;
+
+            tryCompress();
+
+          } else {
+
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.\w+$/, ".jpg"),
+              {
+                type: "image/jpeg"
+              }
+            );
+
+            console.log(
+              file.name,
+              "→",
+              Math.round(sizeKB) + "KB"
+            );
+
+            resolve(compressedFile);
+
+          }
+
+        }, "image/jpeg", quality);
+
+      }
+
+      tryCompress();
+
     };
 
   });
 
 }
+
+/* =========================================
+   HEIC → JPG
+========================================= */
+async function handleHeic(file) {
+
+  try {
+
+    const convertedBlob = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.9
+    });
+
+    return new File(
+      [convertedBlob],
+      file.name.replace(/\.(heic|heif)/i, ".jpg"),
+      {
+        type: "image/jpeg"
+      }
+    );
+
+  } catch (err) {
+
+    alert("Failed to process HEIC image");
+
+    return null;
+
+  }
+
+}
+
+/* =========================================
+   MULTIPLE IMAGE PROCESSING
+========================================= */
+if (input && btn) {
+
+  input.addEventListener("change", async function () {
+
+    const files = Array.from(this.files);
+
+    if (!files.length) return;
+
+    // disable button
+    imageReady = false;
+
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    btn.classList.add(
+      "opacity-50",
+      "cursor-not-allowed"
+    );
+
+    const processedFiles = [];
+
+    for (let file of files) {
+
+      const isHeic =
+        file.name.toLowerCase().endsWith(".heic") ||
+        file.name.toLowerCase().endsWith(".heif");
+
+      // convert HEIC
+      if (isHeic) {
+
+        console.log("Converting:", file.name);
+
+        const converted = await handleHeic(file);
+
+        if (!converted) continue;
+
+        file = converted;
+      }
+
+      // validate image
+      if (!file.type.startsWith("image/")) {
+        continue;
+      }
+
+      // compress image
+      const compressed = await compressImage(file);
+
+      if (compressed) {
+        processedFiles.push(compressed);
+      }
+
+    }
+
+    // rebuild input files
+    const dt = new DataTransfer();
+
+    processedFiles.forEach(file => {
+      dt.items.add(file);
+    });
+
+    input.files = dt.files;
+
+    console.log(
+      "Final processed files:",
+      processedFiles.length
+    );
+
+    // enable button
+    imageReady = true;
+
+    btn.innerText = "BUY NOW";
+
+    btn.disabled = false;
+
+    btn.classList.remove(
+      "opacity-50",
+      "cursor-not-allowed"
+    );
+
+  });
+
+}
 </script>
+
 <script>
 function handleBuyClick(productId) {
 

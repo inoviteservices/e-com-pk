@@ -80,3 +80,24 @@ def send_cod_otp_sms(phone, otp):
     except Exception as e:
         print("❌ OTP SMS ERROR:", str(e))
         return None
+    
+
+def send_out_for_delivery_sms(order):
+
+    payload = {
+        "template_id": "YOUR_DLT_TEMPLATE_ID",
+        "recipients": [
+            {
+                "mobiles": "91" + str(order.phone)[-10:],
+                "NAME": order.first_name,
+                "ORDER": order.public_order_id
+            }
+        ]
+    }
+
+    requests.post(BASE_URL, json=payload, headers=HEADERS)
+
+
+def send_delivered_sms(order):
+    # similar structure
+    pass

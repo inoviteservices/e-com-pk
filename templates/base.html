@@ -221,7 +221,7 @@
               <div class="flex gap-4 mb-6">
                 <!-- Image -->
                 <!-- Image Wrapper -->
-                <div class="relative w-20 h-20 flex-shrink-0">
+                {% comment %} <div class="relative w-20 h-20 flex-shrink-0">
                   {% if item.custom_image %}
                   <!-- IMAGE STACK -->
                   <div
@@ -267,7 +267,43 @@
                     alt="{{ item.title }}"
                   />
                   {% endif %}
-                </div>
+                </div> {% endcomment %}
+<div class="relative w-20 h-20 flex-shrink-0">
+
+  {% if item.custom_images %}
+
+    <!-- First Uploaded Image -->
+    <img
+      src="/media/{{ item.custom_images.0 }}"
+      class="w-20 h-20 object-cover rounded-lg"
+      alt="{{ item.title }}"
+    />
+
+    <!-- Multi Image Count -->
+    {% if item.custom_images|length > 1 %}
+      <div
+        class="absolute top-1 right-1
+               bg-black/70 text-white
+               text-[10px] px-1.5 py-0.5
+               rounded-full"
+      >
+        +{{ item.custom_images|length }}
+      </div>
+    {% endif %}
+
+  {% else %}
+
+    <!-- Normal Product Image -->
+    <img
+      src="{{ item.image }}"
+      class="w-20 h-20 object-cover rounded-lg"
+      alt="{{ item.title }}"
+    />
+
+  {% endif %}
+
+</div>
+
 
                 <div class="flex-1">
                   <p class="text-sm text-gray-500">{{ item.category }}</p>
@@ -728,41 +764,39 @@
       <div class="relative w-20 h-20 flex-shrink-0">
 
         ${
-          item.custom_image
-            ? `
-              <div class="relative w-full h-full overflow-hidden rounded-lg">
-                <img
-                  src="${item.image}"
-                  class="absolute inset-0 w-full h-full object-cover
-                         transition-opacity duration-300
-                         cart-img-product-${item.cart_key}"
-                >
-                <img
-                  src="/media/${item.custom_image}"
-                  class="absolute inset-0 w-full h-full object-cover
-                         opacity-0 transition-opacity duration-300
-                         cart-img-custom-${item.cart_key}"
-                >
-              </div>
+item.custom_images
+  ? `
+      <div class="relative w-20 h-20 flex-shrink-0">
 
-              <div class="absolute -bottom-2 left-1/2 -translate-x-1/2
-                          flex gap-1 bg-white/90 px-1.5 py-0.5 rounded-full shadow">
-                <button
-                  class="w-1.5 h-1.5 rounded-full bg-black"
-                  onclick="showCartImage('${item.cart_key}','product')"
-                ></button>
-                <button
-                  class="w-1.5 h-1.5 rounded-full bg-gray-400"
-                  onclick="showCartImage('${item.cart_key}','custom')"
-                ></button>
+        <img
+          src="/media/${item.custom_images[0]}"
+          class="w-20 h-20 object-cover rounded-lg"
+        >
+
+        ${
+          item.custom_images.length > 1
+            ? `
+              <div
+                class="absolute top-1 right-1
+                       bg-black/70 text-white
+                       text-[10px] px-1.5 py-0.5
+                       rounded-full"
+              >
+                +${item.custom_images.length}
               </div>
             `
-            : `
-              <img
-                src="${item.image}"
-                class="w-20 h-20 object-cover rounded-lg"
-              >
-            `
+            : ""
+        }
+
+      </div>
+    `
+  : `
+      <img
+        src="${item.image}"
+        class="w-20 h-20 object-cover rounded-lg"
+      >
+    `
+
         }
 
       </div>
@@ -863,21 +897,7 @@
       window.decreaseCart = decreaseCart;
       window.removeFromCart = removeFromCart;
 
-      /* =========================
-   IMAGE TOGGLE (CUSTOM)
-========================= */
-      function showCartImage(productId, type) {
-        const productImg = document.querySelector(
-          `.cart-img-product-${productId}`,
-        );
-        const customImg = document.querySelector(
-          `.cart-img-custom-${productId}`,
-        );
-        if (!productImg || !customImg) return;
-
-        productImg.style.opacity = type === "product" ? "1" : "0";
-        customImg.style.opacity = type === "custom" ? "1" : "0";
-      }
+      
     </script>
 
     <script>
@@ -938,61 +958,7 @@
       })();
     </script>
 
-    <script>
-      /* =========================
-   AUTO SLIDE CART IMAGES
-========================= */
-      function startCartImageAutoSlide() {
-        document
-          .querySelectorAll("[class*='cart-img-product-']")
-          .forEach((img) => {
-            const match = img.className.match(
-              /cart-img-product-([a-zA-Z0-9_]+)/,
-            );
-            if (!match) return;
 
-            const cartKey = match[1];
-            const productImg = document.querySelector(
-              `.cart-img-product-${cartKey}`,
-            );
-            const customImg = document.querySelector(
-              `.cart-img-custom-${cartKey}`,
-            );
-
-            if (!productImg || !customImg) return;
-
-            let showProduct = true;
-
-            // clear old interval if exists (important on refresh)
-            if (productImg.dataset.intervalId) {
-              clearInterval(productImg.dataset.intervalId);
-            }
-
-            const intervalId = setInterval(() => {
-              if (showProduct) {
-                productImg.style.opacity = "0";
-                customImg.style.opacity = "1";
-              } else {
-                productImg.style.opacity = "1";
-                customImg.style.opacity = "0";
-              }
-              showProduct = !showProduct;
-            }, 3500); // ⏱️ 3.5 sec (sweet spot)
-
-            productImg.dataset.intervalId = intervalId;
-          });
-      }
-
-      /* Re-run auto slide after cart refresh */
-      const _refreshCart = refreshCart;
-      refreshCart = async function (data) {
-        await _refreshCart(data);
-        startCartImageAutoSlide();
-      };
-
-      /* Initial run */
-      document.addEventListener("DOMContentLoaded", startCartImageAutoSlide);
-    </script>
 
     <script>
       document
