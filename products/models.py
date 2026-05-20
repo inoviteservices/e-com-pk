@@ -52,6 +52,13 @@ class Product(models.Model):
     stock = models.IntegerField()
 
     has_variants = models.BooleanField(default=False)
+    has_gift_option = models.BooleanField(default=False)
+    gift_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
 
     sold_units = models.PositiveIntegerField(
     default=0,

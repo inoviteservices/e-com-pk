@@ -52,6 +52,9 @@ def shop_all(request):
         "active_category": active_category,
         "active_nav": "shop",
     })
+
+
+
 def product_detail(request, slug):
 
     product = get_object_or_404(Product, slug=slug, is_active=True)
@@ -61,14 +64,13 @@ def product_detail(request, slug):
     # Fake interest count
     interest_count = (product.id % 5) + random.randint(6, 18)
 
-    # ✅ SAVE REVIEW (NEW PART)
+    # ✅ SAVE REVIEW
     if request.method == "POST":
 
         name = request.POST.get("name")
         rating = request.POST.get("rating")
         review_text = request.POST.get("review")
         media = request.FILES.get("media")
-
 
         if name and rating and review_text:
 
@@ -81,10 +83,10 @@ def product_detail(request, slug):
                 is_active=True,
             )
 
-        return redirect(request.path)  # avoid resubmission
+        return redirect(request.path)
 
 
-    # Reviews
+    # REVIEWS
     reviews = product.reviews.filter(is_active=True)
 
     total_reviews = reviews.count()
@@ -92,7 +94,7 @@ def product_detail(request, slug):
     avg_rating = reviews.aggregate(avg=Avg("rating"))["avg"] or 0
     avg_rating = round(avg_rating, 2)
 
-    # Star counts
+    # STAR COUNTS
     star_counts = {
         5: reviews.filter(rating=5).count(),
         4: reviews.filter(rating=4).count(),
@@ -101,23 +103,43 @@ def product_detail(request, slug):
         1: reviews.filter(rating=1).count(),
     }
 
-    # Star percentages (for bars)
+    # STAR PERCENTAGES
     star_percentages = {}
 
     for star, count in star_counts.items():
+
         if total_reviews > 0:
             star_percentages[star] = int((count / total_reviews) * 100)
+
         else:
             star_percentages[star] = 0
 
+
+    # RELATED PRODUCTS
+    related_products = Product.objects.filter(
+        category=product.category,
+        is_active=True
+    ).exclude(
+        id=product.id
+    ).annotate(
+        avg_rating=Coalesce(Avg("reviews__rating"), Value(0.0)),
+        review_count=Count("reviews", distinct=True)
+    )[:8]
+
+
     return render(request, "product_detail.html", {
+
         "product": product,
         "interest_count": interest_count,
         "variants": variants,
+
         "reviews": reviews,
         "avg_rating": avg_rating,
         "total_reviews": total_reviews,
 
         "star_counts": star_counts,
         "star_percentages": star_percentages,
+
+        # NEW
+        "related_products": related_products,
     })

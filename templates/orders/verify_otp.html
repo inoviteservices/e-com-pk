@@ -55,13 +55,68 @@
         </button>
     </form>
 
+<!-- TIMER -->
+<div class="mt-4 text-center">
+
+    <p id="timerText" class="text-sm text-gray-500">
+        Resend OTP in <span id="timer">10:00</span>
+    </p>
+
+    <button
+        id="resendBtn"
+        onclick="reloadPage()"
+        class="hidden mt-3 w-full border border-black text-black py-3 rounded-xl font-semibold hover:bg-black hover:text-white transition"
+    >
+        Resend OTP
+    </button>
+
 </div>
 
+</div>
+
+```html id="u7k9rm"
 <script>
+
 function goBack() {
     window.history.back();
 }
+
+function reloadPage() {
+    window.location.reload();
+}
+
+// 10 MINUTE TIMER
+let totalSeconds = 10 * 60;
+
+const timer = document.getElementById("timer");
+const timerText = document.getElementById("timerText");
+const resendBtn = document.getElementById("resendBtn");
+
+const countdown = setInterval(() => {
+
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    timer.innerText = `${minutes}:${seconds}`;
+
+    if (totalSeconds <= 0) {
+
+        clearInterval(countdown);
+
+        timerText.classList.add("hidden");
+
+        resendBtn.classList.remove("hidden");
+    }
+
+    totalSeconds--;
+
+}, 1000);
+
 </script>
+```
+
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-59CG09Q2VF"></script>
@@ -73,6 +128,8 @@ function goBack() {
   gtag('config', 'G-59CG09Q2VF');
 </script>
 <!-- Meta Pixel Code -->
+
+
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
