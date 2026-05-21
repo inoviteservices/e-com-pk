@@ -128,14 +128,30 @@ class Order(models.Model):
 
     # 🔥 AUTO GENERATE ORDER ID
     def save(self, *args, **kwargs):
+
         if not self.public_order_id:
-            month_year = datetime.now().strftime("%m%y")
-            while True:
-                candidate = f"AG{month_year}{random.randint(1000, 9999)}"
-                if not Order.objects.filter(public_order_id=candidate).exists():
-                    self.public_order_id = candidate
-                    break
+
+            latest_order = Order.objects.order_by("-id").first()
+
+            next_number = 1
+
+            if latest_order:
+                next_number = latest_order.id + 1
+
+            # LETTER SERIES
+            letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+            letter_index = (next_number - 1) // 9999
+
+            current_letter = letters[letter_index % len(letters)]
+
+            serial_number = ((next_number - 1) % 9999) + 1
+
+            self.public_order_id = f"AG{current_letter}{serial_number:04d}"
+
         super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return self.public_order_id or f"Order #{self.id}"
